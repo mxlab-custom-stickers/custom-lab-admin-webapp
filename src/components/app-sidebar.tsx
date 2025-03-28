@@ -1,10 +1,22 @@
-import { AudioWaveform, Blocks, Command, GalleryVerticalEnd, Settings2 } from 'lucide-react';
+import {
+  AudioWaveform,
+  Blocks,
+  Command,
+  GalleryVerticalEnd,
+  Settings2,
+} from 'lucide-react';
 import * as React from 'react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { TeamSwitcher } from '@/components/team-switcher';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from '@/components/ui/sidebar';
 
 // This is sample data.
 const data = {
@@ -31,7 +43,14 @@ const data = {
     },
   ],
   navMain: [
-    { title: 'Templates', icon: Blocks, items: [{ title: 'Mes Templates', url: '/templates' }] },
+    {
+      title: 'Templates',
+      icon: Blocks,
+      items: [
+        { title: 'Mes Templates', url: '/templates' },
+        { title: 'Couleurs', url: '/colors' },
+      ],
+    },
     {
       title: 'Paramètres',
       icon: Settings2,
