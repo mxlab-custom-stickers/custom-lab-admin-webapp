@@ -51,7 +51,7 @@ function SvgLayerItem({
       <Collapsible defaultOpen>
         <div
           className={cn(
-            'flex items-center justify-between rounded p-1 hover:bg-gray-200/80',
+            'mb-0.5 flex items-center justify-between rounded p-1 hover:bg-gray-200/80',
             {
               'bg-gray-200 font-semibold': selected === svgLayer.id,
             }

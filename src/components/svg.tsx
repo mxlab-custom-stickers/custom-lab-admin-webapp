@@ -14,6 +14,8 @@ export function Svg({ afterInjection }: SvgProps) {
       src: svg,
       beforeInjection: (svg) => {
         svg.setAttribute('id', 'nouveau-template');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
       },
       afterInjection,
     }),

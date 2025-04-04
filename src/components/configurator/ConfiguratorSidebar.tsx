@@ -4,20 +4,22 @@ import * as React from 'react';
 import ColorElement from './ColorElement';
 import ColorGroup from './ColorGroup';
 
-type SidebarProps = React.ComponentPropsWithoutRef<'div'> & {
+type ConfiguratorSidebarProps = React.ComponentPropsWithoutRef<'div'> & {
   template: EditTemplate;
 };
 
-export default function Sidebar({
+export default function ConfiguratorSidebar({
   className,
   template,
   ...props
-}: SidebarProps) {
+}: ConfiguratorSidebarProps) {
   const layer = template.layers[0];
 
   return (
-    <div className={cn('w-64 bg-gray-100 p-2', className)} {...props}>
-      <div className="mb-2 font-semibold">{layer?.name}</div>
+    <div className={cn('w-64 border-r bg-gray-50 p-2', className)} {...props}>
+      <div className="mb-2 flex items-center">
+        <span className="flex-1 font-semibold">{layer?.name}</span>
+      </div>
 
       <div className="flex flex-col gap-3">
         {layer?.colors?.length ? (

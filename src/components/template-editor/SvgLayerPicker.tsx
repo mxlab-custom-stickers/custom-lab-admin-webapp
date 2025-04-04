@@ -1,17 +1,20 @@
 import SvgLayerTree from '@/components/template-editor/SvgLayerTree.tsx';
 import { getSvgLayers } from '@/lib/svg.ts';
+import { cn } from '@/lib/utils.ts';
 import { SvgLayer } from '@/models/svg.ts';
 import { SVG } from '@svgdotjs/svg.js';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-type SvgLayerPickerProps = {
+type SvgLayerPickerProps = React.ComponentPropsWithoutRef<'div'> & {
   svgId: string;
   onSelectLayer?: (layer?: SvgLayer) => void;
 };
 
 export default function SvgLayerPicker({
+  className,
   svgId,
   onSelectLayer,
+  ...props
 }: SvgLayerPickerProps) {
   const [svgLayers, setSvgLayers] = useState<SvgLayer[]>([]);
   const [selected, setSelected] = useState<SvgLayer>();
@@ -34,7 +37,7 @@ export default function SvgLayerPicker({
   }
 
   return (
-    <div>
+    <div className={cn(className)} {...props}>
       <SvgLayerTree
         svgLayers={svgLayers}
         onLayerClick={selectLayer}

@@ -24,7 +24,7 @@ function RouteComponent() {
         <CardHeader className="relative">
           <CardTitle>Couleurs</CardTitle>
           <CardDescription>
-            Vous avez {COLORS_FIXTURE.length} couleurs enregistrées
+            {COLORS_FIXTURE.length} couleurs enregistrées
           </CardDescription>
 
           <Button className="absolute -top-2 right-4">
@@ -40,7 +40,9 @@ function RouteComponent() {
       <Card>
         <CardHeader className="relative">
           <CardTitle>Palettes</CardTitle>
-          <CardDescription></CardDescription>
+          <CardDescription>
+            {COLOR_PALETTES_FIXTURE.length} palettes enregistrées
+          </CardDescription>
           <Button className="absolute -top-2 right-4">
             <Plus />
             Nouvelle palette
@@ -49,7 +51,10 @@ function RouteComponent() {
         <CardContent className="max-h-[700px] overflow-auto">
           <div className="grid grid-cols-2 gap-4">
             {COLOR_PALETTES_FIXTURE.map((colorPalette) => (
-              <ColorPaletteCard colorPalette={colorPalette} />
+              <ColorPaletteCard
+                key={colorPalette.id}
+                colorPalette={colorPalette}
+              />
             ))}
           </div>
         </CardContent>

@@ -14,7 +14,7 @@ export default function LayersBar({
   return (
     <div
       className={cn(
-        'flex h-16 w-full items-center justify-center bg-gray-100 px-4 py-2',
+        'flex h-16 w-full items-center justify-center border-t bg-gray-50 px-4 py-2',
         className
       )}
       {...props}

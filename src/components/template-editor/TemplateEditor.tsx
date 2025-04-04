@@ -1,29 +1,27 @@
-import LayersBar from '@/components/configurator/LayersBar.tsx';
-import ConfiguratorSidebar from '@/components/configurator/Sidebar.tsx';
-import { Svg } from '@/components/svg.tsx';
-import SvgLayerPicker from '@/components/template-editor/SvgLayerPicker.tsx';
+import Configurator from '@/components/configurator/Configurator.tsx';
+import TemplateEditorSidebar from '@/components/template-editor/TemplateEditorSidebar.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar.tsx';
 import { TemplateEditorContext } from '@/contexts/template-editor-context.ts';
+import { COLOR_PALETTES_FIXTURE } from '@/fixtures/color-palettes.fixture.ts';
+import { COLORS_FIXTURE } from '@/fixtures/colors.fixture.ts';
 import { focusElement, unfocusElement } from '@/lib/svg.ts';
 import { svgLayerToTemplateLayerColor } from '@/lib/template-editor.ts';
 import { SvgLayer } from '@/models/svg.ts';
 import { EditTemplate } from '@/models/template.ts';
-import { useParams } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
+import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 
 export default function TemplateEditor() {
   const { id } = useParams({ strict: false });
 
   const [template, setTemplate] = useState<EditTemplate>(getTemplate);
-  const [injecting, setInjecting] = useState<boolean>(true);
+  const [svgInjecting, setSvgInjecting] = useState<boolean>(true);
 
   function getTemplate(): EditTemplate {
     const json = localStorage.getItem(`edit-template:${id}`);
@@ -58,35 +56,34 @@ export default function TemplateEditor() {
   }
 
   return (
-    <TemplateEditorContext.Provider value={{ template, setTemplate }}>
+    <TemplateEditorContext.Provider
+      value={{
+        template,
+        setTemplate,
+        svgInjecting,
+        allColors: COLORS_FIXTURE,
+        allColorPalettes: COLOR_PALETTES_FIXTURE,
+      }}
+    >
       <SidebarProvider>
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-mr-1 ml-auto rotate-180" />
+          <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
+            <Button asChild>
+              <Link to="/templates">
+                <ArrowLeft /> Retour
+              </Link>
+            </Button>
+            <div className="font-medium">{template.name}</div>
+            <SidebarTrigger className="-mr-1 rotate-180" />
           </header>
-          <div className="grid grid-cols-[min-content_auto]">
-            <ConfiguratorSidebar template={template} />
-            <div>
-              <Svg afterInjection={() => setInjecting(false)} />
-              <LayersBar template={template} />
-            </div>
-          </div>
+
+          <Configurator
+            template={template}
+            afterSvgInjection={() => setSvgInjecting(false)}
+          />
         </SidebarInset>
 
-        <Sidebar side="right">
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupContent>
-                {!injecting ? (
-                  <SvgLayerPicker
-                    svgId={template.id}
-                    onSelectLayer={handleSelectLayer}
-                  />
-                ) : null}
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-        </Sidebar>
+        <TemplateEditorSidebar />
       </SidebarProvider>
     </TemplateEditorContext.Provider>
   );

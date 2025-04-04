@@ -64,7 +64,7 @@ export interface TemplateLayerColor extends TemplateLayerBase {
   colors?: (ColorGroup | ColorElement)[];
 
   config: {
-    allowedColors: Color[];
-    allowedColorPalettes: ColorPalette[];
+    availableColors: Color[];
+    availableColorPalettes: ColorPalette[];
   };
 }
