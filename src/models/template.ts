@@ -1,4 +1,3 @@
-import { PartialBy } from '@/lib/utils.ts';
 import { Color, ColorPalette } from '@/models/color.ts';
 
 export interface Template {
@@ -21,11 +20,6 @@ export interface Template {
   updatedBy?: string;
 }
 
-export type EditTemplate = PartialBy<
-  Template,
-  'svgUrl' | 'createdAt' | 'createdBy'
->;
-
 export type TemplateLayerType = 'color' | 'image' | 'text' | 'background';
 
 export interface TemplateLayerBase {
@@ -41,27 +35,29 @@ export interface TemplateLayerBase {
 /**
  * TemplateLayerColor
  */
-export interface ColorGroup {
-  type: 'group';
+export interface ColorElementBase {
+  type: 'group' | 'item';
   id: string;
   name: string;
-
-  children: (ColorGroup | ColorElement)[];
+  parentId: string;
 }
 
-export interface ColorElement {
-  type: 'element';
-  id: string;
-  name: string;
+export interface ColorGroup extends ColorElementBase {
+  type: 'group';
+  subColorElements: ColorElement[];
+}
 
+export interface ColorItem extends ColorElementBase {
+  type: 'item';
   color: Color;
 }
+
+export type ColorElement = ColorGroup | ColorItem;
 
 export interface TemplateLayerColor extends TemplateLayerBase {
   type: 'color';
 
-  color?: Color;
-  colors?: (ColorGroup | ColorElement)[];
+  colorElements: ColorElement[];
 
   config: {
     availableColors: Color[];

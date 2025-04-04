@@ -1,48 +1,68 @@
 import SvgLayerTree from '@/components/template-editor/SvgLayerTree.tsx';
-import { getSvgLayers } from '@/lib/svg.ts';
+import { Button } from '@/components/ui/button.tsx';
+import { focusElement, getSvgLayers, unfocusElement } from '@/lib/svg.ts';
 import { cn } from '@/lib/utils.ts';
 import { SvgLayer } from '@/models/svg.ts';
 import { SVG } from '@svgdotjs/svg.js';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 type SvgLayerPickerProps = React.ComponentPropsWithoutRef<'div'> & {
   svgId: string;
-  onSelectLayer?: (layer?: SvgLayer) => void;
+  onLayerSelect: (layer: SvgLayer) => void;
 };
 
 export default function SvgLayerPicker({
   className,
   svgId,
-  onSelectLayer,
+  onLayerSelect,
   ...props
 }: SvgLayerPickerProps) {
-  const [svgLayers, setSvgLayers] = useState<SvgLayer[]>([]);
   const [selected, setSelected] = useState<SvgLayer>();
 
-  useEffect(() => {
+  const svgLayers = useMemo(() => {
     const svg = SVG(`#${svgId}`)?.toRoot();
-    if (!svg) return;
+    if (!svg) return [];
+    return getSvgLayers(svg);
+  }, [svgId]);
 
-    setSvgLayers(getSvgLayers(svg));
+  useEffect(() => {
+    return () => {
+      // Clean up function to unfocus the element when the component unmounts
+      unfocusElement(svgId);
+    };
   }, []);
 
+  /**
+   * Select a layer and focus it.
+   * @param layer
+   */
   function selectLayer(layer: SvgLayer) {
+    unfocusElement(svgId);
+
     if (selected?.id === layer.id) {
-      onSelectLayer?.(undefined);
       setSelected(undefined);
     } else {
-      onSelectLayer?.(layer);
       setSelected(layer);
+      focusElement(svgId, layer.id);
     }
   }
 
   return (
-    <div className={cn(className)} {...props}>
+    <div className={cn('relative', className)} {...props}>
       <SvgLayerTree
+        className={cn({ 'pb-3': !!selected })}
         svgLayers={svgLayers}
         onLayerClick={selectLayer}
-        selected={selected?.id}
+        activeLayer={selected?.id}
       />
+
+      {selected ? (
+        <div className="sticky right-0 bottom-0 left-0 -m-2 bg-gray-100 p-2">
+          <Button className="w-full" onClick={() => onLayerSelect(selected)}>
+            Utiliser ce calque
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -6,27 +6,29 @@ import {
 import { cn } from '@/lib/utils.ts';
 import { SvgLayer } from '@/models/svg.ts';
 import { ChevronDown } from 'lucide-react';
+import React from 'react';
 
-type SvgLayerTreeProps = {
+type SvgLayerTreeProps = React.ComponentPropsWithoutRef<'div'> & {
   svgLayers: SvgLayer[];
   onLayerClick?: (layer: SvgLayer) => void;
-
-  selected?: string;
+  activeLayer?: string;
 };
 
 export default function SvgLayerTree({
+  className,
   svgLayers,
   onLayerClick,
-  selected,
+  activeLayer,
+  ...props
 }: SvgLayerTreeProps) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className={cn('flex flex-col gap-0.5', className)} {...props}>
       {svgLayers.map((svgLayer) => (
         <SvgLayerItem
           key={svgLayer.id}
           svgLayer={svgLayer}
           onLayerClick={onLayerClick}
-          selected={selected}
+          activeLayer={activeLayer}
           depth={1}
         />
       ))}
@@ -37,13 +39,13 @@ export default function SvgLayerTree({
 function SvgLayerItem({
   svgLayer,
   onLayerClick,
+  activeLayer,
   depth,
-  selected,
 }: {
   svgLayer: SvgLayer;
   onLayerClick?: (layer: SvgLayer) => void;
+  activeLayer?: string;
   depth: number;
-  selected?: string;
 }) {
   return svgLayer.children?.length ? (
     <>
@@ -53,7 +55,7 @@ function SvgLayerItem({
           className={cn(
             'mb-0.5 flex items-center justify-between rounded p-1 hover:bg-gray-200/80',
             {
-              'bg-gray-200 font-semibold': selected === svgLayer.id,
+              'bg-gray-200 font-semibold': activeLayer === svgLayer.id,
             }
           )}
         >
@@ -80,7 +82,7 @@ function SvgLayerItem({
                 key={child.id}
                 svgLayer={child}
                 onLayerClick={onLayerClick}
-                selected={selected}
+                activeLayer={activeLayer}
                 depth={depth + 1}
               />
             ))}
@@ -95,7 +97,7 @@ function SvgLayerItem({
         className={cn(
           'flex cursor-pointer items-center rounded p-1 hover:bg-gray-200/80',
           {
-            'bg-gray-200 font-semibold': selected === svgLayer.id,
+            'bg-gray-200 font-semibold': activeLayer === svgLayer.id,
           }
         )}
         onClick={() => onLayerClick?.(svgLayer)}

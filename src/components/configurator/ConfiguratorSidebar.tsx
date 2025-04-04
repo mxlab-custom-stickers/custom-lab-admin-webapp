@@ -1,39 +1,61 @@
+import ColorElementList from '@/components/configurator/ColorElementList.tsx';
+import ColorGroup from '@/components/configurator/ColorGroup.tsx';
+import ColorPicker from '@/components/configurator/ColorPicker.tsx';
+import BackButton from '@/components/ui/BackButton.tsx';
+import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
+import { useConfiguratorContext } from '@/contexts/configurator-context';
+import { findColorElementById } from '@/lib/template-editor.ts';
 import { cn } from '@/lib/utils.ts';
-import { EditTemplate } from '@/models/template.ts';
 import * as React from 'react';
-import ColorElement from './ColorElement';
-import ColorGroup from './ColorGroup';
+import ColorItem from './ColorItem';
 
-type ConfiguratorSidebarProps = React.ComponentPropsWithoutRef<'div'> & {
-  template: EditTemplate;
-};
+type ConfiguratorSidebarProps = React.ComponentPropsWithoutRef<'div'>;
 
 export default function ConfiguratorSidebar({
   className,
-  template,
   ...props
 }: ConfiguratorSidebarProps) {
-  const layer = template.layers[0];
+  const { currentLayer, currentColorElement, setCurrentColorElement } =
+    useConfiguratorContext();
+
+  function goBack() {
+    if (!currentLayer || !currentColorElement) return;
+
+    const { parentId } = currentColorElement;
+    if (parentId === currentLayer?.id) {
+      setCurrentColorElement(undefined);
+    } else {
+      setCurrentColorElement(
+        findColorElementById(currentLayer.colorElements, parentId)
+      );
+    }
+  }
 
   return (
     <div className={cn('w-64 border-r bg-gray-50 p-2', className)} {...props}>
-      <div className="mb-2 flex items-center">
-        <span className="flex-1 font-semibold">{layer?.name}</span>
-      </div>
+      {currentLayer && !currentColorElement ? (
+        <>
+          <div className="mb-2 flex items-center">
+            <InvisibleInput
+              className="!text-lg font-semibold"
+              value={currentLayer?.name}
+              onSubmit={(value) => console.log(value)}
+            />
+          </div>
+          <ColorElementList
+            colorElements={currentLayer.colorElements}
+            onColorElementClick={setCurrentColorElement}
+          />
+        </>
+      ) : null}
 
-      <div className="flex flex-col gap-3">
-        {layer?.colors?.length ? (
-          layer.colors.map((color) =>
-            color.type === 'group' ? (
-              <ColorGroup key={color.id} colorGroup={color} />
-            ) : (
-              <ColorElement key={color.id} colorElement={color} />
-            )
-          )
-        ) : (
-          <div>TODO</div>
-        )}
-      </div>
+      {currentColorElement ? (
+        <BackButton className="mb-3" onClick={goBack} />
+      ) : null}
+
+      <ColorGroup />
+      <ColorItem />
+      <ColorPicker />
     </div>
   );
 }

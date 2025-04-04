@@ -1,39 +1,56 @@
-import ConfiguratorSidebar from '@/components/configurator/ConfiguratorSidebar.tsx';
-import LayersBar from '@/components/configurator/LayersBar.tsx';
-import { Svg } from '@/components/svg.tsx';
 import { ConfiguratorContext } from '@/contexts/configurator-context.ts';
-import { cn } from '@/lib/utils';
-import { EditTemplate } from '@/models/template.ts';
+import { cn } from '@/lib/utils.ts';
+import {
+  ColorElement,
+  Template,
+  TemplateLayerColor,
+} from '@/models/template.ts';
 import React, { useState } from 'react';
 
 type ConfiguratorProps = React.ComponentPropsWithoutRef<'div'> & {
-  template: EditTemplate;
-  afterSvgInjection?: () => void;
+  template: Template;
+  onTemplateChange: (template: Template) => void;
 };
 
 export default function Configurator({
   className,
+  children,
   template,
-  afterSvgInjection,
+  onTemplateChange,
   ...props
 }: ConfiguratorProps) {
-  const [currentLayerId] = useState<string>(template.layers[0]?.id);
+  const [currentLayer, _setCurrentLayer] = useState<
+    TemplateLayerColor | undefined
+  >(template.layers[0]);
+  const [currentColorElement, setCurrentColorElement] =
+    useState<ColorElement>();
+
+  const [svgInjecting, setSvgInjecting] = useState<boolean>(true);
+
+  function setTemplate(template: Template) {
+    onTemplateChange(template);
+  }
+
+  function setCurrentLayer(layer: TemplateLayerColor | undefined) {
+    _setCurrentLayer(layer);
+    setCurrentColorElement(undefined);
+  }
 
   return (
-    <ConfiguratorContext.Provider value={{ template, currentLayerId }}>
-      <div
-        className={cn('grid h-full grid-cols-[min-content_auto]')}
-        {...props}
-      >
-        <ConfiguratorSidebar template={template} />
-
-        <div className="flex flex-col justify-center">
-          <div className="flex-1 [&_div]:h-full">
-            <Svg afterInjection={afterSvgInjection} />
-          </div>
-
-          <LayersBar template={template} />
-        </div>
+    <ConfiguratorContext.Provider
+      value={{
+        template,
+        setTemplate,
+        svgInjecting,
+        setSvgInjecting,
+        currentLayer,
+        setCurrentLayer,
+        currentColorElement,
+        setCurrentColorElement,
+      }}
+    >
+      <div className={cn(className)} {...props}>
+        {children}
       </div>
     </ConfiguratorContext.Provider>
   );

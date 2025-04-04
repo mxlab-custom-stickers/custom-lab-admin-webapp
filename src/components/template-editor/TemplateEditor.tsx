@@ -1,6 +1,10 @@
 import Configurator from '@/components/configurator/Configurator.tsx';
+import ConfiguratorSidebar from '@/components/configurator/ConfiguratorSidebar.tsx';
+import ConfiguratorLayersBar from '@/components/configurator/LayersBar.tsx';
+import ConfiguratorSvg from '@/components/configurator/Svg.tsx';
 import TemplateEditorSidebar from '@/components/template-editor/TemplateEditorSidebar.tsx';
 import { Button } from '@/components/ui/button.tsx';
+import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import {
   SidebarInset,
   SidebarProvider,
@@ -9,10 +13,7 @@ import {
 import { TemplateEditorContext } from '@/contexts/template-editor-context.ts';
 import { COLOR_PALETTES_FIXTURE } from '@/fixtures/color-palettes.fixture.ts';
 import { COLORS_FIXTURE } from '@/fixtures/colors.fixture.ts';
-import { focusElement, unfocusElement } from '@/lib/svg.ts';
-import { svgLayerToTemplateLayerColor } from '@/lib/template-editor.ts';
-import { SvgLayer } from '@/models/svg.ts';
-import { EditTemplate } from '@/models/template.ts';
+import { Template } from '@/models/template.ts';
 import { Link, useParams } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
@@ -20,13 +21,12 @@ import { useState } from 'react';
 export default function TemplateEditor() {
   const { id } = useParams({ strict: false });
 
-  const [template, setTemplate] = useState<EditTemplate>(getTemplate);
-  const [svgInjecting, setSvgInjecting] = useState<boolean>(true);
+  const [template, _setTemplate] = useState<Template>(getTemplate);
 
-  function getTemplate(): EditTemplate {
+  function getTemplate(): Template {
     const json = localStorage.getItem(`edit-template:${id}`);
     if (json) {
-      return JSON.parse(json) as EditTemplate;
+      return JSON.parse(json) as Template;
     }
 
     const newTemplate = {
@@ -36,55 +36,53 @@ export default function TemplateEditor() {
       layers: [],
       tags: [],
       attributes: [],
+      createdAt: new Date().toLocaleDateString('fr'),
+      createdBy: '',
     };
-    localStorage.setItem(`edit-template:${id}`, JSON.stringify(newTemplate));
+    localStorage.setItem(`template:${id}`, JSON.stringify(newTemplate));
     return newTemplate;
   }
 
-  function handleSelectLayer(layer?: SvgLayer) {
-    unfocusElement(template.id);
-    if (layer) {
-      focusElement(template.id, layer.id);
-
-      setTemplate({
-        ...template,
-        layers: [svgLayerToTemplateLayerColor(layer)],
-      });
-    } else {
-      setTemplate({ ...template, layers: [] });
-    }
+  function setTemplate(template: Template) {
+    _setTemplate(template);
+    localStorage.setItem(`template:${id}`, JSON.stringify(template));
   }
 
   return (
     <TemplateEditorContext.Provider
       value={{
-        template,
-        setTemplate,
-        svgInjecting,
-        allColors: COLORS_FIXTURE,
         allColorPalettes: COLOR_PALETTES_FIXTURE,
+        allColors: COLORS_FIXTURE,
       }}
     >
-      <SidebarProvider>
-        <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
-            <Button asChild>
-              <Link to="/templates">
-                <ArrowLeft /> Retour
-              </Link>
-            </Button>
-            <div className="font-medium">{template.name}</div>
-            <SidebarTrigger className="-mr-1 rotate-180" />
-          </header>
+      <Configurator template={template} onTemplateChange={setTemplate}>
+        <SidebarProvider>
+          <SidebarInset>
+            <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
+              <Button asChild>
+                <Link to="/templates">
+                  <ArrowLeft /> Retour
+                </Link>
+              </Button>
+              <InvisibleInput
+                className="text-center !text-lg font-medium"
+                value={template.name}
+              />
+              <SidebarTrigger className="-mr-1 rotate-180" />
+            </header>
 
-          <Configurator
-            template={template}
-            afterSvgInjection={() => setSvgInjecting(false)}
-          />
-        </SidebarInset>
+            <div className="grid h-full grid-cols-[min-content_auto]">
+              <ConfiguratorSidebar />
+              <div className="flex flex-col justify-center">
+                <ConfiguratorSvg wrapperClassName="flex-1 [&_div]:h-full" />
+                <ConfiguratorLayersBar />
+              </div>
+            </div>
+          </SidebarInset>
 
-        <TemplateEditorSidebar />
-      </SidebarProvider>
+          <TemplateEditorSidebar />
+        </SidebarProvider>
+      </Configurator>
     </TemplateEditorContext.Provider>
   );
 }

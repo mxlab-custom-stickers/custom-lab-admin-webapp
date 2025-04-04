@@ -21,8 +21,8 @@ type ColorSelectorProps = {
 };
 
 export default function ColorSelector({
-  allColors,
   allColorPalettes,
+  allColors,
   selectedColorPalettes: selectedColorPalettesProp,
   selectedColors: selectedColorsProp,
 }: ColorSelectorProps) {
@@ -96,6 +96,10 @@ export default function ColorSelector({
             ))}
           </div>
 
+          {allColorPalettes.length === 0 ? (
+            <div>Aucune palette de couleur enregistrée</div>
+          ) : null}
+
           <div className="mt-4 flex justify-end">
             <Button>
               <Plus />
@@ -118,6 +122,10 @@ export default function ColorSelector({
               />
             ))}
           </div>
+
+          {allColors.length === 0 ? (
+            <div>Aucune couleur enregistrée</div>
+          ) : null}
 
           <div className="mt-4 flex justify-end">
             <Button>

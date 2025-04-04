@@ -1,32 +1,19 @@
 import { Color } from '@/models/color.ts';
 import { SvgLayer } from '@/models/svg.ts';
-import {
-  ColorElement,
-  ColorGroup,
-  TemplateLayerColor,
-} from '@/models/template.ts';
+import { ColorElement, ColorGroup } from '@/models/template.ts';
 
-export function svgLayerToTemplateLayerColor(
-  svgLayer: SvgLayer
-): TemplateLayerColor {
-  return {
-    id: svgLayer.id,
-    name: svgLayer.id,
-    order: 1,
-    type: 'color',
-    colors: svgLayer.children?.length
-      ? svgLayer.children.map(svgLayerToColorGroupOrColorElement)
-      : [],
-    config: {
-      allowedColors: [],
-      allowedColorPalettes: [],
-    },
-  };
+export function svgLayerToColorElements(svgLayer: SvgLayer): ColorElement[] {
+  return svgLayer.children
+    ? svgLayer.children.map((child) =>
+        svgLayerToColorGroupOrColorElement(child, svgLayer.id)
+      )
+    : [];
 }
 
 function svgLayerToColorGroupOrColorElement(
-  svgLayer: SvgLayer
-): ColorGroup | ColorElement {
+  svgLayer: SvgLayer,
+  parentId: string
+): ColorElement {
   const base = {
     id: svgLayer.id,
     name: svgLayer.id,
@@ -35,7 +22,8 @@ function svgLayerToColorGroupOrColorElement(
   if (svgLayer.color) {
     return {
       ...base,
-      type: 'element',
+      type: 'item',
+      parentId,
       color: { id: '', name: '', value: svgLayer.color },
     };
   }
@@ -43,15 +31,37 @@ function svgLayerToColorGroupOrColorElement(
   return {
     ...base,
     type: 'group',
-    children: svgLayer.children?.map(svgLayerToColorGroupOrColorElement) || [],
+    parentId,
+    subColorElements:
+      svgLayer.children?.map((child) =>
+        svgLayerToColorGroupOrColorElement(child, svgLayer.id)
+      ) || [],
   };
 }
 
 export function getAllColorGroupColors(colorGroup: ColorGroup): Color[] {
-  return colorGroup.children.reduce<Color[]>((acc, child) => {
-    if (child.type === 'element') {
+  return colorGroup.subColorElements.reduce<Color[]>((acc, child) => {
+    if (child.type === 'item') {
       return [...acc, child.color];
     }
     return [...acc, ...getAllColorGroupColors(child)];
   }, []);
+}
+
+export function findColorElementById(
+  colorElements: ColorElement[],
+  id: string
+): ColorElement | undefined {
+  for (const element of colorElements) {
+    if (element.id === id) {
+      return element;
+    }
+    if (element.type === 'group') {
+      const found = findColorElementById(element.subColorElements, id);
+      if (found) {
+        return found;
+      }
+    }
+  }
+  return undefined;
 }
