@@ -4,7 +4,7 @@ import ColorPicker from '@/components/configurator/ColorPicker.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator-context';
-import { findColorElementById } from '@/lib/template-editor.ts';
+import { findColorElementById } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
 import * as React from 'react';
 import ColorItem from './ColorItem';
@@ -15,8 +15,12 @@ export default function ConfiguratorSidebar({
   className,
   ...props
 }: ConfiguratorSidebarProps) {
-  const { currentLayer, currentColorElement, setCurrentColorElement } =
-    useConfiguratorContext();
+  const {
+    currentLayer,
+    updateCurrentLayer,
+    currentColorElement,
+    setCurrentColorElement,
+  } = useConfiguratorContext();
 
   function goBack() {
     if (!currentLayer || !currentColorElement) return;
@@ -31,6 +35,12 @@ export default function ConfiguratorSidebar({
     }
   }
 
+  function handleCurrentLayerNameChange(name: string) {
+    if (!currentLayer || !updateCurrentLayer) return;
+
+    updateCurrentLayer({ ...currentLayer, name });
+  }
+
   return (
     <div className={cn('w-64 border-r bg-gray-50 p-2', className)} {...props}>
       {currentLayer && !currentColorElement ? (
@@ -39,7 +49,7 @@ export default function ConfiguratorSidebar({
             <InvisibleInput
               className="!text-lg font-semibold"
               value={currentLayer?.name}
-              onSubmit={(value) => console.log(value)}
+              onSubmit={handleCurrentLayerNameChange}
             />
           </div>
           <ColorElementList
@@ -55,7 +65,7 @@ export default function ConfiguratorSidebar({
 
       <ColorGroup />
       <ColorItem />
-      <ColorPicker />
+      <ColorPicker className="mt-6" />
     </div>
   );
 }

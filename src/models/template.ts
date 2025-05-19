@@ -4,6 +4,7 @@ export interface Template {
   id: string;
   name: string;
   description?: string;
+  status: 'draft' | 'published' | 'archived';
 
   svgUrl: string;
   layers: TemplateLayerColor[];
@@ -14,13 +15,20 @@ export interface Template {
     value: string;
   }[];
 
-  createdAt: string;
+  createdAt?: string;
   updatedAt?: string;
-  createdBy: string;
+  createdBy?: string;
   updatedBy?: string;
 }
 
 export type TemplateLayerType = 'color' | 'image' | 'text' | 'background';
+
+export const templateLayerTypes: Record<TemplateLayerType, string> = {
+  color: 'Couleur',
+  image: 'Image',
+  text: 'Texte',
+  background: 'Arrière plan',
+};
 
 export interface TemplateLayerBase {
   id: string;
@@ -60,7 +68,10 @@ export interface TemplateLayerColor extends TemplateLayerBase {
   colorElements: ColorElement[];
 
   config: {
-    availableColors: Color[];
     availableColorPalettes: ColorPalette[];
+    availableColors: Color[];
+
+    columns: number;
+    space: number;
   };
 }

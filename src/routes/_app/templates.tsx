@@ -13,7 +13,7 @@ function RouteComponent() {
         <h1 className="text-2xl font-semibold">Mes Templates</h1>
 
         <Button asChild>
-          <Link to="/template-editor/$id" params={{ id: 'nouveau-template' }}>
+          <Link to="/template-editor">
             <Plus /> Nouveau template
           </Link>
         </Button>

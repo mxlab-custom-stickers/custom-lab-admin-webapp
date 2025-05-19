@@ -68,3 +68,13 @@ function recursiveUnfocus(element: Element) {
     recursiveUnfocus(child);
   });
 }
+
+export function changeColor(svgId: string, elementId: string, color: string) {
+  const element = SVG(`#${svgId} #${elementId}`);
+  if (!element) return;
+
+  element.attr('fill', color);
+  element.children()?.forEach((child) => {
+    child.attr('fill', color);
+  });
+}

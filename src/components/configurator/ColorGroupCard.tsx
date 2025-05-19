@@ -1,5 +1,5 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
-import { getAllColorGroupColors } from '@/lib/template-editor.ts';
+import { getAllColorGroupColors } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
 import { ColorGroup } from '@/models/template.ts';
 import * as React from 'react';
@@ -35,7 +35,7 @@ export default function ColorGroupCard({
       <div className="flex flex-wrap items-center gap-2">
         {colors.map((color, index) => (
           <ColorChip
-            key={color.id ? color.id : index}
+            key={color.id ? `${color.id}-${index}` : index}
             className="h-9 w-9"
             color={color}
           />

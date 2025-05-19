@@ -18,6 +18,14 @@ type ColorSelectorProps = {
 
   selectedColorPalettes?: ColorPalette[];
   selectedColors?: Color[];
+
+  onChange?: ({
+    colorPalettes,
+    colors,
+  }: {
+    colorPalettes: ColorPalette[];
+    colors: Color[];
+  }) => void;
 };
 
 export default function ColorSelector({
@@ -25,6 +33,7 @@ export default function ColorSelector({
   allColors,
   selectedColorPalettes: selectedColorPalettesProp,
   selectedColors: selectedColorsProp,
+  onChange,
 }: ColorSelectorProps) {
   const [selectedColorPalettes, setSelectedColorPalettes] = useState<
     ColorPalette[]
@@ -44,21 +53,29 @@ export default function ColorSelector({
   }, [selectedColorsProp]);
 
   function handleColorPaletteSelect(colorPalette: ColorPalette) {
+    let changes: ColorPalette[] = [];
+
     if (selectedColorPalettes.find((p) => p.id === colorPalette.id)) {
-      setSelectedColorPalettes(
-        selectedColorPalettes.filter((p) => p.id !== colorPalette.id)
-      );
+      changes = selectedColorPalettes.filter((p) => p.id !== colorPalette.id);
     } else {
-      setSelectedColorPalettes([...selectedColorPalettes, colorPalette]);
+      changes = [...selectedColorPalettes, colorPalette];
     }
+
+    setSelectedColorPalettes(changes);
+    onChange?.({ colorPalettes: changes, colors: selectedColors });
   }
 
   function handleColorSelect(color: Color) {
+    let changes: Color[] = [];
+
     if (selectedColors.find((c) => c.id === color.id)) {
-      setSelectedColors(selectedColors.filter((c) => c.id !== color.id));
+      changes = selectedColors.filter((p) => p.id !== color.id);
     } else {
-      setSelectedColors([...selectedColors, color]);
+      changes = [...selectedColors, color];
     }
+
+    setSelectedColors(changes);
+    onChange?.({ colorPalettes: selectedColorPalettes, colors: changes });
   }
 
   return (

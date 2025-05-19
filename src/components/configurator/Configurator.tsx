@@ -1,4 +1,5 @@
 import { ConfiguratorContext } from '@/contexts/configurator-context.ts';
+import { updateColorElement } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
 import {
   ColorElement,
@@ -36,6 +37,46 @@ export default function Configurator({
     setCurrentColorElement(undefined);
   }
 
+  function updateCurrentLayer(layer: TemplateLayerColor) {
+    if (!currentLayer) return;
+
+    const updatedTemplate = {
+      ...template,
+      layers: template.layers.map((l) =>
+        l.id === currentLayer.id ? layer : l
+      ),
+    };
+
+    setTemplate(updatedTemplate);
+    setCurrentLayer(layer);
+    setCurrentColorElement(currentColorElement);
+  }
+
+  function updateCurrentColorElement(updates: ColorElement) {
+    if (!currentLayer || !currentColorElement) return;
+
+    const updatedColorElements = updateColorElement(
+      currentLayer.colorElements,
+      updates
+    );
+
+    const updatedLayer = {
+      ...currentLayer,
+      colorElements: updatedColorElements,
+    };
+
+    const updatedTemplate = {
+      ...template,
+      layers: template.layers.map((l) =>
+        l.id === currentLayer.id ? updatedLayer : l
+      ),
+    };
+
+    setTemplate(updatedTemplate);
+    setCurrentLayer(updatedLayer);
+    setCurrentColorElement(updates);
+  }
+
   return (
     <ConfiguratorContext.Provider
       value={{
@@ -45,8 +86,10 @@ export default function Configurator({
         setSvgInjecting,
         currentLayer,
         setCurrentLayer,
+        updateCurrentLayer,
         currentColorElement,
         setCurrentColorElement,
+        updateCurrentColorElement,
       }}
     >
       <div className={cn(className)} {...props}>

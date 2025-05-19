@@ -1,4 +1,3 @@
-import svg from '@/assets/KTM_2024_lab1.svg';
 import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
 import { cn } from '@/lib/utils.ts';
 import * as React from 'react';
@@ -17,7 +16,7 @@ export default function Svg({ wrapperClassName }: SvgProps) {
 
   const memoValue: Omit<ReactSVGProps, 'ref'> = useMemo(
     () => ({
-      src: svg,
+      src: new URL(template.svgUrl, import.meta.url).href,
       beforeInjection: (svg) => {
         setSvgInjecting(true);
 
@@ -34,7 +33,7 @@ export default function Svg({ wrapperClassName }: SvgProps) {
 
   return (
     <div className={cn(wrapperClassName)}>
-      <ReactSVGMemo {...memoValue} />;
+      <ReactSVGMemo {...memoValue} />
     </div>
   );
 }

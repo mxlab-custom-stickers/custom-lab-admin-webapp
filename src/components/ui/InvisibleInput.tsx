@@ -50,7 +50,7 @@ export default function InvisibleInput({
       <Input
         ref={inputRef}
         className={cn(
-          'not-focus:border-none not-focus:bg-transparent not-focus:shadow-none',
+          'underline-offset-2 not-focus:border-none not-focus:bg-transparent not-focus:shadow-none hover:not-focus:underline',
           className
         )}
         value={value}

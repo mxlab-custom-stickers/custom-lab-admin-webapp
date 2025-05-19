@@ -15,8 +15,12 @@ type ConfiguratorContextType = {
   currentLayer?: TemplateLayerColor;
   setCurrentLayer: (layer?: TemplateLayerColor) => void;
 
+  // TODO: keep this here ?
+  updateCurrentLayer: (layer: TemplateLayerColor) => void;
+
   currentColorElement?: ColorElement;
   setCurrentColorElement: (colorElement?: ColorElement) => void;
+  updateCurrentColorElement: (updates: ColorElement) => void;
 };
 
 export const ConfiguratorContext = createContext<ConfiguratorContextType>(
