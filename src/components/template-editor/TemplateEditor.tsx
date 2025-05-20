@@ -1,6 +1,6 @@
+import ConfiguratorCanvas from '@/components/configurator/ConfiguratorCanvas.tsx';
 import ConfiguratorSidebar from '@/components/configurator/ConfiguratorSidebar.tsx';
 import ConfiguratorLayersBar from '@/components/configurator/LayersBar.tsx';
-import ConfiguratorSvg from '@/components/configurator/Svg.tsx';
 import TemplateEditorHeader from '@/components/template-editor/TemplateEditorHeader.tsx';
 import TemplateEditorSidebar from '@/components/template-editor/TemplateEditorSidebar.tsx';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar.tsx';
@@ -27,7 +27,9 @@ export default function TemplateEditor() {
               <PreviewModeWrapper className="@container overflow-hidden rounded-lg">
                 <div className="grid h-full grid-cols-[min-content_auto] grid-rows-[1fr_min-content] @max-[385px]:grid-cols-1">
                   <ConfiguratorSidebar className="row-span-2 @max-[385px]:w-full" />
-                  <ConfiguratorSvg wrapperClassName="bg-white @max-[385px]:order-first [&_div]:h-full" />
+                  <div className="relative h-full w-full @max-[385px]:order-first">
+                    <ConfiguratorCanvas wrapperClassName="absolute top-0 left-0 right-0 bottom-0" />
+                  </div>
                   <ConfiguratorLayersBar />
                 </div>
               </PreviewModeWrapper>

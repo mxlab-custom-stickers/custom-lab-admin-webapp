@@ -14,6 +14,9 @@ export function templateEditorReducer(
     case 'UPDATE_TEMPLATE': {
       return { ...state, template: action.payload };
     }
+    case 'SET_PREVIEW_MODE': {
+      return { ...state, previewMode: action.payload };
+    }
     default: {
       return state;
     }

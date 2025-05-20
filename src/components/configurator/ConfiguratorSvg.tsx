@@ -7,11 +7,13 @@ import { ReactSVG, Props as ReactSVGProps } from 'react-svg';
 // Memoized the SVG so it doesn't re-render on every state change
 const ReactSVGMemo = React.memo(ReactSVG);
 
-type SvgProps = {
+type ConfiguratorSvgProps = {
   wrapperClassName?: string;
 };
 
-export default function Svg({ wrapperClassName }: SvgProps) {
+export default function ConfiguratorSvg({
+  wrapperClassName,
+}: ConfiguratorSvgProps) {
   const {
     state: { template },
     setSvgInjecting,
