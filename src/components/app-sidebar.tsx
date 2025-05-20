@@ -8,15 +8,11 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import { Link } from '@tanstack/react-router';
 
-import mxlabLogo from '@/assets/mxlab.png';
 import nelson from '@/assets/nelson.jpg';
+import { AppSwitcher } from '@/components/app-switcher.tsx';
 
 // This is sample data.
 const data = {
@@ -31,19 +27,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <Link to="/templates">
-                <img src={mxlabLogo} className="h-5 w-5" />
-                <span className="text-base font-semibold">MXlab</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <AppSwitcher />
       </SidebarHeader>
 
       <SidebarContent>

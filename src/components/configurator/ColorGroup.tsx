@@ -1,6 +1,6 @@
 import ColorElementList from '@/components/configurator/ColorElementList.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
@@ -10,8 +10,10 @@ export default function ColorGroupComponent({
   className,
   ...props
 }: ColorGroupComponentProps) {
-  const { currentColorElement, setCurrentColorElement } =
-    useConfiguratorContext();
+  const {
+    state: { currentColorElement },
+    setCurrentColorElement,
+  } = useConfiguratorContext();
 
   const colorGroup =
     currentColorElement?.type === 'group' ? currentColorElement : null;

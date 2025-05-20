@@ -1,6 +1,8 @@
 import { Color, ColorPalette } from '@/models/color.ts';
 
 export interface Template {
+  appId: string;
+
   id: string;
   name: string;
   description?: string;
@@ -15,9 +17,9 @@ export interface Template {
     value: string;
   }[];
 
-  createdAt?: string;
+  createdAt: string;
   updatedAt?: string;
-  createdBy?: string;
+  createdBy: string;
   updatedBy?: string;
 }
 

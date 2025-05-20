@@ -1,0 +1,19 @@
+import { Template } from '@/models/template.ts';
+
+export type TemplateEditorState = {
+  template: Template;
+  currentLayerId: string | undefined;
+  isDirty: boolean;
+  isSaving: boolean;
+  previewMode: PreviewMode;
+  showSvgLayerPicker: boolean;
+};
+
+export type PreviewMode = 'desktop' | 'mobile' | 'fullscreen';
+
+export type TemplateEditorAction =
+  | { type: 'UPDATE_TEMPLATE'; payload: Template }
+  | { type: 'SET_IS_SAVING'; payload: boolean }
+  | { type: 'SET_PREVIEW_MODE'; payload: PreviewMode }
+  | { type: 'SET_CURRENT_LAYER_ID'; payload: string | undefined }
+  | { type: 'SET_SHOW_SVG_LAYER_PICKER'; payload: boolean };

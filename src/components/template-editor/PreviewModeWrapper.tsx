@@ -1,4 +1,4 @@
-import { useTemplateEditorContext } from '@/contexts/template-editor-context.ts';
+import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
@@ -8,7 +8,9 @@ export default function PreviewModeWrapper({
   className,
   children,
 }: PreviewModeWrapperProps) {
-  const { previewMode } = useTemplateEditorContext();
+  const {
+    state: { previewMode },
+  } = useTemplateEditorContext();
 
   return (
     <div

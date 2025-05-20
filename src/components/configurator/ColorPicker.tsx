@@ -1,5 +1,5 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { getAllAvailableColors } from '@/lib/configurator.ts';
 import { changeColor } from '@/lib/svg.ts';
 import { cn } from '@/lib/utils.ts';
@@ -10,9 +10,11 @@ type ColorPickerProps = React.ComponentPropsWithoutRef<'div'>;
 
 export default function ColorPicker({ className, ...props }: ColorPickerProps) {
   const {
-    template: { id: svgId },
-    currentLayer,
-    currentColorElement,
+    state: {
+      template: { id: svgId },
+      currentLayer,
+      currentColorElement,
+    },
     updateCurrentColorElement,
   } = useConfiguratorContext();
 

@@ -8,8 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
-import { useTemplateEditorContext } from '@/contexts/template-editor-context.ts';
+import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import {
   TemplateLayerColor,
   TemplateLayerType,
@@ -18,10 +17,9 @@ import {
 import { Plus } from 'lucide-react';
 
 export default function NewLayerDropdownMenu() {
-  const { showSvgLayerPicker, setShowSvgLayerPicker } =
-    useTemplateEditorContext();
-
-  const { template, setTemplate, setCurrentLayer } = useConfiguratorContext();
+  const {
+    state: { template, showSvgLayerPicker },
+  } = useTemplateEditorContext();
 
   function handleLayerTypeSelect(layerType: TemplateLayerType) {
     if (layerType !== 'color') return;
@@ -40,9 +38,9 @@ export default function NewLayerDropdownMenu() {
       },
     };
 
-    setShowSvgLayerPicker(true);
-    setTemplate({ ...template, layers: [...template.layers, newLayer] });
-    setCurrentLayer(newLayer);
+    // setShowSvgLayerPicker(true);
+    // updateTemplate({ ...template, layers: [...template.layers, newLayer] });
+    // setCurrentLayer(newLayer);
   }
 
   return !showSvgLayerPicker ? (

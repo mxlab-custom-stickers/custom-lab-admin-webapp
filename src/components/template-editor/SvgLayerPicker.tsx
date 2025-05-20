@@ -1,7 +1,7 @@
 import SvgLayerTree from '@/components/template-editor/SvgLayerTree.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { useTemplateEditorContext } from '@/contexts/template-editor-context.ts';
+import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import useSvgLayerPicker from '@/hooks/template-editor/use-svg-layer-picker.ts';
 import { cn } from '@/lib/utils.ts';
 import React from 'react';
@@ -12,8 +12,9 @@ export default function SvgLayerPicker({
   className,
   ...props
 }: SvgLayerPickerProps) {
-  const { showSvgLayerPicker, setShowSvgLayerPicker } =
-    useTemplateEditorContext();
+  const {
+    state: { showSvgLayerPicker },
+  } = useTemplateEditorContext();
 
   const { svgLayers, selected, loading, selectSvgLayer, validate } =
     useSvgLayerPicker();
@@ -25,7 +26,7 @@ export default function SvgLayerPicker({
       <div className={cn('relative flex flex-col', className)} {...props}>
         <BackButton
           className="mb-3"
-          onClick={() => setShowSvgLayerPicker(false)}
+          // onClick={() => setShowSvgLayerPicker(false)}
         />
         <SvgLayerTree
           className={cn({ 'pb-2': !!selected })}

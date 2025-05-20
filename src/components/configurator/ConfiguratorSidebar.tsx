@@ -3,7 +3,7 @@ import ColorGroup from '@/components/configurator/ColorGroup.tsx';
 import ColorPicker from '@/components/configurator/ColorPicker.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-context';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { findColorElementById } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
 import * as React from 'react';
@@ -16,9 +16,8 @@ export default function ConfiguratorSidebar({
   ...props
 }: ConfiguratorSidebarProps) {
   const {
-    currentLayer,
+    state: { currentLayer, currentColorElement },
     updateCurrentLayer,
-    currentColorElement,
     setCurrentColorElement,
   } = useConfiguratorContext();
 

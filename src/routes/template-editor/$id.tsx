@@ -1,7 +1,9 @@
 import TemplateEditor from '@/components/template-editor/TemplateEditor.tsx';
+import { TemplateEditorProvider } from '@/contexts/template-editor/template-editor-context.tsx';
+import { getTemplateById } from '@/lib/firebase/firestore.ts';
 import { Template } from '@/models/template.ts';
-import { createFileRoute, Navigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/template-editor/$id')({
   component: RouteComponent,
@@ -10,30 +12,17 @@ export const Route = createFileRoute('/template-editor/$id')({
 function RouteComponent() {
   const { id } = Route.useParams();
 
-  const [template, setTemplate] = useState<Template | undefined>(getTemplate);
+  const [template, setTemplate] = useState<Template | undefined>();
 
-  function getTemplate(): Template | undefined {
-    const json = localStorage.getItem(`template:${id}`);
-    if (json) {
-      return JSON.parse(json) as Template;
-    }
-    return undefined;
-  }
-
-  function handleTemplateChange(updatedTemplate: Template) {
-    setTemplate(updatedTemplate);
-    localStorage.setItem(
-      `template:${updatedTemplate.id}`,
-      JSON.stringify(updatedTemplate)
-    );
-  }
+  useEffect(() => {
+    getTemplateById(id).then(setTemplate);
+  }, [id]);
 
   return template ? (
-    <TemplateEditor
-      template={template}
-      onTemplateChange={handleTemplateChange}
-    />
+    <TemplateEditorProvider template={template}>
+      <TemplateEditor />
+    </TemplateEditorProvider>
   ) : (
-    <Navigate to={'/template-editor'} />
+    <div>Chargement...</div>
   );
 }

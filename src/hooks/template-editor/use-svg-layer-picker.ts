@@ -1,5 +1,5 @@
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
-import { useTemplateEditorContext } from '@/contexts/template-editor-context.ts';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
+import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { focusElement, getSvgLayers, unfocusElement } from '@/lib/svg.ts';
 import { svgLayerToColorElements } from '@/lib/template-editor.ts';
 import { SvgLayer } from '@/models/svg.ts';
@@ -10,9 +10,7 @@ export default function useSvgLayerPicker() {
   const { setShowSvgLayerPicker } = useTemplateEditorContext();
 
   const {
-    template,
-    svgInjecting,
-    currentLayer,
+    state: { template, svgInjecting, currentLayer },
     updateCurrentLayer,
     setCurrentColorElement,
   } = useConfiguratorContext();

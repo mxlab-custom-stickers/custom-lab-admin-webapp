@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/button.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { Download } from 'lucide-react';
 
 export default function DownloadSvgButton() {
-  const { template } = useConfiguratorContext();
+  const {
+    state: { template },
+  } = useConfiguratorContext();
 
   function downloadSvg() {
     const svg = document.querySelector(`#${template.id}`) as SVGSVGElement;

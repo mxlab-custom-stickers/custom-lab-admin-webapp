@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app/route'
 import { Route as TemplateEditorIndexImport } from './routes/template-editor/index'
+import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as TemplateEditorIdImport } from './routes/template-editor/$id'
 import { Route as AppTemplatesImport } from './routes/_app/templates'
 import { Route as AppColorsImport } from './routes/_app/colors'
@@ -31,6 +32,12 @@ const TemplateEditorIndexRoute = TemplateEditorIndexImport.update({
   id: '/template-editor/',
   path: '/template-editor/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AppIndexRoute = AppIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 
 const TemplateEditorIdRoute = TemplateEditorIdImport.update({
@@ -101,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TemplateEditorIdImport
       parentRoute: typeof rootRoute
     }
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexImport
+      parentRoute: typeof AppRouteImport
+    }
     '/template-editor/': {
       id: '/template-editor/'
       path: '/template-editor'
@@ -137,6 +151,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteRouteChildren {
   AppColorsRoute: typeof AppColorsRoute
   AppTemplatesRoute: typeof AppTemplatesRoute
+  AppIndexRoute: typeof AppIndexRoute
   AppSettingsCustomLabRoute: typeof AppSettingsCustomLabRoute
   AppSettingsGeneralRoute: typeof AppSettingsGeneralRoute
   AppSettingsThemeRoute: typeof AppSettingsThemeRoute
@@ -145,6 +160,7 @@ interface AppRouteRouteChildren {
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppColorsRoute: AppColorsRoute,
   AppTemplatesRoute: AppTemplatesRoute,
+  AppIndexRoute: AppIndexRoute,
   AppSettingsCustomLabRoute: AppSettingsCustomLabRoute,
   AppSettingsGeneralRoute: AppSettingsGeneralRoute,
   AppSettingsThemeRoute: AppSettingsThemeRoute,
@@ -159,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/colors': typeof AppColorsRoute
   '/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
+  '/': typeof AppIndexRoute
   '/template-editor': typeof TemplateEditorIndexRoute
   '/settings/custom-lab': typeof AppSettingsCustomLabRoute
   '/settings/general': typeof AppSettingsGeneralRoute
@@ -166,10 +183,10 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
-  '': typeof AppRouteRouteWithChildren
   '/colors': typeof AppColorsRoute
   '/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
+  '/': typeof AppIndexRoute
   '/template-editor': typeof TemplateEditorIndexRoute
   '/settings/custom-lab': typeof AppSettingsCustomLabRoute
   '/settings/general': typeof AppSettingsGeneralRoute
@@ -182,6 +199,7 @@ export interface FileRoutesById {
   '/_app/colors': typeof AppColorsRoute
   '/_app/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
+  '/_app/': typeof AppIndexRoute
   '/template-editor/': typeof TemplateEditorIndexRoute
   '/_app/settings/custom-lab': typeof AppSettingsCustomLabRoute
   '/_app/settings/general': typeof AppSettingsGeneralRoute
@@ -195,16 +213,17 @@ export interface FileRouteTypes {
     | '/colors'
     | '/templates'
     | '/template-editor/$id'
+    | '/'
     | '/template-editor'
     | '/settings/custom-lab'
     | '/settings/general'
     | '/settings/theme'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | ''
     | '/colors'
     | '/templates'
     | '/template-editor/$id'
+    | '/'
     | '/template-editor'
     | '/settings/custom-lab'
     | '/settings/general'
@@ -215,6 +234,7 @@ export interface FileRouteTypes {
     | '/_app/colors'
     | '/_app/templates'
     | '/template-editor/$id'
+    | '/_app/'
     | '/template-editor/'
     | '/_app/settings/custom-lab'
     | '/_app/settings/general'
@@ -254,6 +274,7 @@ export const routeTree = rootRoute
       "children": [
         "/_app/colors",
         "/_app/templates",
+        "/_app/",
         "/_app/settings/custom-lab",
         "/_app/settings/general",
         "/_app/settings/theme"
@@ -269,6 +290,10 @@ export const routeTree = rootRoute
     },
     "/template-editor/$id": {
       "filePath": "template-editor/$id.tsx"
+    },
+    "/_app/": {
+      "filePath": "_app/index.tsx",
+      "parent": "/_app"
     },
     "/template-editor/": {
       "filePath": "template-editor/index.tsx"

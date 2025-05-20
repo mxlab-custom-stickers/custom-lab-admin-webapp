@@ -1,6 +1,6 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import React from 'react';
 
 type ColorItemComponentProps = React.ComponentPropsWithoutRef<'div'>;
@@ -9,7 +9,9 @@ export default function ColorItemComponent({
   className,
   ...props
 }: ColorItemComponentProps) {
-  const { currentColorElement } = useConfiguratorContext();
+  const {
+    state: { currentColorElement },
+  } = useConfiguratorContext();
 
   const colorItem =
     currentColorElement?.type === 'item' ? currentColorElement : null;

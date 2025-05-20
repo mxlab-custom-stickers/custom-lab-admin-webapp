@@ -1,4 +1,4 @@
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { cn } from '@/lib/utils.ts';
 import * as React from 'react';
 
@@ -6,8 +6,10 @@ type LayerBarProps = React.ComponentPropsWithoutRef<'div'>;
 
 export default function LayersBar({ className, ...props }: LayerBarProps) {
   const {
-    template: { layers },
-    currentLayer,
+    state: {
+      template: { layers },
+      currentLayer,
+    },
     setCurrentLayer,
   } = useConfiguratorContext();
 

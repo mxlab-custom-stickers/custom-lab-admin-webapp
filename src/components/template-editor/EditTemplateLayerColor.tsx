@@ -14,8 +14,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
-import { useTemplateEditorContext } from '@/contexts/template-editor-context.ts';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.ts';
+import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.ts';
 import { compareColorsByLuminance } from '@/lib/colors.ts';
 import { getAllAvailableColors } from '@/lib/configurator.ts';
 import { Color, ColorPalette } from '@/models/color.ts';

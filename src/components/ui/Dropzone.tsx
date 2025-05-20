@@ -1,3 +1,4 @@
+import LoadingSpinner from '@/components/ui/LoadingSpinner.tsx';
 import { Properties } from 'csstype';
 import { Upload } from 'lucide-react';
 import React, { useCallback, useMemo } from 'react';
@@ -47,14 +48,15 @@ type DropzoneProps = {
   className?: string;
   children?: React.ReactNode;
   onDrop?: (files: File[]) => void;
+  loading?: boolean;
 };
 
 export default function Dropzone({
   className,
   children,
   onDrop: onDropProp,
+  loading = false,
 }: DropzoneProps) {
-  // TODO: think about this
   const onDrop = useCallback((acceptedFiles: File[]) => {
     onDropProp?.(acceptedFiles);
   }, []);
@@ -75,14 +77,19 @@ export default function Dropzone({
   return (
     <div className={className} style={wrapperStyle}>
       <div {...getRootProps({ style })}>
-        <input {...getInputProps()} />
+        <input {...getInputProps()} disabled={loading} />
 
-        <Upload size={64} />
-
-        {children ? (
-          children
+        {loading ? (
+          <LoadingSpinner size={96} />
         ) : (
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <>
+            <Upload size={64} />
+            {children ? (
+              children
+            ) : (
+              <p>Drag 'n' drop some files here, or click to select files</p>
+            )}
+          </>
         )}
       </div>
     </div>

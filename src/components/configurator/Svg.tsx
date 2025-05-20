@@ -1,4 +1,4 @@
-import { useConfiguratorContext } from '@/contexts/configurator-context.ts';
+import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { cn } from '@/lib/utils.ts';
 import * as React from 'react';
 import { useMemo } from 'react';
@@ -12,7 +12,10 @@ type SvgProps = {
 };
 
 export default function Svg({ wrapperClassName }: SvgProps) {
-  const { template, setSvgInjecting } = useConfiguratorContext();
+  const {
+    state: { template },
+    setSvgInjecting,
+  } = useConfiguratorContext();
 
   const memoValue: Omit<ReactSVGProps, 'ref'> = useMemo(
     () => ({
