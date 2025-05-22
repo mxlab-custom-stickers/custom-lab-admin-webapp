@@ -1,4 +1,4 @@
-import { Color } from '@/models/color.ts';
+import { Color, ColorPalette } from '@/models/color.ts';
 
 /**
  * Converts a hex color to its RGB components.
@@ -52,4 +52,45 @@ export function isColorCloserToBlackOrWhite(color: string): 'black' | 'white' {
 
   // Determine if the color is closer to black or white
   return luminance > 128 ? 'black' : 'white';
+}
+
+/**
+ * Merges and deduplicates colors from an array of standalone colors and an array of color palettes.
+ *
+ * @param {Color[]} colors - A list of individual Color objects.
+ * @param {ColorPalette[]} palettes - A list of ColorPalette objects containing colors.
+ * @returns {Color[]} A deduplicated array of Color objects based on unique `id`.
+ */
+export function mergeUniqueColors(
+  colors: Color[],
+  palettes: ColorPalette[]
+): Color[] {
+  const allColors = [
+    ...colors,
+    ...palettes.flatMap((palette) => palette.colors),
+  ];
+
+  const uniqueMap = new Map<string, Color>();
+  for (const color of allColors) {
+    if (!uniqueMap.has(color.id)) {
+      uniqueMap.set(color.id, color);
+    }
+  }
+
+  return Array.from(uniqueMap.values());
+}
+
+/**
+ * Checks whether all colors in the given palette are present in the provided array of colors.
+ *
+ * @param {ColorPalette} palette - The color palette to check.
+ * @param {Color[]} availableColors - The array of available colors to compare against.
+ * @returns {boolean} True if all colors in the palette are found in availableColors, false otherwise.
+ */
+export function arePaletteColorsAvailable(
+  palette: ColorPalette,
+  availableColors: Color[]
+): boolean {
+  const availableColorIds = new Set(availableColors.map((color) => color.id));
+  return palette.colors.every((color) => availableColorIds.has(color.id));
 }

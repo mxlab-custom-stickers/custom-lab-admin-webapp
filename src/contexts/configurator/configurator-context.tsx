@@ -3,58 +3,47 @@ import {
   ConfiguratorAction,
   ConfiguratorState,
 } from '@/contexts/configurator/configurator-types.ts';
-import {
-  ColorElement,
-  Template,
-  TemplateLayerColor,
-} from '@/models/template.ts';
-import React, { createContext, useContext, useReducer } from 'react';
+import { ColorElement, Template } from '@/models/template.ts';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 
 export const ConfiguratorContext = createContext<{
   state: ConfiguratorState;
   dispatch: React.Dispatch<ConfiguratorAction>;
 
-  setSvgInjecting: (svgInjecting: boolean) => void;
-
-  updateTemplate: (updates: Template) => void;
   // Current layer
-  setCurrentLayer: (currentLayer: TemplateLayerColor | undefined) => void;
-  updateCurrentLayer: (currentLayer: TemplateLayerColor) => void;
+  setCurrentLayerId: (currentLayerId: string | undefined) => void;
   // Current color element
   setCurrentColorElement: (
     currentColorElement: ColorElement | undefined
   ) => void;
-  updateCurrentColorElement: (currentColorElement: ColorElement) => void;
+  updateCurrentColorElement: (updates: ColorElement) => void;
 } | null>(null);
 
 export function ConfiguratorProvider({
   template,
+  currentLayerId,
   children,
 }: {
   template: Template;
+  currentLayerId?: string;
   children: React.ReactNode;
 }) {
   const [state, dispatch] = useReducer(configuratorReducer, {
     template,
-    svgInjecting: true,
-    currentLayer: undefined,
+    currentLayerId: currentLayerId,
     currentColorElement: undefined,
   });
 
-  function setSvgInjecting(svgInjecting: boolean) {
-    dispatch({ type: 'SET_SVG_INJECTING', payload: svgInjecting });
-  }
+  useEffect(() => {
+    dispatch({ type: 'SET_TEMPLATE', payload: template });
+  }, [template]);
 
-  function updateTemplate(updates: Template) {
-    dispatch({ type: 'UPDATE_TEMPLATE', payload: updates });
-  }
+  useEffect(() => {
+    dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: currentLayerId });
+  }, [currentLayerId]);
 
-  function setCurrentLayer(currentLayer: TemplateLayerColor | undefined) {
-    dispatch({ type: 'SET_CURRENT_LAYER', payload: currentLayer });
-  }
-
-  function updateCurrentLayer(currentLayer: TemplateLayerColor) {
-    dispatch({ type: 'UPDATE_CURRENT_LAYER', payload: currentLayer });
+  function setCurrentLayerId(currentLayer: string | undefined) {
+    dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: currentLayer });
   }
 
   function setCurrentColorElement(
@@ -66,10 +55,10 @@ export function ConfiguratorProvider({
     });
   }
 
-  function updateCurrentColorElement(currentColorElement: ColorElement) {
+  function updateCurrentColorElement(updates: ColorElement) {
     dispatch({
       type: 'UPDATE_CURRENT_COLOR_ELEMENT',
-      payload: currentColorElement,
+      payload: updates,
     });
   }
 
@@ -78,10 +67,7 @@ export function ConfiguratorProvider({
       value={{
         state,
         dispatch,
-        setSvgInjecting,
-        updateTemplate,
-        setCurrentLayer,
-        updateCurrentLayer,
+        setCurrentLayerId,
         setCurrentColorElement,
         updateCurrentColorElement,
       }}

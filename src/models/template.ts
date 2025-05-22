@@ -1,4 +1,4 @@
-import { Color, ColorPalette } from '@/models/color.ts';
+import { Color } from '@/models/color.ts';
 
 export interface Template {
   appId: string;
@@ -49,7 +49,7 @@ export interface ColorElementBase {
   type: 'group' | 'item';
   id: string;
   name: string;
-  parentId: string;
+  parentId?: string;
 }
 
 export interface ColorGroup extends ColorElementBase {
@@ -70,9 +70,7 @@ export interface TemplateLayerColor extends TemplateLayerBase {
   colorElements: ColorElement[];
 
   config: {
-    availableColorPalettes: ColorPalette[];
     availableColors: Color[];
-
     columns: number;
     space: number;
   };

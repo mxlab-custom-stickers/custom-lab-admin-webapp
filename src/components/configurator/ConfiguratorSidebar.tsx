@@ -4,6 +4,7 @@ import ColorPicker from '@/components/configurator/ColorPicker.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
+import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { findColorElementById } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
 import * as React from 'react';
@@ -16,28 +17,35 @@ export default function ConfiguratorSidebar({
   ...props
 }: ConfiguratorSidebarProps) {
   const {
-    state: { currentLayer, currentColorElement },
-    updateCurrentLayer,
+    state: { template, currentLayerId, currentColorElement },
     setCurrentColorElement,
   } = useConfiguratorContext();
+
+  const templateEditorContext = useOptionalTemplateEditorContext();
+
+  const currentLayer = template.layers.find(
+    (layer) => layer.id === currentLayerId
+  );
 
   function goBack() {
     if (!currentLayer || !currentColorElement) return;
 
     const { parentId } = currentColorElement;
-    if (parentId === currentLayer?.id) {
-      setCurrentColorElement(undefined);
-    } else {
-      setCurrentColorElement(
-        findColorElementById(currentLayer.colorElements, parentId)
-      );
-    }
+    if (!parentId) return;
+
+    setCurrentColorElement(
+      findColorElementById(currentLayer.colorElements, parentId)
+    );
   }
 
   function handleCurrentLayerNameChange(name: string) {
-    if (!currentLayer || !updateCurrentLayer) return;
+    if (!templateEditorContext) return;
+    if (!currentLayer) return;
 
-    updateCurrentLayer({ ...currentLayer, name });
+    templateEditorContext.updateCurrentLayer({
+      ...currentLayer,
+      name,
+    });
   }
 
   return (
@@ -64,7 +72,14 @@ export default function ConfiguratorSidebar({
 
       <ColorGroup />
       <ColorItem />
-      <ColorPicker className="mt-6" />
+      {currentLayer && currentColorElement?.type === 'item' ? (
+        <ColorPicker
+          className="mt-6"
+          colors={currentLayer.config.availableColors}
+          columns={currentLayer.config.columns}
+          space={currentLayer.config.space}
+        />
+      ) : null}
     </div>
   );
 }

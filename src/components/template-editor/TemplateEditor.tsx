@@ -10,11 +10,11 @@ import PreviewModeWrapper from './PreviewModeWrapper';
 
 export default function TemplateEditor() {
   const {
-    state: { template, previewMode },
+    state: { template, previewMode, currentLayerId },
   } = useTemplateEditorContext();
 
   return (
-    <ConfiguratorProvider template={template}>
+    <ConfiguratorProvider template={template} currentLayerId={currentLayerId}>
       <SidebarProvider
         className="flex flex-col"
         open={previewMode !== 'fullscreen'}
@@ -27,9 +27,11 @@ export default function TemplateEditor() {
               <PreviewModeWrapper className="@container overflow-hidden rounded-lg">
                 <div className="grid h-full grid-cols-[min-content_auto] grid-rows-[1fr_min-content] @max-[385px]:grid-cols-1">
                   <ConfiguratorSidebar className="row-span-2 @max-[385px]:w-full" />
+
                   <div className="relative h-full w-full @max-[385px]:order-first">
                     <ConfiguratorCanvas wrapperClassName="absolute top-0 left-0 right-0 bottom-0" />
                   </div>
+
                   <ConfiguratorLayersBar />
                 </div>
               </PreviewModeWrapper>

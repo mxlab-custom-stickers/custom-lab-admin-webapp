@@ -3,34 +3,36 @@ import { useTemplateEditorContext } from '@/contexts/template-editor/template-ed
 
 export default function DeleteCurrentLayerButton() {
   const {
-    state: { template, showSvgLayerPicker },
+    state: { template, currentLayerId },
+    updateTemplate,
+    setCurrentLayerId,
   } = useTemplateEditorContext();
 
-  // const { template, updateTemplate, currentLayer, setCurrentLayer } =
-  //   useConfiguratorContext();
+  const currentLayer = template.layers.find(
+    (layer) => layer.id === currentLayerId
+  );
 
   function deleteCurrentLayer() {
-    // const updatedTemplate = {
-    //   ...template,
-    //   layers: template.layers.filter((layer) => layer.id !== currentLayer?.id),
-    // };
-    // updateTemplate(updatedTemplate);
-    // setCurrentLayer(updatedTemplate.layers[(currentLayer?.order ?? 1) - 1]);
+    if (!currentLayer) return;
+
+    const updatedTemplate = {
+      ...template,
+      layers: template.layers.filter((layer) => layer.id !== currentLayer.id),
+    };
+    updateTemplate(updatedTemplate);
+    setCurrentLayerId(
+      template.layers.find((layer) => layer.order === currentLayer.order - 1)
+        ?.id
+    );
   }
 
-  // return !showSvgLayerPicker && currentLayer ? (
-  //   <Button
-  //     className="absolute right-0 bottom-0 left-0"
-  //     variant="destructive"
-  //     onClick={deleteCurrentLayer}
-  //   >
-  //     Supprimer le calque
-  //   </Button>
-  // ) : null;
-
-  return (
-    <Button className="absolute right-0 bottom-0 left-0" variant="destructive">
+  return currentLayer ? (
+    <Button
+      className="absolute right-0 bottom-0 left-0"
+      variant="destructive"
+      onClick={deleteCurrentLayer}
+    >
       Supprimer le calque
     </Button>
-  );
+  ) : null;
 }

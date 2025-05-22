@@ -1,29 +1,5 @@
-import { compareColorsByLuminance } from '@/lib/colors.ts';
 import { Color } from '@/models/color.ts';
-import {
-  ColorElement,
-  ColorGroup,
-  TemplateLayerColor,
-} from '@/models/template.ts';
-
-export function getAllAvailableColors(
-  templateLayerColor: TemplateLayerColor
-): Color[] {
-  const colorMap = new Map<string, Color>();
-
-  templateLayerColor.config.availableColors.forEach((color) => {
-    colorMap.set(color.id, color);
-  });
-
-  templateLayerColor.config.availableColorPalettes
-    .map((colorPalette) => colorPalette.colors)
-    .flat()
-    .forEach((color) => {
-      colorMap.set(color.id, color);
-    });
-
-  return Array.from(colorMap.values()).sort(compareColorsByLuminance);
-}
+import { ColorElement, ColorGroup } from '@/models/template.ts';
 
 export function getAllColorGroupColors(colorGroup: ColorGroup): Color[] {
   return colorGroup.subColorElements.reduce<Color[]>((acc, child) => {

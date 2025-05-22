@@ -1,4 +1,4 @@
-import SvgLayerTree from '@/components/template-editor/SvgLayerTree.tsx';
+import SvgLayerTree from '@/components/template-editor/svg-editor/SvgLayerTree.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';

@@ -1,21 +1,4 @@
-import { SvgLayer } from '@/models/svg.ts';
 import { Element, SVG } from '@svgdotjs/svg.js';
-
-export function getSvgLayers(element: Element): SvgLayer[] {
-  return Array.from(element.children())
-    .filter((child) => child.children().length > 0)
-    .map((child) => {
-      const color =
-        child.first().type !== 'g' ? child.first().attr('fill') : undefined;
-
-      return {
-        id: child.id(),
-        type: child.type,
-        color,
-        children: getSvgLayers(child),
-      };
-    });
-}
 
 /**
  * Focus on a specific element in the SVG

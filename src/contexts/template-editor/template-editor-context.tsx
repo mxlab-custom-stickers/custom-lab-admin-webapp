@@ -4,8 +4,10 @@ import {
   TemplateEditorAction,
   TemplateEditorState,
 } from '@/contexts/template-editor/template-editor-types.ts';
+import { COLOR_PALETTES_FIXTURE } from '@/fixtures/color-palettes.fixture.ts';
+import { COLORS_FIXTURE } from '@/fixtures/colors.fixture.ts';
 import * as firestore from '@/lib/firebase/firestore.ts';
-import { Template } from '@/models/template.ts';
+import { Template, TemplateLayerColor } from '@/models/template.ts';
 import { isEqual } from 'lodash';
 import React, {
   createContext,
@@ -18,8 +20,10 @@ import React, {
 const TemplateEditorContext = createContext<{
   state: TemplateEditorState;
   dispatch: React.Dispatch<TemplateEditorAction>;
+  setCurrentLayerId: (currentLayerId: string | undefined) => void;
   setPreviewMode: (previewMode: PreviewMode) => void;
   updateTemplate: (updates: Template) => void;
+  updateCurrentLayer: (updates: TemplateLayerColor) => void;
   saveTemplateState: () => void;
 } | null>(null);
 
@@ -32,11 +36,15 @@ export function TemplateEditorProvider({
 }) {
   const [state, dispatch] = useReducer(templateEditorReducer, {
     template,
-    currentLayerId: undefined,
+    currentLayerId: template.layers[0]?.id || undefined,
     isDirty: false,
     isSaving: false,
     previewMode: 'desktop',
     showSvgLayerPicker: false,
+    config: {
+      colors: COLORS_FIXTURE,
+      colorPalettes: COLOR_PALETTES_FIXTURE,
+    },
   });
 
   const [lastSavedTemplateState, setLastSavedTemplateState] =
@@ -55,6 +63,10 @@ export function TemplateEditorProvider({
     setLastSavedTemplateState(state.template);
   }
 
+  function setCurrentLayerId(currentLayerId: string | undefined) {
+    dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: currentLayerId });
+  }
+
   function setPreviewMode(previewMode: PreviewMode) {
     dispatch({ type: 'SET_PREVIEW_MODE', payload: previewMode });
   }
@@ -63,13 +75,33 @@ export function TemplateEditorProvider({
     dispatch({ type: 'UPDATE_TEMPLATE', payload: updates });
   }
 
+  function updateCurrentLayer(updates: TemplateLayerColor) {
+    const currentLayer = state.template.layers.find(
+      (layer) => layer.id === state.currentLayerId
+    );
+
+    if (!currentLayer) return;
+
+    const updatedLayer = { ...currentLayer, ...updates };
+    const updatedTemplate = {
+      ...state.template,
+      layers: state.template.layers.map((layer) =>
+        layer.id === currentLayer.id ? updatedLayer : layer
+      ),
+    };
+
+    dispatch({ type: 'UPDATE_TEMPLATE', payload: updatedTemplate });
+  }
+
   return (
     <TemplateEditorContext.Provider
       value={{
         state: { ...state, isDirty },
         dispatch,
+        setCurrentLayerId,
         setPreviewMode,
         updateTemplate,
+        updateCurrentLayer,
         saveTemplateState,
       }}
     >

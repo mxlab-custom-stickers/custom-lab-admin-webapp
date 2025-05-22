@@ -16,9 +16,11 @@ import {
 } from '@/models/template.ts';
 import { Plus } from 'lucide-react';
 
-export default function NewLayerDropdownMenu() {
+export default function AddLayerDropdownMenu() {
   const {
-    state: { template, showSvgLayerPicker },
+    state: { template },
+    updateTemplate,
+    setCurrentLayerId,
   } = useTemplateEditorContext();
 
   function handleLayerTypeSelect(layerType: TemplateLayerType) {
@@ -26,10 +28,11 @@ export default function NewLayerDropdownMenu() {
 
     const newLayer: TemplateLayerColor = {
       type: 'color',
-      id: 'new-layer',
-      name: 'Nouveau calque',
+      id: `new-layer-${template.layers.length + 1}`,
+      name: 'Calque de couleur ' + (template.layers.length + 1),
       order: template.layers.length + 1,
       colorElements: [],
+      // TODO: add default color
       config: {
         availableColorPalettes: [],
         availableColors: [],
@@ -38,12 +41,11 @@ export default function NewLayerDropdownMenu() {
       },
     };
 
-    // setShowSvgLayerPicker(true);
-    // updateTemplate({ ...template, layers: [...template.layers, newLayer] });
-    // setCurrentLayer(newLayer);
+    updateTemplate({ ...template, layers: [...template.layers, newLayer] });
+    setCurrentLayerId(newLayer.id);
   }
 
-  return !showSvgLayerPicker ? (
+  return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="w-full">
@@ -68,5 +70,5 @@ export default function NewLayerDropdownMenu() {
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  ) : null;
+  );
 }

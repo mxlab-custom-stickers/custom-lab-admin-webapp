@@ -1,8 +1,8 @@
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { focusElement, getSvgLayers, unfocusElement } from '@/lib/svg.ts';
-import { svgLayerToColorElements } from '@/lib/template-editor.ts';
-import { SvgLayer } from '@/models/svg.ts';
+import { svgLayerToColorElement } from '@/lib/template-editor.ts';
+import { SvgLayer } from '@/models/svg-editor.ts';
 import { SVG } from '@svgdotjs/svg.js';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -58,7 +58,7 @@ export default function useSvgLayerPicker() {
       ...currentLayer,
       id: selected.id,
       name: selected.id,
-      colorElements: svgLayerToColorElements(selected),
+      colorElements: svgLayerToColorElement(selected),
     };
 
     unfocusElement(svgId);

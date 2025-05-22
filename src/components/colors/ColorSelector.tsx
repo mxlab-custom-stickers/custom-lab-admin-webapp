@@ -8,13 +8,14 @@ import {
   TabsTrigger,
 } from '@/components/ui/tabs.tsx';
 import { compareColorsByLuminance } from '@/lib/colors.ts';
+import { cn } from '@/lib/utils.ts';
 import { Color, ColorPalette } from '@/models/color.ts';
 import { Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-type ColorSelectorProps = {
-  allColorPalettes: ColorPalette[];
-  allColors: Color[];
+type ColorSelectorProps = React.ComponentPropsWithoutRef<'div'> & {
+  colorPalettes: ColorPalette[];
+  colors: Color[];
 
   selectedColorPalettes?: ColorPalette[];
   selectedColors?: Color[];
@@ -29,11 +30,13 @@ type ColorSelectorProps = {
 };
 
 export default function ColorSelector({
-  allColorPalettes,
-  allColors,
+  className,
+  colorPalettes,
+  colors,
   selectedColorPalettes: selectedColorPalettesProp,
   selectedColors: selectedColorsProp,
   onChange,
+  ...props
 }: ColorSelectorProps) {
   const [selectedColorPalettes, setSelectedColorPalettes] = useState<
     ColorPalette[]
@@ -79,7 +82,7 @@ export default function ColorSelector({
   }
 
   return (
-    <div className="w-[500px]">
+    <div className={cn(className)} {...props}>
       <Tabs defaultValue="palettes" className="gap-4">
         <TabsList className="w-full">
           <TabsTrigger value="palettes">
@@ -98,7 +101,7 @@ export default function ColorSelector({
         {/* Palettes */}
         <TabsContent value="palettes">
           <div className="grid grid-cols-2 gap-2">
-            {allColorPalettes.map((colorPalette) => (
+            {colorPalettes.map((colorPalette) => (
               <ColorPaletteCard
                 key={colorPalette.id}
                 colorPalette={colorPalette}
@@ -113,7 +116,7 @@ export default function ColorSelector({
             ))}
           </div>
 
-          {allColorPalettes.length === 0 ? (
+          {colorPalettes.length === 0 ? (
             <div>Aucune palette de couleur enregistrée</div>
           ) : null}
 
@@ -128,7 +131,7 @@ export default function ColorSelector({
         {/* Colors */}
         <TabsContent value="colors">
           <div className="grid grid-cols-10 gap-3">
-            {allColors.sort(compareColorsByLuminance).map((color) => (
+            {colors.sort(compareColorsByLuminance).map((color) => (
               <ColorChip
                 key={color.id}
                 className="w-full"
@@ -140,9 +143,7 @@ export default function ColorSelector({
             ))}
           </div>
 
-          {allColors.length === 0 ? (
-            <div>Aucune couleur enregistrée</div>
-          ) : null}
+          {colors.length === 0 ? <div>Aucune couleur enregistrée</div> : null}
 
           <div className="mt-4 flex justify-end">
             <Button>

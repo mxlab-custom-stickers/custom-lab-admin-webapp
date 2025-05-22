@@ -1,18 +1,7 @@
-import { SvgLayer } from '@/models/svg.ts';
+import { SvgLayer } from '@/models/svg-editor.ts';
 import { ColorElement } from '@/models/template.ts';
 
-export function svgLayerToColorElements(svgLayer: SvgLayer): ColorElement[] {
-  return svgLayer.children
-    ? svgLayer.children.map((child) =>
-        svgLayerToColorGroupOrColorElement(child, svgLayer.id)
-      )
-    : [];
-}
-
-function svgLayerToColorGroupOrColorElement(
-  svgLayer: SvgLayer,
-  parentId: string
-): ColorElement {
+export function svgLayerToColorElement(svgLayer: SvgLayer): ColorElement {
   const base = {
     id: svgLayer.id,
     name: svgLayer.id,
@@ -22,7 +11,7 @@ function svgLayerToColorGroupOrColorElement(
     return {
       ...base,
       type: 'item',
-      parentId,
+      parentId: svgLayer.parentId,
       color: { id: '', name: '', value: svgLayer.color },
     };
   }
@@ -30,10 +19,8 @@ function svgLayerToColorGroupOrColorElement(
   return {
     ...base,
     type: 'group',
-    parentId,
+    parentId: svgLayer.parentId,
     subColorElements:
-      svgLayer.children?.map((child) =>
-        svgLayerToColorGroupOrColorElement(child, svgLayer.id)
-      ) || [],
+      svgLayer.children?.map((child) => svgLayerToColorElement(child)) || [],
   };
 }

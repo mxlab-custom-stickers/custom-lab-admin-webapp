@@ -1,3 +1,4 @@
+import { Color, ColorPalette } from '@/models/color.ts';
 import { Template } from '@/models/template.ts';
 
 export type TemplateEditorState = {
@@ -7,6 +8,10 @@ export type TemplateEditorState = {
   isSaving: boolean;
   previewMode: PreviewMode;
   showSvgLayerPicker: boolean;
+  config: {
+    colors: Color[];
+    colorPalettes: ColorPalette[];
+  };
 };
 
 export type PreviewMode = 'desktop' | 'mobile' | 'fullscreen';
