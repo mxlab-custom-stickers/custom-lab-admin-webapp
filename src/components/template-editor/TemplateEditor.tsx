@@ -10,11 +10,11 @@ import PreviewModeWrapper from './PreviewModeWrapper';
 
 export default function TemplateEditor() {
   const {
-    state: { template, previewMode, currentLayerId },
+    state: { template, previewMode, currentLayer },
   } = useTemplateEditorContext();
 
   return (
-    <ConfiguratorProvider template={template} currentLayerId={currentLayerId}>
+    <ConfiguratorProvider template={template} currentLayerId={currentLayer?.id}>
       <SidebarProvider
         className="flex flex-col"
         open={previewMode !== 'fullscreen'}

@@ -101,7 +101,7 @@ export default function ColorElementsOptionsCard({
               </DialogClose>
               <Button
                 onClick={validate}
-                disabled={initialSelectedLayerIds.length === 0}
+                disabled={selectedSvgLayers.length === 0}
               >
                 Sélectionner
               </Button>

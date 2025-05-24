@@ -9,18 +9,18 @@ export default function LayersBar({ className, ...props }: LayerBarProps) {
   const {
     state: {
       template: { layers },
-      currentLayerId,
+      currentLayer,
     },
-    setCurrentLayerId,
+    setCurrentLayer,
   } = useConfiguratorContext();
 
   const templateEditorContext = useOptionalTemplateEditorContext();
 
   function handleLayerClick(layerId: string) {
     if (templateEditorContext) {
-      templateEditorContext.setCurrentLayerId(layerId);
+      templateEditorContext.setCurrentLayer(layerId);
     } else {
-      setCurrentLayerId(layerId);
+      setCurrentLayer(layerId);
     }
   }
 
@@ -37,7 +37,7 @@ export default function LayersBar({ className, ...props }: LayerBarProps) {
           key={layer.id}
           className={cn(
             'hover:border-primary grid h-10 cursor-pointer place-items-center rounded-md border border-transparent bg-gray-200 px-3',
-            { 'border-primary bg-gray-300': currentLayerId === layer.id }
+            { 'border-primary bg-gray-300': currentLayer?.id === layer.id }
           )}
           onClick={() => handleLayerClick(layer.id)}
         >

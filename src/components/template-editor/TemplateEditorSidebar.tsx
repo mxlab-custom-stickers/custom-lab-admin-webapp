@@ -19,8 +19,6 @@ export default function TemplateEditorSidebar() {
               <CurrentLayerComponent />
             </div>
 
-            {/*<SvgLayerPicker />*/}
-
             <DeleteCurrentLayerButton />
           </SidebarGroupContent>
         </SidebarGroup>

@@ -1,7 +1,16 @@
 import MXlabLogo from '@/assets/mxlab.png';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
+import { getAllColorItems } from '@/lib/configurator.ts';
+import { getFabricObjectsByIds } from '@/lib/fabric.ts';
 import { cn } from '@/lib/utils.ts';
-import { Canvas, FabricImage, loadSVGFromURL, Point, util } from 'fabric';
+import {
+  Canvas,
+  FabricImage,
+  FabricObject,
+  loadSVGFromURL,
+  Point,
+  util,
+} from 'fabric';
 import { useEffect, useRef, useState } from 'react';
 
 type ConfiguratorCanvasProps = {
@@ -12,13 +21,32 @@ export default function ConfiguratorCanvas({
   wrapperClassName,
 }: ConfiguratorCanvasProps) {
   const {
-    state: { template },
+    state: { template, currentLayer },
+    setCanvas,
+    setCurrentFabricObjects,
   } = useConfiguratorContext();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const [canvas, setCanvas] = useState<Canvas | null>(null);
+  const [fabricObjects, setFabricObjects] = useState<FabricObject[]>([]);
+
+  useEffect(() => {
+    if (!currentLayer) {
+      return;
+    }
+
+    const colorItemIds = getAllColorItems(currentLayer.colorElements).map(
+      (ci) => ci.id
+    );
+
+    const currentFabricObjects = getFabricObjectsByIds(
+      fabricObjects,
+      colorItemIds
+    );
+
+    setCurrentFabricObjects(currentFabricObjects);
+  }, [fabricObjects, currentLayer]);
 
   useEffect(() => {
     const wrapperEl = wrapperRef.current;
@@ -45,6 +73,8 @@ export default function ConfiguratorCanvas({
 
     loadSVGFromURL(template.svgUrl).then((svgData) => {
       const { objects, options } = svgData;
+
+      setFabricObjects(objects.filter((obj) => obj !== null));
 
       // Group all SVG elements
       const group = util.groupSVGElements(objects, options);
@@ -178,6 +208,9 @@ export default function ConfiguratorCanvas({
 
     initCanvas.renderAll();
     setCanvas(initCanvas);
+
+    // Expose the canvas instance to the global window object for debugging
+    (window as any).__fabricCanvas = initCanvas;
 
     return () => {
       initCanvas.dispose();

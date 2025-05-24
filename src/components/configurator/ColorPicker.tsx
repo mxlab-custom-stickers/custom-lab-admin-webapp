@@ -8,6 +8,9 @@ type ColorPickerProps = React.ComponentPropsWithoutRef<'div'> & {
   colors: Color[];
   columns: number;
   space: number;
+
+  selectedColor?: Color;
+  onSelectColor?: (color: Color) => void;
 };
 
 export default function ColorPicker({
@@ -15,6 +18,8 @@ export default function ColorPicker({
   colors,
   columns,
   space,
+  selectedColor,
+  onSelectColor,
   ...props
 }: ColorPickerProps) {
   return (
@@ -33,6 +38,8 @@ export default function ColorPicker({
           color={color}
           selectable
           showTooltip
+          selected={color.id === selectedColor?.id}
+          onClick={() => onSelectColor?.(color)}
         />
       ))}
     </div>

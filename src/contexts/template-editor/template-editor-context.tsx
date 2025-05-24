@@ -20,7 +20,7 @@ import React, {
 const TemplateEditorContext = createContext<{
   state: TemplateEditorState;
   dispatch: React.Dispatch<TemplateEditorAction>;
-  setCurrentLayerId: (currentLayerId: string | undefined) => void;
+  setCurrentLayer: (layerId: string | undefined) => void;
   setPreviewMode: (previewMode: PreviewMode) => void;
   updateTemplate: (updates: Template) => void;
   updateCurrentLayer: (updates: TemplateLayerColor) => void;
@@ -36,20 +36,24 @@ export function TemplateEditorProvider({
 }) {
   const [state, dispatch] = useReducer(templateEditorReducer, {
     template,
-    currentLayerId: template.layers[0]?.id || undefined,
+    currentLayer: undefined,
     isDirty: false,
     isSaving: false,
     previewMode: 'desktop',
-    showSvgLayerPicker: false,
     config: {
       colors: COLORS_FIXTURE,
       colorPalettes: COLOR_PALETTES_FIXTURE,
     },
   });
 
+  const [currentLayerId, setCurrentLayerId] = useState<string>();
+  const currentLayer = useMemo(
+    () => state.template.layers.find((l) => l.id === currentLayerId),
+    [state.template.layers, currentLayerId]
+  );
+
   const [lastSavedTemplateState, setLastSavedTemplateState] =
     useState<Template>(template);
-
   const isDirty = useMemo(
     () => !isEqual(state.template, lastSavedTemplateState),
     [state, lastSavedTemplateState]
@@ -63,8 +67,8 @@ export function TemplateEditorProvider({
     setLastSavedTemplateState(state.template);
   }
 
-  function setCurrentLayerId(currentLayerId: string | undefined) {
-    dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: currentLayerId });
+  function setCurrentLayer(layerId: string | undefined) {
+    setCurrentLayerId(layerId);
   }
 
   function setPreviewMode(previewMode: PreviewMode) {
@@ -76,10 +80,6 @@ export function TemplateEditorProvider({
   }
 
   function updateCurrentLayer(updates: TemplateLayerColor) {
-    const currentLayer = state.template.layers.find(
-      (layer) => layer.id === state.currentLayerId
-    );
-
     if (!currentLayer) return;
 
     const updatedLayer = { ...currentLayer, ...updates };
@@ -96,9 +96,9 @@ export function TemplateEditorProvider({
   return (
     <TemplateEditorContext.Provider
       value={{
-        state: { ...state, isDirty },
+        state: { ...state, currentLayer, isDirty },
         dispatch,
-        setCurrentLayerId,
+        setCurrentLayer,
         setPreviewMode,
         updateTemplate,
         updateCurrentLayer,

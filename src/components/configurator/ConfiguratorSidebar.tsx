@@ -7,7 +7,9 @@ import { useConfiguratorContext } from '@/contexts/configurator/configurator-con
 import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { findColorElementById } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
+import { Color } from '@/models/color.ts';
 import * as React from 'react';
+import { useEffect } from 'react';
 import ColorItem from './ColorItem';
 
 type ConfiguratorSidebarProps = React.ComponentPropsWithoutRef<'div'>;
@@ -17,15 +19,16 @@ export default function ConfiguratorSidebar({
   ...props
 }: ConfiguratorSidebarProps) {
   const {
-    state: { template, currentLayerId, currentColorElement },
+    state: { template, currentLayer, currentColorElement },
     setCurrentColorElement,
+    updateColorElement,
   } = useConfiguratorContext();
 
-  const templateEditorContext = useOptionalTemplateEditorContext();
+  useEffect(() => {
+    console.log('template change', template);
+  }, [template]);
 
-  const currentLayer = template.layers.find(
-    (layer) => layer.id === currentLayerId
-  );
+  const templateEditorContext = useOptionalTemplateEditorContext();
 
   function goBack() {
     if (!currentLayer || !currentColorElement) return;
@@ -46,6 +49,11 @@ export default function ConfiguratorSidebar({
       ...currentLayer,
       name,
     });
+  }
+
+  function handleColorSelect(color: Color) {
+    if (!currentColorElement || currentColorElement.type !== 'item') return;
+    updateColorElement({ ...currentColorElement, color });
   }
 
   return (
@@ -78,6 +86,8 @@ export default function ConfiguratorSidebar({
           colors={currentLayer.config.availableColors}
           columns={currentLayer.config.columns}
           space={currentLayer.config.space}
+          selectedColor={currentColorElement.color}
+          onSelectColor={handleColorSelect}
         />
       ) : null}
     </div>

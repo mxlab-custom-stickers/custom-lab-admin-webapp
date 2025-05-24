@@ -20,7 +20,7 @@ export default function AddLayerDropdownMenu() {
   const {
     state: { template },
     updateTemplate,
-    setCurrentLayerId,
+    setCurrentLayer,
   } = useTemplateEditorContext();
 
   function handleLayerTypeSelect(layerType: TemplateLayerType) {
@@ -32,9 +32,7 @@ export default function AddLayerDropdownMenu() {
       name: 'Calque de couleur ' + (template.layers.length + 1),
       order: template.layers.length + 1,
       colorElements: [],
-      // TODO: add default color
       config: {
-        availableColorPalettes: [],
         availableColors: [],
         columns: 5,
         space: 2,
@@ -42,7 +40,7 @@ export default function AddLayerDropdownMenu() {
     };
 
     updateTemplate({ ...template, layers: [...template.layers, newLayer] });
-    setCurrentLayerId(newLayer.id);
+    setCurrentLayer(newLayer.id);
   }
 
   return (
