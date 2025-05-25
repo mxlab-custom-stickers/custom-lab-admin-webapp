@@ -16,6 +16,7 @@ import { Route as TemplateEditorIndexImport } from './routes/template-editor/ind
 import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as TemplateEditorIdImport } from './routes/template-editor/$id'
 import { Route as AppTemplatesImport } from './routes/_app/templates'
+import { Route as AppImagesImport } from './routes/_app/images'
 import { Route as AppColorsImport } from './routes/_app/colors'
 import { Route as AppSettingsThemeImport } from './routes/_app/settings/theme'
 import { Route as AppSettingsGeneralImport } from './routes/_app/settings/general'
@@ -49,6 +50,12 @@ const TemplateEditorIdRoute = TemplateEditorIdImport.update({
 const AppTemplatesRoute = AppTemplatesImport.update({
   id: '/templates',
   path: '/templates',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppImagesRoute = AppImagesImport.update({
+  id: '/images',
+  path: '/images',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -92,6 +99,13 @@ declare module '@tanstack/react-router' {
       path: '/colors'
       fullPath: '/colors'
       preLoaderRoute: typeof AppColorsImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/images': {
+      id: '/_app/images'
+      path: '/images'
+      fullPath: '/images'
+      preLoaderRoute: typeof AppImagesImport
       parentRoute: typeof AppRouteImport
     }
     '/_app/templates': {
@@ -150,6 +164,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteRouteChildren {
   AppColorsRoute: typeof AppColorsRoute
+  AppImagesRoute: typeof AppImagesRoute
   AppTemplatesRoute: typeof AppTemplatesRoute
   AppIndexRoute: typeof AppIndexRoute
   AppSettingsCustomLabRoute: typeof AppSettingsCustomLabRoute
@@ -159,6 +174,7 @@ interface AppRouteRouteChildren {
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppColorsRoute: AppColorsRoute,
+  AppImagesRoute: AppImagesRoute,
   AppTemplatesRoute: AppTemplatesRoute,
   AppIndexRoute: AppIndexRoute,
   AppSettingsCustomLabRoute: AppSettingsCustomLabRoute,
@@ -173,6 +189,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AppRouteRouteWithChildren
   '/colors': typeof AppColorsRoute
+  '/images': typeof AppImagesRoute
   '/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
   '/': typeof AppIndexRoute
@@ -184,6 +201,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/colors': typeof AppColorsRoute
+  '/images': typeof AppImagesRoute
   '/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
   '/': typeof AppIndexRoute
@@ -197,6 +215,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_app': typeof AppRouteRouteWithChildren
   '/_app/colors': typeof AppColorsRoute
+  '/_app/images': typeof AppImagesRoute
   '/_app/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
   '/_app/': typeof AppIndexRoute
@@ -211,6 +230,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/colors'
+    | '/images'
     | '/templates'
     | '/template-editor/$id'
     | '/'
@@ -221,6 +241,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/colors'
+    | '/images'
     | '/templates'
     | '/template-editor/$id'
     | '/'
@@ -232,6 +253,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/_app/colors'
+    | '/_app/images'
     | '/_app/templates'
     | '/template-editor/$id'
     | '/_app/'
@@ -273,6 +295,7 @@ export const routeTree = rootRoute
       "filePath": "_app/route.tsx",
       "children": [
         "/_app/colors",
+        "/_app/images",
         "/_app/templates",
         "/_app/",
         "/_app/settings/custom-lab",
@@ -282,6 +305,10 @@ export const routeTree = rootRoute
     },
     "/_app/colors": {
       "filePath": "_app/colors.tsx",
+      "parent": "/_app"
+    },
+    "/_app/images": {
+      "filePath": "_app/images.tsx",
       "parent": "/_app"
     },
     "/_app/templates": {

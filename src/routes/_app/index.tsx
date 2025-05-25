@@ -7,7 +7,9 @@ export const Route = createFileRoute('/_app/')({
 function RouteComponent() {
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <h1 className="mb-4 text-2xl font-semibold">Dashboard</h1>
+      <div>Bonjour Nelson ✌️</div>
+      <div>Bienvenue sur Custom Lab.</div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Blocks, Palette } from 'lucide-react';
+import { Blocks, Images, LayoutDashboard, Palette } from 'lucide-react';
 import * as React from 'react';
 
 import { NavMain } from '@/components/nav-main';
@@ -17,8 +17,10 @@ import { AppSwitcher } from '@/components/app-switcher.tsx';
 // This is sample data.
 const data = {
   navMain: [
+    { title: 'Dashboard', icon: LayoutDashboard, url: '/' },
     { title: 'Templates', icon: Blocks, url: '/templates' },
     { title: 'Couleurs', icon: Palette, url: '/colors' },
+    { title: 'Images', icon: Images, url: '/images' },
   ],
   user: { name: 'Nelson', email: 'nelson@mxlab.fr', avatar: nelson },
 };
