@@ -53,6 +53,7 @@ export function ConfiguratorProvider({
     template,
     currentLayer: undefined,
     currentColorElement: undefined,
+    canvas: undefined,
   } as ConfiguratorState);
 
   // Current layer management
@@ -149,7 +150,7 @@ export function ConfiguratorProvider({
   return (
     <ConfiguratorContext.Provider
       value={{
-        state: { ...state, currentLayer },
+        state: { ...state, currentLayer, canvas },
         dispatch,
         setCurrentLayer,
         setCurrentColorElement,

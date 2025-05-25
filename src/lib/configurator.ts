@@ -1,5 +1,11 @@
 import { Color } from '@/models/color.ts';
-import { ColorElement, ColorGroup, ColorItem } from '@/models/template.ts';
+import {
+  ColorElement,
+  ColorGroup,
+  ColorItem,
+  Template,
+  TemplateLayerColor,
+} from '@/models/template.ts';
 
 export function getAllColorGroupColors(colorGroup: ColorGroup): Color[] {
   return colorGroup.subColorElements.reduce<Color[]>((acc, child) => {
@@ -81,25 +87,30 @@ export function updateColorElement(
 }
 
 /**
- * Recursively extracts all ColorItem elements from a nested array of ColorElement.
+ * Recursively collects all ColorItem elements from a ColorElement tree.
  *
- * @param {ColorElement[]} elements - The array of ColorElement to search within.
- * @returns {ColorItem[]} An array of all ColorItem found in the nested structure.
+ * @param elements - Array of ColorElements (group or item)
+ * @returns An array of ColorItem objects found in the input tree
  */
-export function getAllColorItems(elements: ColorElement[]): ColorItem[] {
-  const result: ColorItem[] = [];
-
-  function recurse(elements: ColorElement[]) {
-    for (const el of elements) {
-      if (el.type === 'item') {
-        result.push(el);
-      } else if (el.type === 'group') {
-        recurse(el.subColorElements);
-      }
+export function collectColorItems(elements: ColorElement[]): ColorItem[] {
+  return elements.flatMap((element) => {
+    if (element.type === 'item') {
+      return [element];
+    } else if (element.type === 'group') {
+      return collectColorItems(element.subColorElements);
     }
-  }
+    return [];
+  });
+}
 
-  recurse(elements);
-
-  return result;
+/**
+ * Retrieves all ColorItem elements from a Template object.
+ *
+ * @param template - The Template containing multiple layers
+ * @returns An array of all ColorItem objects found in the template
+ */
+export function getAllColorItemsFromTemplate(template: Template): ColorItem[] {
+  return template.layers
+    .filter((layer): layer is TemplateLayerColor => layer.type === 'color')
+    .flatMap((layer) => collectColorItems(layer.colorElements));
 }

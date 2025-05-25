@@ -16,21 +16,20 @@ export default function ConfiguratorSvg({
 }: ConfiguratorSvgProps) {
   const {
     state: { template },
-    setSvgInjecting,
   } = useConfiguratorContext();
 
   const memoValue: Omit<ReactSVGProps, 'ref'> = useMemo(
     () => ({
       src: new URL(template.svgUrl, import.meta.url).href,
       beforeInjection: (svg) => {
-        setSvgInjecting(true);
+        // setSvgInjecting(true);
 
         svg.setAttribute('id', template.id);
         svg.setAttribute('width', '100%');
         svg.setAttribute('height', '100%');
       },
       afterInjection: () => {
-        setSvgInjecting(false);
+        // setSvgInjecting(false);
       },
     }),
     []

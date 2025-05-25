@@ -37,7 +37,7 @@ export default function ColorPicker({
           className="w-full"
           color={color}
           selectable
-          showTooltip
+          showTooltip={false}
           selected={color.id === selectedColor?.id}
           onClick={() => onSelectColor?.(color)}
         />

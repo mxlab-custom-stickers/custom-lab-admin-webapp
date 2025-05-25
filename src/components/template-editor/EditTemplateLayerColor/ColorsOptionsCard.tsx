@@ -26,16 +26,11 @@ export default function ColorsOptionsCard({
 
   const {
     state: {
-      template,
-      currentLayerId,
+      currentLayer,
       config: { colors, colorPalettes },
     },
     updateCurrentLayer,
   } = useTemplateEditorContext();
-
-  const currentLayer = template.layers.find(
-    (layer) => layer.id === currentLayerId
-  );
 
   const [state, setState] = useState<ColorsConfiguratorState>(
     currentLayer?.config || {

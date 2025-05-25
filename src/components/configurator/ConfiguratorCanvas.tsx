@@ -1,16 +1,12 @@
-import MXlabLogo from '@/assets/mxlab.png';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
-import { getAllColorItems } from '@/lib/configurator.ts';
+import {
+  collectColorItems,
+  findColorElementById,
+  getAllColorItemsFromTemplate,
+} from '@/lib/configurator.ts';
 import { getFabricObjectsByIds } from '@/lib/fabric.ts';
 import { cn } from '@/lib/utils.ts';
-import {
-  Canvas,
-  FabricImage,
-  FabricObject,
-  loadSVGFromURL,
-  Point,
-  util,
-} from 'fabric';
+import { Canvas, FabricObject, loadSVGFromURL, Point, util } from 'fabric';
 import { useEffect, useRef, useState } from 'react';
 
 type ConfiguratorCanvasProps = {
@@ -21,7 +17,7 @@ export default function ConfiguratorCanvas({
   wrapperClassName,
 }: ConfiguratorCanvasProps) {
   const {
-    state: { template, currentLayer },
+    state: { template, currentLayer, canvas },
     setCanvas,
     setCurrentFabricObjects,
   } = useConfiguratorContext();
@@ -32,11 +28,11 @@ export default function ConfiguratorCanvas({
   const [fabricObjects, setFabricObjects] = useState<FabricObject[]>([]);
 
   useEffect(() => {
-    if (!currentLayer) {
+    if (!currentLayer || !canvas) {
       return;
     }
 
-    const colorItemIds = getAllColorItems(currentLayer.colorElements).map(
+    const colorItemIds = collectColorItems(currentLayer.colorElements).map(
       (ci) => ci.id
     );
 
@@ -44,6 +40,33 @@ export default function ConfiguratorCanvas({
       fabricObjects,
       colorItemIds
     );
+
+    console.log(currentFabricObjects);
+
+    currentFabricObjects.forEach((obj) => {
+      const colorItem = findColorElementById(
+        currentLayer.colorElements,
+        obj.get('id')
+      );
+
+      if (colorItem?.type !== 'item') return;
+
+      obj.set({
+        evented: true,
+        perPixelTargetFind: true,
+        targetFindTolerance: 0,
+        hoverCursor: 'pointer',
+      });
+      obj.on('mouseover', () => {
+        console.log(`Mouse over object: ${obj.get('id')}`);
+        obj.set('fill', 'blue');
+        canvas.requestRenderAll();
+      });
+      obj.on('mouseout', () => {
+        obj.set('fill', colorItem.color.value);
+        canvas.requestRenderAll();
+      });
+    });
 
     setCurrentFabricObjects(currentFabricObjects);
   }, [fabricObjects, currentLayer]);
@@ -72,28 +95,34 @@ export default function ConfiguratorCanvas({
     window.addEventListener('resize', resizeCanvas);
 
     loadSVGFromURL(template.svgUrl).then((svgData) => {
-      const { objects, options } = svgData;
+      const { options } = svgData;
 
-      setFabricObjects(objects.filter((obj) => obj !== null));
+      const objects = svgData.objects.filter((obj) => obj !== null);
 
       // Group all SVG elements
       const group = util.groupSVGElements(objects, options);
 
-      // Disable interaction on the group
-      group.set({
-        selectable: false,
-        evented: false,
-        hasControls: false,
-        hasBorders: false,
-        lockMovementX: true,
-        lockMovementY: true,
-        lockScalingX: true,
-        lockScalingY: true,
-        lockRotation: true,
+      objects.forEach((obj) => {
+        console.log(obj.get('id'), obj.get('type'));
+        if (['shadows', 'background'].includes(obj.get('id'))) {
+          console.log('    Skipping object');
+          return;
+        }
+        obj.set({
+          selectable: false,
+          evented: false,
+          hasControls: false,
+          hasBorders: false,
+          lockMovementX: true,
+          lockMovementY: true,
+          lockScalingX: true,
+          lockScalingY: true,
+          lockRotation: true,
+        });
+        initCanvas.add(obj);
       });
 
-      initCanvas.add(group);
-      initCanvas.sendObjectToBack(group);
+      setFabricObjects(objects);
 
       // Calculate scale to fit the canvas viewport
       const bounds = group.getBoundingRect();
@@ -111,6 +140,18 @@ export default function ConfiguratorCanvas({
       const dy =
         initCanvas.getHeight()! / 2 - (bounds.top + bounds.height / 2) * scale;
       initCanvas.relativePan(new Point(dx, dy));
+
+      const colorItems = getAllColorItemsFromTemplate(template);
+      objects.forEach((obj) => {
+        const assignedColorItem = colorItems.find(
+          (ci) => ci.id === obj.get('id')
+        );
+        if (assignedColorItem) {
+          obj.set({
+            fill: assignedColorItem.color.value,
+          });
+        }
+      });
 
       initCanvas.requestRenderAll();
     });
@@ -196,15 +237,15 @@ export default function ConfiguratorCanvas({
       initCanvas.selection = true; // Re-enable selection
     });
 
-    FabricImage.fromURL(MXlabLogo).then((img) => {
-      img.set({
-        left: 0,
-        top: -50,
-      });
-      initCanvas.add(img);
-      initCanvas.bringObjectToFront(img);
-      initCanvas.requestRenderAll();
-    });
+    // FabricImage.fromURL(MXlabLogo).then((img) => {
+    //   img.set({
+    //     left: 0,
+    //     top: -50,
+    //   });
+    //   initCanvas.add(img);
+    //   initCanvas.bringObjectToFront(img);
+    //   initCanvas.requestRenderAll();
+    // });
 
     initCanvas.renderAll();
     setCanvas(initCanvas);
@@ -219,10 +260,7 @@ export default function ConfiguratorCanvas({
   }, []);
 
   return (
-    <div
-      ref={wrapperRef}
-      className={cn('h-full w-full bg-white', wrapperClassName)}
-    >
+    <div ref={wrapperRef} className={cn('h-full w-full', wrapperClassName)}>
       <canvas
         id="configurator-canvas"
         ref={canvasRef}

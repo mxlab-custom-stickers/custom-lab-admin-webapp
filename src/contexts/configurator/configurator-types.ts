@@ -3,11 +3,14 @@ import {
   Template,
   TemplateLayerColor,
 } from '@/models/template.ts';
+import { Canvas } from 'fabric';
 
 export type ConfiguratorState = {
   template: Template;
   currentLayer?: TemplateLayerColor;
   currentColorElement?: ColorElement;
+
+  canvas?: Canvas;
 };
 
 export type ConfiguratorAction =

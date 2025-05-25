@@ -5,12 +5,8 @@ import { ReactNode } from 'react';
 
 export default function CurrentLayerComponent() {
   const {
-    state: { template, currentLayerId },
+    state: { currentLayer },
   } = useTemplateEditorContext();
-
-  const currentLayerType = template.layers.find(
-    (layer) => layer.id === currentLayerId
-  )?.type;
 
   const currentLayerComponents: Record<TemplateLayerType, ReactNode> = {
     color: <EditTemplateLayerColorComponent />,
@@ -19,5 +15,5 @@ export default function CurrentLayerComponent() {
     background: <div>Background Layer</div>,
   };
 
-  return currentLayerType ? currentLayerComponents[currentLayerType] : null;
+  return currentLayer ? currentLayerComponents[currentLayer?.type] : null;
 }

@@ -5,13 +5,9 @@ import { useTemplateEditorContext } from '@/contexts/template-editor/template-ed
 
 export default function EditTemplateLayerColorComponent() {
   const {
-    state: { template, currentLayerId },
+    state: { currentLayer },
     updateCurrentLayer,
   } = useTemplateEditorContext();
-
-  const currentLayer = template.layers.find(
-    (layer) => layer.id === currentLayerId
-  );
 
   function updateCurrentLayerName(name: string) {
     if (!currentLayer) return;

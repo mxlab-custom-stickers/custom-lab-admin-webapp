@@ -25,7 +25,7 @@ export default function ColorElementsOptionsCard({
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const {
-    state: { template, currentLayerId },
+    state: { template, currentLayer: currentTemplateLayer },
     updateCurrentLayer,
   } = useTemplateEditorContext();
 
@@ -34,17 +34,10 @@ export default function ColorElementsOptionsCard({
   >(getInitialSelectedLayerIds);
   const [selectedSvgLayers, setSelectedSvgLayers] = useState<SvgLayer[]>([]);
 
-  const currentTemplateLayer = template.layers.find(
-    (templateLayer) => templateLayer.id === currentLayerId
-  );
-
   /**
    * SVG layers and template color elements have matching ids.
    */
   function getInitialSelectedLayerIds() {
-    const currentTemplateLayer = template.layers.find(
-      (templateLayer) => templateLayer.id === currentLayerId
-    );
     return currentTemplateLayer?.colorElements.map((ce) => ce.id) || [];
   }
 
