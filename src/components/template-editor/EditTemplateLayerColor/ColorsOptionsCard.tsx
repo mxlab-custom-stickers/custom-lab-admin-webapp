@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { cn } from '@/lib/utils.ts';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function ColorsOptionsCard({
   className,
@@ -26,10 +26,10 @@ export default function ColorsOptionsCard({
 
   const {
     state: {
-      currentLayer,
       config: { colors, colorPalettes },
     },
-    updateCurrentLayer,
+    currentLayer,
+    updateLayer,
   } = useTemplateEditorContext();
 
   const [state, setState] = useState<ColorsConfiguratorState>(
@@ -40,9 +40,19 @@ export default function ColorsOptionsCard({
     }
   );
 
+  useEffect(() => {
+    setState(
+      currentLayer?.config || {
+        availableColors: [],
+        columns: 5,
+        space: 2,
+      }
+    );
+  }, [currentLayer]);
+
   function validate() {
     if (!currentLayer) return;
-    updateCurrentLayer({
+    updateLayer({
       ...currentLayer,
       config: {
         ...state,

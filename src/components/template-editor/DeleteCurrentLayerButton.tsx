@@ -3,9 +3,10 @@ import { useTemplateEditorContext } from '@/contexts/template-editor/template-ed
 
 export default function DeleteCurrentLayerButton() {
   const {
-    state: { template, currentLayer },
+    state: { template },
     updateTemplate,
-    setCurrentLayer,
+    currentLayer,
+    setCurrentLayerId,
   } = useTemplateEditorContext();
 
   function deleteCurrentLayer() {
@@ -16,7 +17,7 @@ export default function DeleteCurrentLayerButton() {
       layers: template.layers.filter((layer) => layer.id !== currentLayer.id),
     };
     updateTemplate(updatedTemplate);
-    setCurrentLayer(
+    setCurrentLayerId(
       template.layers.find((layer) => layer.order === currentLayer.order - 1)
         ?.id
     );

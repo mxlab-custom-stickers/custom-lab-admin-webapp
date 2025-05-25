@@ -10,10 +10,8 @@ export default function ColorGroupComponent({
   className,
   ...props
 }: ColorGroupComponentProps) {
-  const {
-    state: { currentColorElement },
-    setCurrentColorElement,
-  } = useConfiguratorContext();
+  const { currentColorElement, setCurrentColorElementId } =
+    useConfiguratorContext();
 
   const colorGroup =
     currentColorElement?.type === 'group' ? currentColorElement : null;
@@ -26,7 +24,9 @@ export default function ColorGroupComponent({
       />
       <ColorElementList
         colorElements={colorGroup.subColorElements}
-        onColorElementClick={setCurrentColorElement}
+        onColorElementClick={(colorElement) =>
+          setCurrentColorElementId(colorElement.id)
+        }
       />
     </div>
   ) : null;

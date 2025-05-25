@@ -6,6 +6,7 @@ import {
   Template,
   TemplateLayerColor,
 } from '@/models/template.ts';
+import { FabricObject } from 'fabric';
 
 export function getAllColorGroupColors(colorGroup: ColorGroup): Color[] {
   return colorGroup.subColorElements.reduce<Color[]>((acc, child) => {
@@ -35,55 +36,87 @@ export function findColorElementById(
 }
 
 /**
- * Recursively updates a ColorElement by id in a nested ColorElement array.
- *
- * @param elements - The array of ColorElements to update.
- * @param id - The id of the ColorElement to update.
- * @param updater - A function that receives the matched element and returns the updated element.
- * @returns A new array with the updated ColorElement, preserving structure.
+ * Recursively updates a ColorElement by id inside a list.
  */
 export function updateColorElementById(
   elements: ColorElement[],
   id: string,
-  updater: (element: ColorElement) => ColorElement
+  updateFn: (element: ColorElement) => ColorElement
 ): ColorElement[] {
-  return elements.map((el) => {
-    if (el.id === id) {
-      return updater(el);
-    }
-    if (el.type === 'group') {
-      return {
-        ...el,
-        subColorElements: updateColorElementById(
-          el.subColorElements,
-          id,
-          updater
-        ),
-      };
-    }
-    return el;
-  });
-}
-
-export function updateColorElement(
-  colorElements: ColorElement[],
-  updatedElement: ColorElement
-): ColorElement[] {
-  return colorElements.map((element) => {
-    if (element.id === updatedElement.id) {
-      return updatedElement;
-    }
+  return elements.map((element) => {
     if (element.type === 'group') {
       return {
         ...element,
-        subColorElements: updateColorElement(
+        subColorElements: updateColorElementById(
           element.subColorElements,
-          updatedElement
+          id,
+          updateFn
         ),
-      } as ColorGroup;
+      };
     }
-    return element;
+
+    return element.id === id ? updateFn(element) : element;
   });
+}
+
+/**
+ * Update a ColorElement by its id within a Template.
+ *
+ * @param template - The template to update
+ * @param updates - The updated ColorElement
+ * @returns A new Template with the updated ColorElement
+ */
+export function updateColorElementInTemplate(
+  template: Template,
+  updates: ColorElement
+): Template {
+  const updatedLayers = template.layers.map((layer) => {
+    if (layer.type !== 'color') return layer;
+
+    const updatedColorElements = updateColorElementById(
+      layer.colorElements,
+      updates.id,
+      (el) => ({ ...el, ...updates })
+    );
+
+    return {
+      ...layer,
+      colorElements: updatedColorElements,
+    };
+  });
+
+  return {
+    ...template,
+    layers: updatedLayers,
+  };
+}
+
+/**
+ * Updates a ColorItem in the ColorItem-to-FabricObject[] map.
+ *
+ * @param colorItemMap - The current Map of ColorItems to FabricObject arrays
+ * @param updatedElement - The updated ColorElement
+ * @returns A new Map with the ColorItem key updated (if applicable)
+ */
+export function updateColorItemMap(
+  colorItemMap: Map<ColorItem, FabricObject[]>,
+  updatedElement: ColorElement
+): Map<ColorItem, FabricObject[]> {
+  if (updatedElement.type !== 'item') {
+    return colorItemMap;
+  }
+
+  const newMap = new Map<ColorItem, FabricObject[]>();
+
+  for (const [item, objects] of colorItemMap.entries()) {
+    if (item.id === updatedElement.id) {
+      newMap.set(updatedElement, objects); // replace key with updated item
+    } else {
+      newMap.set(item, objects);
+    }
+  }
+
+  return newMap;
 }
 
 /**

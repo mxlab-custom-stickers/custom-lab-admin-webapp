@@ -94,3 +94,31 @@ export function arePaletteColorsAvailable(
   const availableColorIds = new Set(availableColors.map((color) => color.id));
   return palette.colors.every((color) => availableColorIds.has(color.id));
 }
+
+/**
+ * Returns a slightly brighter version of the given hex color.
+ * @param hex - The hex color string, e.g. "#336699"
+ * @param amount - How much to brighten (0-255), default is 20
+ * @returns The brightened hex color string
+ */
+export function brightenHexColor(hex: string, amount = 20): string {
+  // Remove the leading '#' if present
+  const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex;
+
+  // Parse r, g, b components
+  const num = parseInt(cleanHex, 16);
+  let r = (num >> 16) & 0xff;
+  let g = (num >> 8) & 0xff;
+  let b = num & 0xff;
+
+  // Increase each by amount, capped at 255
+  r = Math.min(255, r + amount);
+  g = Math.min(255, g + amount);
+  b = Math.min(255, b + amount);
+
+  // Convert back to hex with leading zeros if needed
+  const brightened =
+    '#' + [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('');
+
+  return brightened;
+}

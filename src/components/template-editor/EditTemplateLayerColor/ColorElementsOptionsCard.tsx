@@ -16,7 +16,7 @@ import { useTemplateEditorContext } from '@/contexts/template-editor/template-ed
 import { svgLayerToColorElement } from '@/lib/template-editor.ts';
 import { cn } from '@/lib/utils.ts';
 import { SvgLayer } from '@/models/svg-editor.ts';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 export default function ColorElementsOptionsCard({
   className,
@@ -25,31 +25,26 @@ export default function ColorElementsOptionsCard({
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const {
-    state: { template, currentLayer: currentTemplateLayer },
-    updateCurrentLayer,
+    state: { template },
+    currentLayer: currentTemplateLayer,
+    updateLayer,
   } = useTemplateEditorContext();
 
-  const [initialSelectedLayerIds, setInitialSelectedLayerIds] = useState<
-    string[]
-  >(getInitialSelectedLayerIds);
-  const [selectedSvgLayers, setSelectedSvgLayers] = useState<SvgLayer[]>([]);
+  const initialSelectedLayerIds = useMemo(
+    () => currentTemplateLayer?.colorElements.map((ce) => ce.id) || [],
+    [currentTemplateLayer]
+  );
 
-  /**
-   * SVG layers and template color elements have matching ids.
-   */
-  function getInitialSelectedLayerIds() {
-    return currentTemplateLayer?.colorElements.map((ce) => ce.id) || [];
-  }
+  const [selectedSvgLayers, setSelectedSvgLayers] = useState<SvgLayer[]>([]);
 
   function validate() {
     if (!currentTemplateLayer) return;
 
-    updateCurrentLayer({
+    updateLayer({
       ...currentTemplateLayer,
       colorElements: selectedSvgLayers.map(svgLayerToColorElement),
     });
     setShowDialog(false);
-    setInitialSelectedLayerIds(selectedSvgLayers.map((layer) => layer.id));
   }
 
   return (

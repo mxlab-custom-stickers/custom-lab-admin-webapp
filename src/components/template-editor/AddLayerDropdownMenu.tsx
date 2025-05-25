@@ -20,7 +20,7 @@ export default function AddLayerDropdownMenu() {
   const {
     state: { template },
     updateTemplate,
-    setCurrentLayer,
+    setCurrentLayerId,
   } = useTemplateEditorContext();
 
   function handleLayerTypeSelect(layerType: TemplateLayerType) {
@@ -40,7 +40,7 @@ export default function AddLayerDropdownMenu() {
     };
 
     updateTemplate({ ...template, layers: [...template.layers, newLayer] });
-    setCurrentLayer(newLayer.id);
+    setCurrentLayerId(newLayer.id);
   }
 
   return (

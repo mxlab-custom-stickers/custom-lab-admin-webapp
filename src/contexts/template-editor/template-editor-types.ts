@@ -1,10 +1,10 @@
 import { Color, ColorPalette } from '@/models/color.ts';
-import { Template, TemplateLayerColor } from '@/models/template.ts';
+import { Template } from '@/models/template.ts';
 
 export type TemplateEditorState = {
   template: Template;
 
-  currentLayer: TemplateLayerColor | undefined;
+  currentLayerId: string | undefined;
 
   isDirty: boolean;
   isSaving: boolean;
@@ -21,5 +21,6 @@ export type PreviewMode = 'desktop' | 'mobile' | 'fullscreen';
 
 export type TemplateEditorAction =
   | { type: 'UPDATE_TEMPLATE'; payload: Template }
+  | { type: 'SET_CURRENT_LAYER_ID'; payload: string | undefined }
   | { type: 'SET_IS_SAVING'; payload: boolean }
   | { type: 'SET_PREVIEW_MODE'; payload: PreviewMode };

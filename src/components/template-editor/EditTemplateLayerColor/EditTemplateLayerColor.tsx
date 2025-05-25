@@ -4,14 +4,11 @@ import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 
 export default function EditTemplateLayerColorComponent() {
-  const {
-    state: { currentLayer },
-    updateCurrentLayer,
-  } = useTemplateEditorContext();
+  const { currentLayer, updateLayer } = useTemplateEditorContext();
 
   function updateCurrentLayerName(name: string) {
     if (!currentLayer) return;
-    updateCurrentLayer({ ...currentLayer, name });
+    updateLayer({ ...currentLayer, name });
   }
 
   return (

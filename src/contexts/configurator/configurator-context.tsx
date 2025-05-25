@@ -6,9 +6,15 @@ import {
 import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import {
   findColorElementById,
-  updateColorElementById,
+  updateColorElementInTemplate,
+  updateColorItemMap,
 } from '@/lib/configurator.ts';
-import { ColorElement, Template } from '@/models/template.ts';
+import {
+  ColorElement,
+  ColorItem,
+  Template,
+  TemplateLayerColor,
+} from '@/models/template.ts';
 import { Canvas, FabricObject } from 'fabric';
 import React, {
   createContext,
@@ -16,7 +22,6 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
-  useState,
 } from 'react';
 
 export const ConfiguratorContext = createContext<{
@@ -24,16 +29,17 @@ export const ConfiguratorContext = createContext<{
   dispatch: React.Dispatch<ConfiguratorAction>;
 
   // FabricJS
-  setCanvas: React.Dispatch<React.SetStateAction<Canvas | undefined>>;
-  setCurrentFabricObjects: React.Dispatch<React.SetStateAction<FabricObject[]>>;
+  setCanvas: (canvas: Canvas) => void;
+  setColorItemMap: (colorItemMap: Map<ColorItem, FabricObject[]>) => void;
 
   // Current layer
-  setCurrentLayer: (layerId: string | undefined) => void;
+  currentLayer: TemplateLayerColor | undefined;
+  setCurrentLayerId: (layerId: string | undefined) => void;
+
   // Current color element
-  setCurrentColorElement: (
-    currentColorElement: ColorElement | undefined
-  ) => void;
-  updateColorElement: (updates: ColorElement) => void;
+  currentColorElement: ColorElement | undefined;
+  setCurrentColorElementId: (currentColorElementId: string | undefined) => void;
+  updateColorElement: (updatedElement: ColorElement) => void;
 } | null>(null);
 
 type ConfiguratorProviderProps = {
@@ -51,112 +57,102 @@ export function ConfiguratorProvider({
 
   const [state, dispatch] = useReducer(configuratorReducer, {
     template,
-    currentLayer: undefined,
-    currentColorElement: undefined,
+    currentLayerId: undefined,
+    currentColorElementId: undefined,
     canvas: undefined,
+    colorItemMap: new Map(),
   } as ConfiguratorState);
 
-  // Current layer management
-  const [currentLayerId, setCurrentLayerId] = useState(currentLayerIdProp);
   const currentLayer = useMemo(
-    () => state.template.layers.find((l) => l.id === currentLayerId),
-    [state.template.layers, currentLayerId]
+    () => state.template.layers.find((l) => l.id === state.currentLayerId),
+    [state.template, state.currentLayerId]
   );
-  useEffect(() => {
-    setCurrentLayerId(currentLayerIdProp);
-  }, [currentLayerIdProp]);
 
-  // FabricJS canvas and objects management
-  const [canvas, setCanvas] = useState<Canvas>();
-  const [currentFabricObjects, setCurrentFabricObjects] = useState<
-    FabricObject[]
-  >([]);
+  const currentColorElement = useMemo(
+    () =>
+      currentLayer && state.currentColorElementId
+        ? findColorElementById(
+            currentLayer.colorElements,
+            state.currentColorElementId
+          )
+        : undefined,
+    [currentLayer, state.currentColorElementId]
+  );
 
   useEffect(() => {
     dispatch({ type: 'SET_TEMPLATE', payload: template });
   }, [template]);
 
-  function setCurrentLayer(layerId: string | undefined) {
+  useEffect(() => {
+    dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: currentLayerIdProp });
+  }, [currentLayerIdProp]);
+
+  function setCurrentLayerId(layerId: string | undefined) {
     if (templateEditorContext) {
-      templateEditorContext.setCurrentLayer(layerId);
+      templateEditorContext.setCurrentLayerId(layerId);
     } else {
-      setCurrentLayerId(layerId);
+      dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: layerId });
     }
   }
 
-  function setCurrentColorElement(
-    currentColorElement: ColorElement | undefined
-  ) {
-    dispatch({
-      type: 'SET_CURRENT_COLOR_ELEMENT',
-      payload: currentColorElement,
-    });
+  function setCurrentColorElementId(colorElementId: string | undefined) {
+    dispatch({ type: 'SET_CURRENT_COLOR_ELEMENT_ID', payload: colorElementId });
   }
 
+  /**
+   * Update a ColorElement by its id within a Template.
+   *
+   * @param updates - The updated ColorElement
+   * @returns A new Template with the updated ColorElement
+   */
   function updateColorElement(updates: ColorElement) {
-    const { template } = state;
-
-    if (!currentLayer || currentLayer.type !== 'color') return;
-
-    const colorElementToUpdate = findColorElementById(
-      currentLayer.colorElements,
-      updates.id
+    const updatedTemplate = updateColorElementInTemplate(
+      state.template,
+      updates
     );
-    if (!colorElementToUpdate) throw new Error('Color element not found');
 
-    const isSameColor =
-      colorElementToUpdate.type === 'item' &&
-      updates.type === 'item' &&
-      updates.color.value === colorElementToUpdate.color.value;
+    if (updates.type === 'item') {
+      const updatedColorItemMap = updateColorItemMap(
+        state.colorItemMap,
+        updates
+      );
 
-    if (!isSameColor) {
-      // Update fill color on canvas objects
-      if (colorElementToUpdate.type === 'item' && updates.type === 'item') {
-        currentFabricObjects
-          .filter((obj) => obj.get('id') === updates.id)
-          .forEach((obj) => obj.set('fill', updates.color.value));
-        canvas?.requestRenderAll();
-      }
+      updatedColorItemMap.get(updates)?.forEach((obj) => {
+        obj.set({
+          fill: updates.color.value,
+        });
+      });
+      state.canvas?.requestRenderAll();
+      dispatch({ type: 'SET_COLOR_ITEM_MAP', payload: updatedColorItemMap });
     }
-
-    // Update nested color element
-    const updatedColorElements = updateColorElementById(
-      currentLayer.colorElements,
-      updates.id,
-      () => ({ ...colorElementToUpdate, ...updates })
-    );
-
-    // Build updated layer and template
-    const updatedLayer = {
-      ...currentLayer,
-      colorElements: updatedColorElements,
-    };
-    const updatedTemplate = {
-      ...template,
-      layers: template.layers.map((layer) =>
-        layer.id === currentLayerId ? updatedLayer : layer
-      ),
-    };
 
     if (templateEditorContext) {
-      templateEditorContext.updateCurrentLayer({ ...updatedLayer });
+      templateEditorContext.updateTemplate(updatedTemplate);
     } else {
-      dispatch({ type: 'SET_TEMPLATE', payload: updatedTemplate });
+      dispatch({ type: 'SET_TEMPLATE', payload: { ...updatedTemplate } });
     }
+  }
 
-    dispatch({ type: 'SET_CURRENT_COLOR_ELEMENT', payload: updates });
+  function setCanvas(canvas: Canvas) {
+    dispatch({ type: 'SET_CANVAS', payload: canvas });
+  }
+
+  function setColorItemMap(colorItemMap: Map<ColorItem, FabricObject[]>) {
+    dispatch({ type: 'SET_COLOR_ITEM_MAP', payload: colorItemMap });
   }
 
   return (
     <ConfiguratorContext.Provider
       value={{
-        state: { ...state, currentLayer, canvas },
+        state,
         dispatch,
-        setCurrentLayer,
-        setCurrentColorElement,
+        currentLayer,
+        setCurrentLayerId,
+        currentColorElement,
+        setCurrentColorElementId,
         updateColorElement,
         setCanvas,
-        setCurrentFabricObjects,
+        setColorItemMap,
       }}
     >
       {children}

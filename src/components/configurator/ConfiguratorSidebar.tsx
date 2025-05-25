@@ -5,11 +5,9 @@ import BackButton from '@/components/ui/BackButton.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
-import { findColorElementById } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
 import { Color } from '@/models/color.ts';
 import * as React from 'react';
-import { useEffect } from 'react';
 import ColorItem from './ColorItem';
 
 type ConfiguratorSidebarProps = React.ComponentPropsWithoutRef<'div'>;
@@ -19,26 +17,19 @@ export default function ConfiguratorSidebar({
   ...props
 }: ConfiguratorSidebarProps) {
   const {
-    state: { template, currentLayer, currentColorElement },
-    setCurrentColorElement,
+    currentLayer,
+    currentColorElement,
+    setCurrentColorElementId,
     updateColorElement,
   } = useConfiguratorContext();
-
-  useEffect(() => {
-    console.log('template change', template);
-  }, [template]);
 
   const templateEditorContext = useOptionalTemplateEditorContext();
 
   function goBack() {
-    if (!currentLayer || !currentColorElement) return;
-
+    if (!currentColorElement) return;
     const { parentId } = currentColorElement;
     if (!parentId) return;
-
-    setCurrentColorElement(
-      findColorElementById(currentLayer.colorElements, parentId)
-    );
+    setCurrentColorElementId(parentId);
   }
 
   function handleCurrentLayerNameChange(name: string) {
@@ -69,7 +60,9 @@ export default function ConfiguratorSidebar({
           </div>
           <ColorElementList
             colorElements={currentLayer.colorElements}
-            onColorElementClick={setCurrentColorElement}
+            onColorElementClick={(colorElement) =>
+              setCurrentColorElementId(colorElement.id)
+            }
           />
         </>
       ) : null}

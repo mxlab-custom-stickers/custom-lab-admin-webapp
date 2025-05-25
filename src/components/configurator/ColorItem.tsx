@@ -9,9 +9,7 @@ export default function ColorItemComponent({
   className,
   ...props
 }: ColorItemComponentProps) {
-  const {
-    state: { currentColorElement },
-  } = useConfiguratorContext();
+  const { currentColorElement } = useConfiguratorContext();
 
   const colorItem =
     currentColorElement?.type === 'item' ? currentColorElement : null;

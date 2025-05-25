@@ -1,3 +1,5 @@
+import { getAllColorItemsFromTemplate } from '@/lib/configurator.ts';
+import { ColorItem, Template } from '@/models/template.ts';
 import { FabricObject, Group } from 'fabric';
 
 /**
@@ -20,38 +22,97 @@ export function getFabricObjectsByIds(
   });
 }
 
-// Assuming `objects` is your array of FabricObjects
-export function groupObjectsById(objects: FabricObject[]): Group[] {
-  const idGroups: Record<string, FabricObject[]> = {};
+export function getColorItemMap(
+  template: Template,
+  objects: FabricObject[]
+): Map<ColorItem, FabricObject[]> {
+  const colorItemMap = new Map<ColorItem, FabricObject[]>();
 
-  // Group objects by their `id` property
+  // Only include SVG shape objects (e.g., path, rect, etc.)
+  const shapeObjects = objects.filter(isSvgShape);
+
+  // Collect all color items from the template
+  const colorItems = getAllColorItemsFromTemplate(template);
+
+  // Associate each ColorItem with its corresponding FabricObjects
+  colorItems.forEach((colorItem) => {
+    const matchingShapes = shapeObjects.filter(
+      (obj) => obj.get('id') === colorItem.id
+    );
+    if (matchingShapes.length) {
+      colorItemMap.set(colorItem, matchingShapes);
+    }
+  });
+
+  return colorItemMap;
+}
+
+/**
+ * Groups FabricObjects that share the same 'id' property into Group instances,
+ * and sets the group's 'id' property to that shared id.
+ *
+ * @param objects - Array of FabricObjects to group.
+ * @returns Array of Group, each grouping objects with the same id and carrying that id.
+ */
+export function groupObjectsById(objects: FabricObject[]): Group[] {
+  const groupsMap = new Map<string, FabricObject[]>();
+
   for (const obj of objects) {
     const id = obj.get('id');
     if (!id) continue;
 
-    if (!idGroups[id]) {
-      idGroups[id] = [];
+    if (!groupsMap.has(id)) {
+      groupsMap.set(id, []);
     }
-    idGroups[id].push(obj);
+    groupsMap.get(id)!.push(obj);
   }
 
-  // Convert each group of objects into a Fabric.Group
-  return Object.entries(idGroups).map(([id, groupObjects]) => {
-    const group = new Group(groupObjects, {
-      selectable: false,
-      evented: false,
-      hasControls: false,
-      hasBorders: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      lockScalingX: true,
-      lockScalingY: true,
-      lockRotation: true,
-    });
+  const groups: Group[] = [];
 
-    // Preserve the shared ID on the group
+  for (const [id, objs] of groupsMap.entries()) {
+    const group = new Group(objs);
     group.set('id', id);
+    groups.push(group);
+  }
 
-    return group;
-  });
+  return groups;
+}
+
+/**
+ * Determines whether the given FabricObject is a vector shape (not image, group, or text).
+ *
+ * @param obj - The FabricObject to check.
+ * @returns True if the object is an SVG shape, false otherwise.
+ */
+export function isSvgShape(obj: FabricObject): boolean {
+  const shapeTypes = [
+    'path',
+    'rect',
+    'circle',
+    'ellipse',
+    'polygon',
+    'polyline',
+    'line',
+  ];
+
+  return shapeTypes.includes(obj.get('type'));
+}
+
+/**
+ * Clone all FabricObjects inside the colorItemMap and return a flat array of clones.
+ *
+ * @param colorItemMap - Map of ColorItem to array of FabricObjects
+ * @returns Promise resolving to an array of cloned FabricObjects
+ */
+export async function cloneAllObjectsFromColorItemMap(
+  colorItemMap: Map<ColorItem, FabricObject[]>
+): Promise<FabricObject[]> {
+  const clonedObjectsArrays = await Promise.all(
+    Array.from(colorItemMap.values()).map((objects) =>
+      Promise.all(objects.map((obj) => obj.clone()))
+    )
+  );
+
+  // Flatten the array of arrays into a single array of cloned objects
+  return clonedObjectsArrays.flat();
 }

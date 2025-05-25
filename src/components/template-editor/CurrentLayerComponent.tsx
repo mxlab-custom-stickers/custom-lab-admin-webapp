@@ -4,9 +4,7 @@ import { TemplateLayerType } from '@/models/template.ts';
 import { ReactNode } from 'react';
 
 export default function CurrentLayerComponent() {
-  const {
-    state: { currentLayer },
-  } = useTemplateEditorContext();
+  const { currentLayer } = useTemplateEditorContext();
 
   const currentLayerComponents: Record<TemplateLayerType, ReactNode> = {
     color: <EditTemplateLayerColorComponent />,

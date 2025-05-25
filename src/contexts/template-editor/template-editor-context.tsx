@@ -20,10 +20,14 @@ import React, {
 const TemplateEditorContext = createContext<{
   state: TemplateEditorState;
   dispatch: React.Dispatch<TemplateEditorAction>;
-  setCurrentLayer: (layerId: string | undefined) => void;
-  setPreviewMode: (previewMode: PreviewMode) => void;
+
   updateTemplate: (updates: Template) => void;
-  updateCurrentLayer: (updates: TemplateLayerColor) => void;
+
+  currentLayer: TemplateLayerColor | undefined;
+  setCurrentLayerId: (layerId: string | undefined) => void;
+  updateLayer: (updates: TemplateLayerColor) => void;
+
+  setPreviewMode: (previewMode: PreviewMode) => void;
   saveTemplateState: () => void;
 } | null>(null);
 
@@ -36,7 +40,7 @@ export function TemplateEditorProvider({
 }) {
   const [state, dispatch] = useReducer(templateEditorReducer, {
     template,
-    currentLayer: undefined,
+    currentLayerId: template.layers[0]?.id,
     isDirty: false,
     isSaving: false,
     previewMode: 'desktop',
@@ -46,17 +50,16 @@ export function TemplateEditorProvider({
     },
   });
 
-  const [currentLayerId, setCurrentLayerId] = useState<string>();
-  const currentLayer = useMemo(
-    () => state.template.layers.find((l) => l.id === currentLayerId),
-    [state.template.layers, currentLayerId]
-  );
-
   const [lastSavedTemplateState, setLastSavedTemplateState] =
     useState<Template>(template);
   const isDirty = useMemo(
     () => !isEqual(state.template, lastSavedTemplateState),
     [state, lastSavedTemplateState]
+  );
+
+  const currentLayer = useMemo(
+    () => state.template.layers.find((l) => l.id === state.currentLayerId),
+    [state.template.layers, state.currentLayerId]
   );
 
   async function saveTemplateState() {
@@ -67,8 +70,8 @@ export function TemplateEditorProvider({
     setLastSavedTemplateState(state.template);
   }
 
-  function setCurrentLayer(layerId: string | undefined) {
-    setCurrentLayerId(layerId);
+  function setCurrentLayerId(layerId: string | undefined) {
+    dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: layerId });
   }
 
   function setPreviewMode(previewMode: PreviewMode) {
@@ -79,29 +82,26 @@ export function TemplateEditorProvider({
     dispatch({ type: 'UPDATE_TEMPLATE', payload: updates });
   }
 
-  function updateCurrentLayer(updates: TemplateLayerColor) {
-    if (!currentLayer) return;
-
-    const updatedLayer = { ...currentLayer, ...updates };
+  function updateLayer(updates: TemplateLayerColor) {
     const updatedTemplate = {
-      ...state.template,
-      layers: state.template.layers.map((layer) =>
-        layer.id === currentLayer.id ? updatedLayer : layer
+      ...template,
+      layers: template.layers.map((layer) =>
+        layer.id === updates.id ? updates : layer
       ),
     };
-
     dispatch({ type: 'UPDATE_TEMPLATE', payload: updatedTemplate });
   }
 
   return (
     <TemplateEditorContext.Provider
       value={{
-        state: { ...state, currentLayer, isDirty },
+        state: { ...state, isDirty },
         dispatch,
-        setCurrentLayer,
+        currentLayer,
+        setCurrentLayerId,
         setPreviewMode,
         updateTemplate,
-        updateCurrentLayer,
+        updateLayer,
         saveTemplateState,
       }}
     >

@@ -1,13 +1,17 @@
+import MXlabLogo from '@/assets/mxlab.png';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
+import { brightenHexColor } from '@/lib/colors.ts';
 import {
-  collectColorItems,
   findColorElementById,
   getAllColorItemsFromTemplate,
 } from '@/lib/configurator.ts';
-import { getFabricObjectsByIds } from '@/lib/fabric.ts';
-import { cn } from '@/lib/utils.ts';
-import { Canvas, FabricObject, loadSVGFromURL, Point, util } from 'fabric';
-import { useEffect, useRef, useState } from 'react';
+import {
+  cloneAllObjectsFromColorItemMap,
+  getColorItemMap,
+} from '@/lib/fabric.ts';
+import { cn, filterMap } from '@/lib/utils.ts';
+import { Canvas, FabricImage, Group, loadSVGFromURL, Point } from 'fabric';
+import { useEffect, useRef } from 'react';
 
 type ConfiguratorCanvasProps = {
   wrapperClassName?: string;
@@ -17,59 +21,66 @@ export default function ConfiguratorCanvas({
   wrapperClassName,
 }: ConfiguratorCanvasProps) {
   const {
-    state: { template, currentLayer, canvas },
+    state: { template, canvas, colorItemMap },
     setCanvas,
-    setCurrentFabricObjects,
+    setColorItemMap,
+    currentLayer,
+    setCurrentColorElementId,
   } = useConfiguratorContext();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const [fabricObjects, setFabricObjects] = useState<FabricObject[]>([]);
-
   useEffect(() => {
-    if (!currentLayer || !canvas) {
-      return;
-    }
+    if (!currentLayer || !canvas) return;
 
-    const colorItemIds = collectColorItems(currentLayer.colorElements).map(
-      (ci) => ci.id
-    );
-
-    const currentFabricObjects = getFabricObjectsByIds(
-      fabricObjects,
-      colorItemIds
-    );
-
-    console.log(currentFabricObjects);
-
-    currentFabricObjects.forEach((obj) => {
-      const colorItem = findColorElementById(
-        currentLayer.colorElements,
-        obj.get('id')
-      );
-
-      if (colorItem?.type !== 'item') return;
-
-      obj.set({
-        evented: true,
-        perPixelTargetFind: true,
-        targetFindTolerance: 0,
-        hoverCursor: 'pointer',
-      });
-      obj.on('mouseover', () => {
-        console.log(`Mouse over object: ${obj.get('id')}`);
-        obj.set('fill', 'blue');
-        canvas.requestRenderAll();
-      });
-      obj.on('mouseout', () => {
-        obj.set('fill', colorItem.color.value);
-        canvas.requestRenderAll();
+    colorItemMap.forEach((objects) => {
+      objects.forEach((obj) => {
+        obj.set({
+          evented: false,
+          perPixelTargetFind: false,
+          targetFindTolerance: 0,
+          hoverCursor: 'default',
+        });
+        obj.off();
       });
     });
 
-    setCurrentFabricObjects(currentFabricObjects);
-  }, [fabricObjects, currentLayer]);
+    filterMap(
+      colorItemMap,
+      (colorItem) =>
+        !!findColorElementById(currentLayer.colorElements, colorItem.id)
+    ).forEach((objects, colorItem) => {
+      objects.forEach((obj) => {
+        obj.set({
+          evented: true,
+          perPixelTargetFind: true,
+          targetFindTolerance: 0,
+          hoverCursor: 'pointer',
+        });
+
+        const hoverColor = brightenHexColor(colorItem.color.value, 50);
+
+        obj.on('mouseover', () => {
+          objects.forEach((obj) => {
+            obj.set('fill', hoverColor);
+          });
+          canvas.requestRenderAll();
+        });
+
+        obj.on('mouseout', () => {
+          objects.forEach((obj) => {
+            obj.set('fill', colorItem.color.value);
+          });
+          canvas.requestRenderAll();
+        });
+
+        obj.on('mousedown', () => {
+          setCurrentColorElementId(colorItem.id);
+        });
+      });
+    });
+  }, [colorItemMap, currentLayer]);
 
   useEffect(() => {
     const wrapperEl = wrapperRef.current;
@@ -96,18 +107,9 @@ export default function ConfiguratorCanvas({
 
     loadSVGFromURL(template.svgUrl).then((svgData) => {
       const { options } = svgData;
-
       const objects = svgData.objects.filter((obj) => obj !== null);
 
-      // Group all SVG elements
-      const group = util.groupSVGElements(objects, options);
-
       objects.forEach((obj) => {
-        console.log(obj.get('id'), obj.get('type'));
-        if (['shadows', 'background'].includes(obj.get('id'))) {
-          console.log('    Skipping object');
-          return;
-        }
         obj.set({
           selectable: false,
           evented: false,
@@ -122,10 +124,16 @@ export default function ConfiguratorCanvas({
         initCanvas.add(obj);
       });
 
-      setFabricObjects(objects);
+      const colorItemMap = getColorItemMap(template, objects);
+      setColorItemMap(colorItemMap);
 
       // Calculate scale to fit the canvas viewport
-      const bounds = group.getBoundingRect();
+      const bounds = {
+        width: options.width,
+        height: options.height,
+        left: 0,
+        top: 0,
+      };
 
       const scaleX = initCanvas.getWidth()! / bounds.width;
       const scaleY = initCanvas.getHeight()! / bounds.height;
@@ -151,6 +159,51 @@ export default function ConfiguratorCanvas({
             fill: assignedColorItem.color.value,
           });
         }
+      });
+
+      cloneAllObjectsFromColorItemMap(
+        filterMap(
+          colorItemMap,
+          (colorItem) => !['Selle'].includes(colorItem.id)
+        )
+      ).then((clonedObjects) => {
+        FabricImage.fromURL(MXlabLogo).then((img) => {
+          const clipGroup = new Group(clonedObjects);
+          // clipGroup.getObjects().forEach((obj) => {
+          clipGroup.set({
+            absolutePositioned: true,
+            selectable: false,
+            evented: false,
+            hasControls: false,
+            hasBorders: false,
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockRotation: true,
+            visible: true,
+            opacity: 0,
+          });
+          // });
+
+          initCanvas.add(clipGroup);
+          initCanvas.sendObjectToBack(clipGroup);
+
+          img.set({
+            absolutePositioned: true,
+            clipPath: clipGroup,
+            left: 0,
+            top: -50,
+          });
+          initCanvas.add(img);
+          initCanvas.bringObjectToFront(img);
+          initCanvas.requestRenderAll();
+
+          initCanvas.on('object:added', () => {
+            // Ensure the MXlab logo stays on top
+            initCanvas.bringObjectToFront(img);
+          });
+        });
       });
 
       initCanvas.requestRenderAll();
@@ -236,16 +289,6 @@ export default function ConfiguratorCanvas({
       isPanning = false;
       initCanvas.selection = true; // Re-enable selection
     });
-
-    // FabricImage.fromURL(MXlabLogo).then((img) => {
-    //   img.set({
-    //     left: 0,
-    //     top: -50,
-    //   });
-    //   initCanvas.add(img);
-    //   initCanvas.bringObjectToFront(img);
-    //   initCanvas.requestRenderAll();
-    // });
 
     initCanvas.renderAll();
     setCanvas(initCanvas);

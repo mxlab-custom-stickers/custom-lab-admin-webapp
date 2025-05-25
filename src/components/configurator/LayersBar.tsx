@@ -1,5 +1,5 @@
+import LayerIcon from '@/components/configurator/LayerIcon.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
-import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { cn } from '@/lib/utils.ts';
 import * as React from 'react';
 
@@ -9,19 +9,13 @@ export default function LayersBar({ className, ...props }: LayerBarProps) {
   const {
     state: {
       template: { layers },
-      currentLayer,
     },
-    setCurrentLayer,
+    currentLayer,
+    setCurrentLayerId,
   } = useConfiguratorContext();
 
-  const templateEditorContext = useOptionalTemplateEditorContext();
-
   function handleLayerClick(layerId: string) {
-    if (templateEditorContext) {
-      templateEditorContext.setCurrentLayer(layerId);
-    } else {
-      setCurrentLayer(layerId);
-    }
+    setCurrentLayerId(layerId);
   }
 
   return (
@@ -36,12 +30,13 @@ export default function LayersBar({ className, ...props }: LayerBarProps) {
         <div
           key={layer.id}
           className={cn(
-            'hover:border-primary grid h-10 cursor-pointer place-items-center rounded-md border border-transparent bg-gray-200 px-3',
+            'hover:border-primary flex h-10 cursor-pointer items-center justify-center rounded-md border border-transparent bg-gray-200 px-3',
             { 'border-primary bg-gray-300': currentLayer?.id === layer.id }
           )}
           onClick={() => handleLayerClick(layer.id)}
         >
-          {layer.name}
+          <LayerIcon className="mr-2" type={layer.type} size={18} />
+          <span>{layer.name}</span>
         </div>
       ))}
     </div>
