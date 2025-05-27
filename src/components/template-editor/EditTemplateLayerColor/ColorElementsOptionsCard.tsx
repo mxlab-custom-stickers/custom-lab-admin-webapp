@@ -40,9 +40,15 @@ export default function ColorElementsOptionsCard({
   function validate() {
     if (!currentTemplateLayer) return;
 
+    let colorElements = selectedSvgLayers.map(svgLayerToColorElement);
+    // If there is only one group, flatten it to its subColorElements
+    if (colorElements.length === 1 && colorElements[0].type === 'group') {
+      colorElements = colorElements[0].subColorElements;
+    }
+
     updateLayer({
       ...currentTemplateLayer,
-      colorElements: selectedSvgLayers.map(svgLayerToColorElement),
+      colorElements,
     });
     setShowDialog(false);
   }

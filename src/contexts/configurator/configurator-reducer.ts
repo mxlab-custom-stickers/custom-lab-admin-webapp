@@ -20,9 +20,6 @@ export function configuratorReducer(
     case 'SET_CANVAS': {
       return { ...state, canvas: action.payload };
     }
-    case 'SET_COLOR_ITEM_MAP': {
-      return { ...state, colorItemMap: action.payload };
-    }
     default: {
       return state;
     }

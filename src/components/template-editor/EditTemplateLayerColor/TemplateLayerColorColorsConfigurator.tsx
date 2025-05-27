@@ -18,7 +18,10 @@ import { Color, ColorPalette } from '@/models/color';
 import { TemplateLayerColor } from '@/models/template.ts';
 import React, { useEffect, useState } from 'react';
 
-export type ColorsConfiguratorState = TemplateLayerColor['config'];
+export type ColorsConfiguratorState = Pick<
+  TemplateLayerColor['config'],
+  'availableColors' | 'columns' | 'space'
+>;
 
 type TemplateLayerColorColorsConfiguratorProps =
   React.ComponentPropsWithoutRef<'div'> & {

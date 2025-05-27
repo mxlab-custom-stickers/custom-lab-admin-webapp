@@ -1,5 +1,5 @@
-import { ColorItem, Template } from '@/models/template.ts';
-import { Canvas, FabricObject } from 'fabric';
+import { ColorElement, Template } from '@/models/template.ts';
+import { Canvas } from 'fabric';
 
 export type ConfiguratorState = {
   template: Template;
@@ -7,12 +7,17 @@ export type ConfiguratorState = {
   currentColorElementId: string | undefined;
 
   canvas?: Canvas;
-  colorItemMap: Map<ColorItem, FabricObject[]>;
 };
 
 export type ConfiguratorAction =
   | { type: 'SET_TEMPLATE'; payload: Template }
   | { type: 'SET_CURRENT_LAYER_ID'; payload: string | undefined }
   | { type: 'SET_CURRENT_COLOR_ELEMENT_ID'; payload: string | undefined }
-  | { type: 'SET_CANVAS'; payload: Canvas }
-  | { type: 'SET_COLOR_ITEM_MAP'; payload: Map<ColorItem, FabricObject[]> };
+  | { type: 'SET_CANVAS'; payload: Canvas };
+
+export type CurrentColorElement =
+  | ColorElement
+  | { id: 'color-palette'; type: 'color-palette'; parentId: undefined }
+  | undefined;
+
+export type CurrentColorElementType = ColorElement['type'] | 'color-palette';

@@ -1,4 +1,5 @@
 import { Color } from '@/models/color.ts';
+import { FabricObject } from 'fabric';
 
 export interface Template {
   appId: string;
@@ -60,6 +61,8 @@ export interface ColorGroup extends ColorElementBase {
 export interface ColorItem extends ColorElementBase {
   type: 'item';
   color: Color;
+
+  fabricObjects?: FabricObject[];
 }
 
 export type ColorElement = ColorGroup | ColorItem;
@@ -73,5 +76,7 @@ export interface TemplateLayerColor extends TemplateLayerBase {
     availableColors: Color[];
     columns: number;
     space: number;
+    enableColorPalette: boolean;
+    enableFocus: boolean;
   };
 }

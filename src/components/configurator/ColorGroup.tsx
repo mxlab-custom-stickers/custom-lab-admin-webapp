@@ -10,7 +10,7 @@ export default function ColorGroupComponent({
   className,
   ...props
 }: ColorGroupComponentProps) {
-  const { currentColorElement, setCurrentColorElementId } =
+  const { currentColorElement, setCurrentColorElementId, updateColorElement } =
     useConfiguratorContext();
 
   const colorGroup =
@@ -21,6 +21,7 @@ export default function ColorGroupComponent({
       <InvisibleInput
         className="mb-3 !text-lg font-semibold"
         value={colorGroup.name}
+        onSubmit={(value) => updateColorElement({ ...colorGroup, name: value })}
       />
       <ColorElementList
         colorElements={colorGroup.subColorElements}

@@ -31,12 +31,12 @@ export default function LayersBar({ className, ...props }: LayerBarProps) {
           key={layer.id}
           className={cn(
             'hover:border-primary flex h-10 cursor-pointer items-center justify-center rounded-md border border-transparent bg-gray-200 px-3',
-            { 'border-primary bg-gray-300': currentLayer?.id === layer.id }
+            { 'border-gray-400/75 bg-gray-300': currentLayer?.id === layer.id }
           )}
           onClick={() => handleLayerClick(layer.id)}
         >
-          <LayerIcon className="mr-2" type={layer.type} size={18} />
-          <span>{layer.name}</span>
+          <LayerIcon className="mr-2" type={layer.type} size={16} />
+          <span className="text-sm">{layer.name}</span>
         </div>
       ))}
     </div>

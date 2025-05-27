@@ -1,81 +1,67 @@
-import { getAllColorItemsFromTemplate } from '@/lib/configurator.ts';
-import { ColorItem, Template } from '@/models/template.ts';
-import { FabricObject, Group } from 'fabric';
+import {
+  ColorElement,
+  ColorItem,
+  TemplateLayerColor,
+} from '@/models/template.ts';
+import { FabricObject } from 'fabric';
 
 /**
- * Filters a list of FabricObjects to include only those whose `id` matches
- * one of the specified group IDs.
+ * Recursively updates ColorItems in a ColorElement tree by assigning matching FabricObjects
+ * based on their ID.
  *
- * @param fabricObjects - An array of FabricObject instances parsed from an SVG.
- * @param ids - An array of `id` strings to match against the FabricObjects.
- * @returns An array of FabricObjects whose `id` property matches any of the provided IDs.
+ * @param elements - An array of ColorElements (ColorItems or ColorGroups)
+ * @param fabricObjects - Flat array of FabricObjects to associate by ID
+ * @returns A new array of ColorElements with updated ColorItems
  */
-export function getFabricObjectsByIds(
-  fabricObjects: FabricObject[],
-  ids: string[]
-): FabricObject[] {
-  const idSet = new Set(ids);
+function assignFabricObjectsToColorElements(
+  elements: ColorElement[],
+  fabricObjects: FabricObject[]
+): ColorElement[] {
+  return elements.map((element) => {
+    if (element.type === 'group') {
+      return {
+        ...element,
+        subColorElements: assignFabricObjectsToColorElements(
+          element.subColorElements,
+          fabricObjects
+        ),
+      };
+    }
 
-  return fabricObjects.filter((obj) => {
-    const id = obj.get('id');
-    return typeof id === 'string' && idSet.has(id);
-  });
-}
-
-export function getColorItemMap(
-  template: Template,
-  objects: FabricObject[]
-): Map<ColorItem, FabricObject[]> {
-  const colorItemMap = new Map<ColorItem, FabricObject[]>();
-
-  // Only include SVG shape objects (e.g., path, rect, etc.)
-  const shapeObjects = objects.filter(isSvgShape);
-
-  // Collect all color items from the template
-  const colorItems = getAllColorItemsFromTemplate(template);
-
-  // Associate each ColorItem with its corresponding FabricObjects
-  colorItems.forEach((colorItem) => {
-    const matchingShapes = shapeObjects.filter(
-      (obj) => obj.get('id') === colorItem.id
+    const matchingObjects = fabricObjects.filter(
+      (obj) => obj.get('id') === element.id
     );
-    if (matchingShapes.length) {
-      colorItemMap.set(colorItem, matchingShapes);
-    }
-  });
 
-  return colorItemMap;
+    return {
+      ...element,
+      fabricObjects: matchingObjects,
+    };
+  });
 }
 
 /**
- * Groups FabricObjects that share the same 'id' property into Group instances,
- * and sets the group's 'id' property to that shared id.
+ * Populates all ColorItems in a TemplateLayerColor with their corresponding FabricObjects.
+ * This works recursively for nested ColorGroups.
  *
- * @param objects - Array of FabricObjects to group.
- * @returns Array of Group, each grouping objects with the same id and carrying that id.
+ * @param layer - A TemplateLayerColor object containing nested ColorElements
+ * @param fabricObjects - An array of FabricObjects to associate with ColorItems
+ * @returns A new TemplateLayerColor with ColorItems enriched with their FabricObjects
  */
-export function groupObjectsById(objects: FabricObject[]): Group[] {
-  const groupsMap = new Map<string, FabricObject[]>();
+export function assignFabricObjectsToColorItemsInLayer(
+  layer: TemplateLayerColor,
+  fabricObjects: FabricObject[]
+): TemplateLayerColor {
+  const shapeObjects = fabricObjects.filter(isSvgShape);
 
-  for (const obj of objects) {
-    const id = obj.get('id');
-    if (!id) continue;
+  const updatedColorElements = assignFabricObjectsToColorElements(
+    layer.colorElements,
+    shapeObjects
+  );
 
-    if (!groupsMap.has(id)) {
-      groupsMap.set(id, []);
-    }
-    groupsMap.get(id)!.push(obj);
-  }
-
-  const groups: Group[] = [];
-
-  for (const [id, objs] of groupsMap.entries()) {
-    const group = new Group(objs);
-    group.set('id', id);
-    groups.push(group);
-  }
-
-  return groups;
+  return {
+    ...layer,
+    colorElements: updatedColorElements,
+  };
 }
 
 /**

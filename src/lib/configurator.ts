@@ -6,7 +6,6 @@ import {
   Template,
   TemplateLayerColor,
 } from '@/models/template.ts';
-import { FabricObject } from 'fabric';
 
 export function getAllColorGroupColors(colorGroup: ColorGroup): Color[] {
   return colorGroup.subColorElements.reduce<Color[]>((acc, child) => {
@@ -44,7 +43,9 @@ export function updateColorElementById(
   updateFn: (element: ColorElement) => ColorElement
 ): ColorElement[] {
   return elements.map((element) => {
-    if (element.type === 'group') {
+    if (element.id === id) {
+      return updateFn(element);
+    } else if (element.type === 'group') {
       return {
         ...element,
         subColorElements: updateColorElementById(
@@ -54,8 +55,7 @@ export function updateColorElementById(
         ),
       };
     }
-
-    return element.id === id ? updateFn(element) : element;
+    return element;
   });
 }
 
@@ -92,31 +92,36 @@ export function updateColorElementInTemplate(
 }
 
 /**
- * Updates a ColorItem in the ColorItem-to-FabricObject[] map.
+ * Updates the specified ColorItems in a TemplateLayerColor.
  *
- * @param colorItemMap - The current Map of ColorItems to FabricObject arrays
- * @param updatedElement - The updated ColorElement
- * @returns A new Map with the ColorItem key updated (if applicable)
+ * @param layer - The original TemplateLayerColor
+ * @param updatedItems - Array of ColorItem instances with updated values
+ * @returns A new TemplateLayerColor with updated color items
  */
-export function updateColorItemMap(
-  colorItemMap: Map<ColorItem, FabricObject[]>,
-  updatedElement: ColorElement
-): Map<ColorItem, FabricObject[]> {
-  if (updatedElement.type !== 'item') {
-    return colorItemMap;
-  }
+export function updateColorItemsInLayer(
+  layer: TemplateLayerColor,
+  updatedItems: ColorItem[]
+): TemplateLayerColor {
+  const updatedIds = new Set(updatedItems.map((item) => item.id));
 
-  const newMap = new Map<ColorItem, FabricObject[]>();
+  const updateElements = (elements: ColorElement[]): ColorElement[] =>
+    elements.map((el) => {
+      if (el.type === 'item' && updatedIds.has(el.id)) {
+        const updated = updatedItems.find((item) => item.id === el.id);
+        return updated ?? el;
+      } else if (el.type === 'group') {
+        return {
+          ...el,
+          subColorElements: updateElements(el.subColorElements),
+        };
+      }
+      return el;
+    });
 
-  for (const [item, objects] of colorItemMap.entries()) {
-    if (item.id === updatedElement.id) {
-      newMap.set(updatedElement, objects); // replace key with updated item
-    } else {
-      newMap.set(item, objects);
-    }
-  }
-
-  return newMap;
+  return {
+    ...layer,
+    colorElements: updateElements(layer.colorElements),
+  };
 }
 
 /**
@@ -146,4 +151,74 @@ export function getAllColorItemsFromTemplate(template: Template): ColorItem[] {
   return template.layers
     .filter((layer): layer is TemplateLayerColor => layer.type === 'color')
     .flatMap((layer) => collectColorItems(layer.colorElements));
+}
+
+/**
+ * Recursively collects all ColorItem elements from a TemplateLayerColor.
+ *
+ * @param layer - The TemplateLayerColor to extract ColorItems from
+ * @returns An array of ColorItem objects found in the layer
+ */
+export function getAllColorItemsFromLayer(
+  layer: TemplateLayerColor
+): ColorItem[] {
+  return collectColorItems(layer.colorElements);
+}
+
+/**
+ * Returns all unique colors used in a TemplateLayerColor.
+ * Recursively traverses the color elements.
+ *
+ * @param layer - The TemplateLayerColor to extract colors from
+ * @returns An array of unique Color objects
+ */
+export function getUniqueColorsFromLayer(layer: TemplateLayerColor): Color[] {
+  const colorMap = new Map<string, Color>();
+
+  const collectColors = (elements: typeof layer.colorElements) => {
+    for (const element of elements) {
+      if (element.type === 'item') {
+        const key = element.color.value.toLowerCase();
+        if (!colorMap.has(key)) {
+          colorMap.set(key, element.color);
+        }
+      } else if (element.type === 'group') {
+        collectColors(element.subColorElements);
+      }
+    }
+  };
+
+  collectColors(layer.colorElements);
+
+  return Array.from(colorMap.values());
+}
+
+/**
+ * Recursively collects all ColorItems from a layer that match the given color.
+ *
+ * @param layer - The TemplateLayerColor to search within
+ * @param colorValue - The hex color string to match (e.g., "#FFFFFF")
+ * @returns An array of matching ColorItem objects
+ */
+export function getColorItemsByColor(
+  layer: TemplateLayerColor,
+  colorValue: string
+): ColorItem[] {
+  const result: ColorItem[] = [];
+
+  const search = (elements: ColorElement[]) => {
+    for (const element of elements) {
+      if (element.type === 'item') {
+        if (element.color.value.toLowerCase() === colorValue.toLowerCase()) {
+          result.push(element);
+        }
+      } else if (element.type === 'group') {
+        search(element.subColorElements);
+      }
+    }
+  };
+
+  search(layer.colorElements);
+
+  return result;
 }

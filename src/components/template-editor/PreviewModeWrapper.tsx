@@ -15,7 +15,7 @@ export default function PreviewModeWrapper({
   return (
     <div
       className={cn(
-        'h-full w-full duration-200',
+        'h-full max-h-[calc(100svh-3.5rem-0.375rem-0.375rem)] w-full duration-200',
         {
           'max-w-full':
             previewMode === 'desktop' || previewMode === 'fullscreen',

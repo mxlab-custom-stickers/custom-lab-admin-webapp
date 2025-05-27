@@ -55,6 +55,7 @@ export default function ColorsOptionsCard({
     updateLayer({
       ...currentLayer,
       config: {
+        ...currentLayer.config,
         ...state,
       },
     });

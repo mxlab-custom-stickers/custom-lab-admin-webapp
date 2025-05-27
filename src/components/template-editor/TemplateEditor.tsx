@@ -26,7 +26,7 @@ export default function TemplateEditor() {
             <div className="grid h-full w-full place-items-center bg-gray-300 p-1.5">
               <PreviewModeWrapper className="@container overflow-hidden rounded-lg">
                 <div className="grid h-full grid-cols-[min-content_auto] grid-rows-[1fr_min-content] @max-[385px]:grid-cols-1">
-                  <ConfiguratorSidebar className="row-span-2 @max-[385px]:w-full" />
+                  <ConfiguratorSidebar className="row-span-2 h-full overflow-auto @max-[385px]:w-full" />
 
                   <div className="relative h-full w-full @max-[385px]:order-first">
                     <ConfiguratorCanvas wrapperClassName="absolute top-0 left-0 right-0 bottom-0 bg-white" />

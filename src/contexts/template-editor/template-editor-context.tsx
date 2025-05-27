@@ -7,6 +7,7 @@ import {
 import { COLOR_PALETTES_FIXTURE } from '@/fixtures/color-palettes.fixture.ts';
 import { COLORS_FIXTURE } from '@/fixtures/colors.fixture.ts';
 import * as firestore from '@/lib/firebase/firestore.ts';
+import { stripFabricObjectsFromTemplate } from '@/lib/template-editor.ts';
 import { Template, TemplateLayerColor } from '@/models/template.ts';
 import { isEqual } from 'lodash';
 import React, {
@@ -32,15 +33,15 @@ const TemplateEditorContext = createContext<{
 } | null>(null);
 
 export function TemplateEditorProvider({
-  template,
+  template: templateProp,
   children,
 }: {
   template: Template;
   children: React.ReactNode;
 }) {
   const [state, dispatch] = useReducer(templateEditorReducer, {
-    template,
-    currentLayerId: template.layers[0]?.id,
+    template: templateProp,
+    currentLayerId: templateProp.layers[0]?.id,
     isDirty: false,
     isSaving: false,
     previewMode: 'desktop',
@@ -51,7 +52,7 @@ export function TemplateEditorProvider({
   });
 
   const [lastSavedTemplateState, setLastSavedTemplateState] =
-    useState<Template>(template);
+    useState<Template>(templateProp);
   const isDirty = useMemo(
     () => !isEqual(state.template, lastSavedTemplateState),
     [state, lastSavedTemplateState]
@@ -65,7 +66,9 @@ export function TemplateEditorProvider({
   async function saveTemplateState() {
     if (!isDirty) return;
     dispatch({ type: 'SET_IS_SAVING', payload: true });
-    await firestore.updateTemplate(state.template);
+    await firestore.updateTemplate(
+      stripFabricObjectsFromTemplate(state.template)
+    );
     dispatch({ type: 'SET_IS_SAVING', payload: false });
     setLastSavedTemplateState(state.template);
   }
@@ -84,8 +87,8 @@ export function TemplateEditorProvider({
 
   function updateLayer(updates: TemplateLayerColor) {
     const updatedTemplate = {
-      ...template,
-      layers: template.layers.map((layer) =>
+      ...state.template,
+      layers: state.template.layers.map((layer) =>
         layer.id === updates.id ? updates : layer
       ),
     };

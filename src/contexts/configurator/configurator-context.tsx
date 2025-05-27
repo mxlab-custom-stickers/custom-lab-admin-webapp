@@ -2,20 +2,20 @@ import { configuratorReducer } from '@/contexts/configurator/configurator-reduce
 import {
   ConfiguratorAction,
   ConfiguratorState,
+  CurrentColorElement,
 } from '@/contexts/configurator/configurator-types.ts';
 import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import {
   findColorElementById,
+  getAllColorItemsFromLayer,
   updateColorElementInTemplate,
-  updateColorItemMap,
 } from '@/lib/configurator.ts';
 import {
   ColorElement,
-  ColorItem,
   Template,
   TemplateLayerColor,
 } from '@/models/template.ts';
-import { Canvas, FabricObject } from 'fabric';
+import { Canvas } from 'fabric';
 import React, {
   createContext,
   useContext,
@@ -30,14 +30,16 @@ export const ConfiguratorContext = createContext<{
 
   // FabricJS
   setCanvas: (canvas: Canvas) => void;
-  setColorItemMap: (colorItemMap: Map<ColorItem, FabricObject[]>) => void;
+
+  updateTemplate: (template: Template) => void;
 
   // Current layer
   currentLayer: TemplateLayerColor | undefined;
   setCurrentLayerId: (layerId: string | undefined) => void;
+  updateLayer: (layer: TemplateLayerColor) => void;
 
   // Current color element
-  currentColorElement: ColorElement | undefined;
+  currentColorElement: CurrentColorElement | undefined;
   setCurrentColorElementId: (currentColorElementId: string | undefined) => void;
   updateColorElement: (updatedElement: ColorElement) => void;
 } | null>(null);
@@ -68,16 +70,22 @@ export function ConfiguratorProvider({
     [state.template, state.currentLayerId]
   );
 
-  const currentColorElement = useMemo(
-    () =>
-      currentLayer && state.currentColorElementId
-        ? findColorElementById(
-            currentLayer.colorElements,
-            state.currentColorElementId
-          )
-        : undefined,
-    [currentLayer, state.currentColorElementId]
-  );
+  const currentColorElement: CurrentColorElement = useMemo(() => {
+    if (!currentLayer || !state.currentColorElementId) return undefined;
+
+    if (state.currentColorElementId === 'color-palette') {
+      return {
+        id: 'color-palette',
+        type: 'color-palette',
+        parentId: undefined,
+      };
+    }
+
+    return findColorElementById(
+      currentLayer.colorElements,
+      state.currentColorElementId
+    );
+  }, [currentLayer, state.currentColorElementId]);
 
   useEffect(() => {
     dispatch({ type: 'SET_TEMPLATE', payload: template });
@@ -87,11 +95,45 @@ export function ConfiguratorProvider({
     dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: currentLayerIdProp });
   }, [currentLayerIdProp]);
 
+  function updateTemplate(template: Template) {
+    dispatch({ type: 'SET_TEMPLATE', payload: template });
+  }
+
   function setCurrentLayerId(layerId: string | undefined) {
     if (templateEditorContext) {
       templateEditorContext.setCurrentLayerId(layerId);
     } else {
       dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: layerId });
+    }
+  }
+
+  function updateLayer(layer: TemplateLayerColor) {
+    const updatedTemplate = {
+      ...state.template,
+      layers: state.template.layers.map((l) =>
+        l.id === layer.id ? { ...l, ...layer } : l
+      ),
+    };
+
+    if (layer.type === 'color') {
+      // Retrieve all color items from the layer that have a different fill color
+      const updatedColorItems = getAllColorItemsFromLayer(layer).filter(
+        (colorItem) =>
+          colorItem.color.value !== colorItem.fabricObjects?.[0]?.get('fill')
+      );
+
+      updatedColorItems.forEach((colorItem) => {
+        colorItem.fabricObjects?.forEach((obj) => {
+          obj.set('fill', colorItem.color.value);
+        });
+      });
+      state.canvas?.requestRenderAll();
+    }
+
+    if (templateEditorContext) {
+      templateEditorContext.updateTemplate(updatedTemplate);
+    } else {
+      dispatch({ type: 'SET_TEMPLATE', payload: updatedTemplate });
     }
   }
 
@@ -111,19 +153,14 @@ export function ConfiguratorProvider({
       updates
     );
 
-    if (updates.type === 'item') {
-      const updatedColorItemMap = updateColorItemMap(
-        state.colorItemMap,
-        updates
-      );
-
-      updatedColorItemMap.get(updates)?.forEach((obj) => {
-        obj.set({
-          fill: updates.color.value,
-        });
+    if (
+      updates.type === 'item' &&
+      updates.color.value !== updates.fabricObjects?.[0]?.get('fill')
+    ) {
+      updates.fabricObjects?.forEach((obj) => {
+        obj.set('fill', updates.color.value);
+        state.canvas?.requestRenderAll();
       });
-      state.canvas?.requestRenderAll();
-      dispatch({ type: 'SET_COLOR_ITEM_MAP', payload: updatedColorItemMap });
     }
 
     if (templateEditorContext) {
@@ -137,22 +174,19 @@ export function ConfiguratorProvider({
     dispatch({ type: 'SET_CANVAS', payload: canvas });
   }
 
-  function setColorItemMap(colorItemMap: Map<ColorItem, FabricObject[]>) {
-    dispatch({ type: 'SET_COLOR_ITEM_MAP', payload: colorItemMap });
-  }
-
   return (
     <ConfiguratorContext.Provider
       value={{
         state,
         dispatch,
+        updateTemplate,
         currentLayer,
+        updateLayer,
         setCurrentLayerId,
         currentColorElement,
         setCurrentColorElementId,
         updateColorElement,
         setCanvas,
-        setColorItemMap,
       }}
     >
       {children}

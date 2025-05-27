@@ -1,14 +1,13 @@
 import ColorElementList from '@/components/configurator/ColorElementList.tsx';
-import ColorGroup from '@/components/configurator/ColorGroup.tsx';
-import ColorPicker from '@/components/configurator/ColorPicker.tsx';
+import ColorPaletteCard from '@/components/configurator/ColorPaletteCard.tsx';
+import CurrentColorElement from '@/components/configurator/CurrentColorElement.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
+import { Separator } from '@/components/ui/separator.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { cn } from '@/lib/utils.ts';
-import { Color } from '@/models/color.ts';
 import * as React from 'react';
-import ColorItem from './ColorItem';
 
 type ConfiguratorSidebarProps = React.ComponentPropsWithoutRef<'div'>;
 
@@ -16,19 +15,14 @@ export default function ConfiguratorSidebar({
   className,
   ...props
 }: ConfiguratorSidebarProps) {
-  const {
-    currentLayer,
-    currentColorElement,
-    setCurrentColorElementId,
-    updateColorElement,
-  } = useConfiguratorContext();
+  const { currentLayer, currentColorElement, setCurrentColorElementId } =
+    useConfiguratorContext();
 
   const templateEditorContext = useOptionalTemplateEditorContext();
 
   function goBack() {
     if (!currentColorElement) return;
     const { parentId } = currentColorElement;
-    if (!parentId) return;
     setCurrentColorElementId(parentId);
   }
 
@@ -36,28 +30,38 @@ export default function ConfiguratorSidebar({
     if (!templateEditorContext) return;
     if (!currentLayer) return;
 
-    templateEditorContext.updateCurrentLayer({
+    templateEditorContext.updateLayer({
       ...currentLayer,
       name,
     });
-  }
-
-  function handleColorSelect(color: Color) {
-    if (!currentColorElement || currentColorElement.type !== 'item') return;
-    updateColorElement({ ...currentColorElement, color });
   }
 
   return (
     <div className={cn('w-64 border-r bg-gray-50 p-2', className)} {...props}>
       {currentLayer && !currentColorElement ? (
         <>
-          <div className="mb-2 flex items-center">
+          <div className="my-2 flex items-center">
             <InvisibleInput
               className="!text-lg font-semibold"
               value={currentLayer?.name}
               onSubmit={handleCurrentLayerNameChange}
             />
           </div>
+
+          <div>
+            <ColorPaletteCard
+              onClick={() => setCurrentColorElementId('color-palette')}
+            />
+            <div className="my-2 grid grid-cols-[40%_20%_40%] items-center px-3">
+              <Separator />
+              <span className="upercase text-center text-sm font-medium">
+                ou
+              </span>
+              <Separator />
+            </div>
+            <div className="p-2 text-xs">Modifie les couleurs par éléments</div>
+          </div>
+
           <ColorElementList
             colorElements={currentLayer.colorElements}
             onColorElementClick={(colorElement) =>
@@ -71,18 +75,7 @@ export default function ConfiguratorSidebar({
         <BackButton className="mb-3" onClick={goBack} />
       ) : null}
 
-      <ColorGroup />
-      <ColorItem />
-      {currentLayer && currentColorElement?.type === 'item' ? (
-        <ColorPicker
-          className="mt-6"
-          colors={currentLayer.config.availableColors}
-          columns={currentLayer.config.columns}
-          space={currentLayer.config.space}
-          selectedColor={currentColorElement.color}
-          onSelectColor={handleColorSelect}
-        />
-      ) : null}
+      <CurrentColorElement />
     </div>
   );
 }

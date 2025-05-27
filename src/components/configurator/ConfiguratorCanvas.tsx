@@ -1,16 +1,12 @@
-import MXlabLogo from '@/assets/mxlab.png';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { brightenHexColor } from '@/lib/colors.ts';
 import {
-  findColorElementById,
+  collectColorItems,
   getAllColorItemsFromTemplate,
 } from '@/lib/configurator.ts';
-import {
-  cloneAllObjectsFromColorItemMap,
-  getColorItemMap,
-} from '@/lib/fabric.ts';
-import { cn, filterMap } from '@/lib/utils.ts';
-import { Canvas, FabricImage, Group, loadSVGFromURL, Point } from 'fabric';
+import { assignFabricObjectsToColorItemsInLayer } from '@/lib/fabric.ts';
+import { cn } from '@/lib/utils.ts';
+import { Canvas, loadSVGFromURL, Point } from 'fabric';
 import { useEffect, useRef } from 'react';
 
 type ConfiguratorCanvasProps = {
@@ -21,9 +17,9 @@ export default function ConfiguratorCanvas({
   wrapperClassName,
 }: ConfiguratorCanvasProps) {
   const {
-    state: { template, canvas, colorItemMap },
+    state: { template, canvas },
+    updateTemplate,
     setCanvas,
-    setColorItemMap,
     currentLayer,
     setCurrentColorElementId,
   } = useConfiguratorContext();
@@ -34,7 +30,11 @@ export default function ConfiguratorCanvas({
   useEffect(() => {
     if (!currentLayer || !canvas) return;
 
-    colorItemMap.forEach((objects) => {
+    // Reset all color items to be non-interactive
+    getAllColorItemsFromTemplate(template).forEach((colorItem) => {
+      const objects = colorItem?.fabricObjects;
+      if (!objects || objects.length === 0) return;
+
       objects.forEach((obj) => {
         obj.set({
           evented: false,
@@ -46,11 +46,11 @@ export default function ConfiguratorCanvas({
       });
     });
 
-    filterMap(
-      colorItemMap,
-      (colorItem) =>
-        !!findColorElementById(currentLayer.colorElements, colorItem.id)
-    ).forEach((objects, colorItem) => {
+    // Make color items in the current layer interactive
+    collectColorItems(currentLayer.colorElements).forEach((colorItem) => {
+      const objects = colorItem?.fabricObjects;
+      if (!objects || objects.length === 0) return;
+
       objects.forEach((obj) => {
         obj.set({
           evented: true,
@@ -60,17 +60,16 @@ export default function ConfiguratorCanvas({
         });
 
         const hoverColor = brightenHexColor(colorItem.color.value, 50);
-
         obj.on('mouseover', () => {
-          objects.forEach((obj) => {
-            obj.set('fill', hoverColor);
+          objects.forEach((o) => {
+            o.set('fill', hoverColor);
           });
           canvas.requestRenderAll();
         });
 
         obj.on('mouseout', () => {
-          objects.forEach((obj) => {
-            obj.set('fill', colorItem.color.value);
+          objects.forEach((o) => {
+            o.set('fill', colorItem.color.value);
           });
           canvas.requestRenderAll();
         });
@@ -80,7 +79,7 @@ export default function ConfiguratorCanvas({
         });
       });
     });
-  }, [colorItemMap, currentLayer]);
+  }, [template.layers, currentLayer]);
 
   useEffect(() => {
     const wrapperEl = wrapperRef.current;
@@ -124,9 +123,6 @@ export default function ConfiguratorCanvas({
         initCanvas.add(obj);
       });
 
-      const colorItemMap = getColorItemMap(template, objects);
-      setColorItemMap(colorItemMap);
-
       // Calculate scale to fit the canvas viewport
       const bounds = {
         width: options.width,
@@ -149,60 +145,71 @@ export default function ConfiguratorCanvas({
         initCanvas.getHeight()! / 2 - (bounds.top + bounds.height / 2) * scale;
       initCanvas.relativePan(new Point(dx, dy));
 
-      const colorItems = getAllColorItemsFromTemplate(template);
-      objects.forEach((obj) => {
-        const assignedColorItem = colorItems.find(
-          (ci) => ci.id === obj.get('id')
-        );
-        if (assignedColorItem) {
-          obj.set({
-            fill: assignedColorItem.color.value,
-          });
-        }
-      });
+      // cloneAllObjectsFromColorItemMap(
+      //   filterMap(
+      //     colorItemMap,
+      //     (colorItem) => !['Selle'].includes(colorItem.id)
+      //   )
+      // ).then((clonedObjects) => {
+      //   FabricImage.fromURL(MXlabLogo).then((img) => {
+      //     const clipGroup = new Group(clonedObjects);
+      //     clipGroup.set({
+      //       absolutePositioned: true,
+      //       selectable: false,
+      //       evented: false,
+      //       hasControls: false,
+      //       hasBorders: false,
+      //       lockMovementX: true,
+      //       lockMovementY: true,
+      //       lockScalingX: true,
+      //       lockScalingY: true,
+      //       lockRotation: true,
+      //       visible: true,
+      //       opacity: 0,
+      //     });
+      //
+      //     initCanvas.add(clipGroup);
+      //     initCanvas.sendObjectToBack(clipGroup);
+      //
+      //     img.set({
+      //       absolutePositioned: true,
+      //       clipPath: clipGroup,
+      //       left: 0,
+      //       top: -50,
+      //     });
+      //     initCanvas.add(img);
+      //     initCanvas.bringObjectToFront(img);
+      //     initCanvas.requestRenderAll();
+      //
+      //     initCanvas.on('object:added', () => {
+      //       // Ensure the MXlab logo stays on top
+      //       initCanvas.bringObjectToFront(img);
+      //     });
+      //   });
+      // });
 
-      cloneAllObjectsFromColorItemMap(
-        filterMap(
-          colorItemMap,
-          (colorItem) => !['Selle'].includes(colorItem.id)
-        )
-      ).then((clonedObjects) => {
-        FabricImage.fromURL(MXlabLogo).then((img) => {
-          const clipGroup = new Group(clonedObjects);
-          // clipGroup.getObjects().forEach((obj) => {
-          clipGroup.set({
-            absolutePositioned: true,
-            selectable: false,
-            evented: false,
-            hasControls: false,
-            hasBorders: false,
-            lockMovementX: true,
-            lockMovementY: true,
-            lockScalingX: true,
-            lockScalingY: true,
-            lockRotation: true,
-            visible: true,
-            opacity: 0,
-          });
-          // });
+      const updatedTemplateColorLayers = template.layers
+        .filter((layer) => layer.type === 'color')
+        .map((layer) => assignFabricObjectsToColorItemsInLayer(layer, objects));
 
-          initCanvas.add(clipGroup);
-          initCanvas.sendObjectToBack(clipGroup);
+      const updatedTemplate = {
+        ...template,
+        layers: template.layers.map((layer) => {
+          const updated = updatedTemplateColorLayers.find(
+            (l) => l.id === layer.id
+          );
+          return updated ?? layer;
+        }),
+      };
 
-          img.set({
-            absolutePositioned: true,
-            clipPath: clipGroup,
-            left: 0,
-            top: -50,
-          });
-          initCanvas.add(img);
-          initCanvas.bringObjectToFront(img);
-          initCanvas.requestRenderAll();
+      updateTemplate(updatedTemplate);
 
-          initCanvas.on('object:added', () => {
-            // Ensure the MXlab logo stays on top
-            initCanvas.bringObjectToFront(img);
-          });
+      getAllColorItemsFromTemplate(updatedTemplate).forEach((colorItem) => {
+        const objects = colorItem?.fabricObjects;
+        if (!objects || objects.length === 0) return;
+
+        objects.forEach((obj) => {
+          obj.set('fill', colorItem.color.value);
         });
       });
 

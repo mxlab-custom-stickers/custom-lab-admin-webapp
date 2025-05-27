@@ -1,4 +1,5 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
+import SidebarCard from '@/components/configurator/SidebarCard.tsx';
 import { getAllColorGroupColors } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
 import { ColorGroup } from '@/models/template.ts';
@@ -12,7 +13,6 @@ type ColorGroupCardProps = React.ComponentPropsWithoutRef<'div'> & {
 export default function ColorGroupCard({
   className,
   colorGroup,
-  onClick,
   ...props
 }: ColorGroupCardProps) {
   const colors = useMemo(
@@ -21,18 +21,9 @@ export default function ColorGroupCard({
   );
 
   return (
-    <div
-      className={cn(
-        'rounded p-2',
-        { 'cursor-pointer hover:bg-gray-200/50': !!onClick },
-        className
-      )}
-      onClick={onClick}
-      {...props}
-    >
+    <SidebarCard className={cn(className)} {...props}>
       <div className="mb-2 text-sm">{colorGroup.name}</div>
-
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1.5">
         {colors.map((color, index) => (
           <ColorChip
             key={color.id ? `${color.id}-${index}` : index}
@@ -41,6 +32,6 @@ export default function ColorGroupCard({
           />
         ))}
       </div>
-    </div>
+    </SidebarCard>
   );
 }
