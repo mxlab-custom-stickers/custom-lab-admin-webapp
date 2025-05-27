@@ -1,5 +1,5 @@
 import ConfiguratorCanvas from '@/components/configurator/ConfiguratorCanvas.tsx';
-import ConfiguratorSidebar from '@/components/configurator/ConfiguratorSidebar.tsx';
+import ConfiguratorSidebar from '@/components/configurator/ConfiguratorSidebar/ConfiguratorSidebar.tsx';
 import ConfiguratorLayersBar from '@/components/configurator/LayersBar.tsx';
 import TemplateEditorHeader from '@/components/template-editor/TemplateEditorHeader.tsx';
 import TemplateEditorSidebar from '@/components/template-editor/TemplateEditorSidebar.tsx';

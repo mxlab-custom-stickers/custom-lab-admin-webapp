@@ -8,7 +8,8 @@ import { COLOR_PALETTES_FIXTURE } from '@/fixtures/color-palettes.fixture.ts';
 import { COLORS_FIXTURE } from '@/fixtures/colors.fixture.ts';
 import * as firestore from '@/lib/firebase/firestore.ts';
 import { stripFabricObjectsFromTemplate } from '@/lib/template-editor.ts';
-import { Template, TemplateLayerColor } from '@/models/template.ts';
+import { Template, TemplateLayer } from '@/models/template.ts';
+import { Canvas } from 'fabric';
 import { isEqual } from 'lodash';
 import React, {
   createContext,
@@ -23,10 +24,11 @@ const TemplateEditorContext = createContext<{
   dispatch: React.Dispatch<TemplateEditorAction>;
 
   updateTemplate: (updates: Template) => void;
+  setCanvas: (canvas: Canvas) => void;
 
-  currentLayer: TemplateLayerColor | undefined;
+  currentLayer: TemplateLayer | undefined;
   setCurrentLayerId: (layerId: string | undefined) => void;
-  updateLayer: (updates: TemplateLayerColor) => void;
+  updateLayer: (updates: TemplateLayer) => void;
 
   setPreviewMode: (previewMode: PreviewMode) => void;
   saveTemplateState: () => void;
@@ -41,6 +43,7 @@ export function TemplateEditorProvider({
 }) {
   const [state, dispatch] = useReducer(templateEditorReducer, {
     template: templateProp,
+    canvas: undefined,
     currentLayerId: templateProp.layers[0]?.id,
     isDirty: false,
     isSaving: false,
@@ -89,7 +92,11 @@ export function TemplateEditorProvider({
     dispatch({ type: 'UPDATE_TEMPLATE', payload: updates });
   }
 
-  function updateLayer(updates: TemplateLayerColor) {
+  function setCanvas(canvas: Canvas) {
+    dispatch({ type: 'SET_CANVAS', payload: canvas });
+  }
+
+  function updateLayer(updates: TemplateLayer) {
     const updatedTemplate = {
       ...state.template,
       layers: state.template.layers.map((layer) =>
@@ -108,6 +115,7 @@ export function TemplateEditorProvider({
         currentLayer,
         setCurrentLayerId,
         setPreviewMode,
+        setCanvas,
         updateTemplate,
         updateLayer,
         saveTemplateState,

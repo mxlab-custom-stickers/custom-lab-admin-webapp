@@ -11,6 +11,9 @@ export function templateEditorReducer(
     case 'UPDATE_TEMPLATE': {
       return { ...state, template: action.payload };
     }
+    case 'SET_CANVAS': {
+      return { ...state, canvas: action.payload };
+    }
     case 'SET_CURRENT_LAYER_ID': {
       return { ...state, currentLayerId: action.payload };
     }

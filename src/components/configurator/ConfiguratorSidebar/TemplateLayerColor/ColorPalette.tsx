@@ -1,11 +1,11 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
-import ColorPicker from '@/components/configurator/ColorPicker.tsx';
+import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPicker.tsx';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
+} from '@/components/ui/accordion.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import {
   getColorItemsByColor,
@@ -19,7 +19,11 @@ export default function ColorPalette() {
   const { currentLayer, currentColorElement, updateLayer } =
     useConfiguratorContext();
 
-  if (!currentLayer || !(currentColorElement?.type === 'color-palette')) {
+  if (
+    !currentLayer ||
+    currentLayer.type !== 'color' ||
+    !(currentColorElement?.type === 'color-palette')
+  ) {
     return null;
   }
 
@@ -29,7 +33,7 @@ export default function ColorPalette() {
   );
 
   function handleColorSelect(oldColor: Color, newColor: Color) {
-    if (!currentLayer) return;
+    if (!currentLayer || currentLayer.type !== 'color') return;
 
     const colorItemsToUpdate = getColorItemsByColor(
       currentLayer,

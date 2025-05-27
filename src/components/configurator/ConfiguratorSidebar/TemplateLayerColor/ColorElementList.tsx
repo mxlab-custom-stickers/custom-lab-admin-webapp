@@ -1,5 +1,6 @@
-import ColorGroupCard from '@/components/configurator/ColorGroupCard.tsx';
-import ColorItemCard from '@/components/configurator/ColorItemCard.tsx';
+import ColorGroupCard from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorGroupCard.tsx';
+import ColorItemCard from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorItemCard.tsx';
+import ColorItemsAccordion from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorItemsAccordion.tsx';
 import { cn } from '@/lib/utils.ts';
 import { ColorElement } from '@/models/template.ts';
 import React from 'react';
@@ -15,7 +16,13 @@ export default function ColorElementList({
   onColorElementClick,
   ...props
 }: ColorElementListProps) {
-  return (
+  const showColorItemsAccordion = colorElements.every(
+    (colorElement) => colorElement.type === 'item'
+  );
+
+  return showColorItemsAccordion ? (
+    <ColorItemsAccordion colorItems={colorElements} />
+  ) : (
     <div className={cn('flex flex-col gap-1.5', className)} {...props}>
       {colorElements
         .sort((a, b) => (a.name < b.name ? -1 : 1))

@@ -31,7 +31,7 @@ export default function TemplateLayerSelector({
     updateLayer,
   } = useTemplateEditorContext();
 
-  if (!currentLayer) return null;
+  if (!currentLayer || currentLayer.type !== 'color') return null;
 
   const {
     config: { focus },
@@ -40,7 +40,7 @@ export default function TemplateLayerSelector({
   const [open, setOpen] = useState<boolean>(false);
 
   function handleLayerSelect(layerId: string) {
-    if (!currentLayer) return;
+    if (!currentLayer || currentLayer.type !== 'color') return;
 
     const isLayerAlreadyPresent = focus.layerIdsToHide.includes(layerId);
     const updatedLayerIdsToHide = isLayerAlreadyPresent
@@ -68,7 +68,15 @@ export default function TemplateLayerSelector({
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          Sélectionne les calques
+          <span className="line-clamp-1">
+            {focus.layerIdsToHide.length
+              ? layers
+                  .filter((layer) => focus.layerIdsToHide.includes(layer.id))
+                  .map((layer) => layer.name)
+                  .join(', ')
+              : 'Sélectionne les calques'}
+          </span>
+
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>

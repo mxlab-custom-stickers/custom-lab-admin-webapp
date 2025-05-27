@@ -1,6 +1,6 @@
-import ColorGroup from '@/components/configurator/ColorGroup.tsx';
-import ColorItem from '@/components/configurator/ColorItem.tsx';
-import ColorPalette from '@/components/configurator/ColorPalette.tsx';
+import ColorGroup from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorGroup.tsx';
+import ColorItem from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorItem.tsx';
+import ColorPalette from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPalette.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { CurrentColorElementType } from '@/contexts/configurator/configurator-types.ts';
 import { ReactNode } from 'react';

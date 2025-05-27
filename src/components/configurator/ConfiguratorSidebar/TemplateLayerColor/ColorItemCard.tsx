@@ -1,5 +1,5 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
-import SidebarCard from '@/components/configurator/SidebarCard.tsx';
+import SidebarCard from '@/components/configurator/ConfiguratorSidebar/SidebarCard.tsx';
 import { cn } from '@/lib/utils.ts';
 import { ColorItem } from '@/models/template.ts';
 import * as React from 'react';

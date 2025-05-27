@@ -2,7 +2,6 @@ import { AppContext } from '@/contexts/app-context';
 import { getApps } from '@/lib/firebase/firestore.ts';
 import { App } from '@/models/settings.ts';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { useEffect, useState } from 'react';
 
 export const Route = createRootRoute({
@@ -38,7 +37,7 @@ function RootComponent() {
   return currentApp ? (
     <AppContext.Provider value={{ apps, currentApp, setCurrentApp }}>
       <Outlet />
-      <TanStackRouterDevtools />
+      {/*<TanStackRouterDevtools />*/}
     </AppContext.Provider>
   ) : (
     <div>Chargement...</div>

@@ -1,13 +1,10 @@
-import ColorElementsOptionsCard from '@/components/template-editor/EditTemplateLayerColor/ColorElementsOptionsCard.tsx';
-import ColorsOptionsCard from '@/components/template-editor/EditTemplateLayerColor/ColorsOptionsCard.tsx';
-import OtherOptionsCard from '@/components/template-editor/EditTemplateLayerColor/OtherOptionsCard.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 
-export default function EditTemplateLayerColorComponent() {
+export default function EditTemplateLayerImage() {
   const { currentLayer, updateLayer } = useTemplateEditorContext();
 
-  if (!currentLayer || currentLayer.type !== 'color') {
+  if (!currentLayer || currentLayer.type !== 'image') {
     return null; // Return null if the current layer is not an image layer
   }
 
@@ -23,10 +20,6 @@ export default function EditTemplateLayerColorComponent() {
         value={currentLayer?.name}
         onSubmit={updateCurrentLayerName}
       />
-
-      <ColorElementsOptionsCard />
-      <ColorsOptionsCard />
-      <OtherOptionsCard />
     </div>
   );
 }

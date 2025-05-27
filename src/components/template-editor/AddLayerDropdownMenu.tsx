@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import {
-  TemplateLayerColor,
+  TemplateLayer,
   TemplateLayerType,
   templateLayerTypes,
 } from '@/models/template.ts';
@@ -24,26 +24,48 @@ export default function AddLayerDropdownMenu() {
   } = useTemplateEditorContext();
 
   function handleLayerTypeSelect(layerType: TemplateLayerType) {
-    if (layerType !== 'color') return;
+    if (layerType !== 'color' && layerType !== 'image') return;
 
-    const newLayer: TemplateLayerColor = {
-      type: 'color',
-      id: `new-layer-${template.layers.length + 1}`,
-      name: 'Calque de couleur ' + (template.layers.length + 1),
-      order: template.layers.length + 1,
-      colorElements: [],
-      config: {
-        availableColors: [],
-        columns: 5,
-        space: 2,
-        enableColorPalette: false,
-        focus: {
-          enable: false,
-          message: 'Activer le focus',
-          layerIdsToHide: [],
-        },
-      },
-    };
+    let newLayer: TemplateLayer;
+
+    switch (layerType) {
+      case 'color': {
+        newLayer = {
+          type: 'color',
+          id: `color-layer-${template.layers.length + 1}`,
+          name: 'Calque de couleur ' + (template.layers.length + 1),
+          order: template.layers.length + 1,
+          colorElements: [],
+          config: {
+            availableColors: [],
+            columns: 5,
+            space: 2,
+            enableColorPalette: false,
+            focus: {
+              enable: false,
+              message: 'Activer le focus',
+              layerIdsToHide: [],
+            },
+          },
+        };
+        break;
+      }
+      case 'image': {
+        newLayer = {
+          type: 'image',
+          id: `image-layer-${template.layers.length + 1}`,
+          name: `Calque d'image ${template.layers.length + 1}`,
+          order: template.layers.length + 1,
+          images: [],
+          config: {
+            availableImages: [],
+            allowImport: true,
+            clipWithLayerId: null,
+          },
+        };
+        break;
+      }
+    }
 
     updateTemplate({ ...template, layers: [...template.layers, newLayer] });
     setCurrentLayerId(newLayer.id);

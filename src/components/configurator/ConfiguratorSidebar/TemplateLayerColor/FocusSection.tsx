@@ -8,22 +8,25 @@ import { useEffect } from 'react';
 export default function FocusSection() {
   const {
     state: {
-      canvas,
       template: { layers },
+      currentLayerId,
+      canvas,
     },
     currentLayer,
     updateLayer,
   } = useConfiguratorContext();
 
-  if (!currentLayer) return null;
+  if (!currentLayer || currentLayer.type !== 'color') return null;
 
   const {
     config: { focus },
   } = currentLayer;
 
   useEffect(() => {
-    focusLayer(false);
-  }, [currentLayer]);
+    return () => {
+      focusLayer(false);
+    };
+  }, [currentLayerId]);
 
   function focusLayer(isFocusing: boolean) {
     if (!canvas) return;
@@ -31,7 +34,7 @@ export default function FocusSection() {
     // Get all the fabric object ids from the layers to hide
     const ids = focus.layerIdsToHide
       .map((layerId) => layers.find((layer) => layer.id === layerId))
-      .filter((layer) => layer !== undefined)
+      .filter((layer) => layer !== undefined && layer.type === 'color')
       .map((layer) => getAllColorItemsFromLayer(layer))
       .flatMap((colorItems) => colorItems)
       .map((colorItem) => colorItem?.fabricObjects)
@@ -43,7 +46,8 @@ export default function FocusSection() {
   }
 
   function handleMessageChange(message: string) {
-    if (!currentLayer) return;
+    if (!currentLayer || currentLayer.type !== 'color') return;
+
     updateLayer({
       ...currentLayer,
       config: { ...currentLayer.config, focus: { ...focus, message } },
@@ -51,7 +55,7 @@ export default function FocusSection() {
   }
 
   return focus.enable ? (
-    <div key={currentLayer.id} className="flex items-center gap-2 p-2">
+    <div className="flex items-center gap-2 p-2">
       <Switch onCheckedChange={focusLayer} />
       <InvisibleInput
         className="p-1"

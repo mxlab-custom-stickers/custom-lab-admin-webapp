@@ -1,5 +1,5 @@
 import OptionsCard from '@/components/template-editor/EditTemplateLayerColor/OptionsCard.tsx';
-import SvgEditor from '@/components/template-editor/svg-editor/SvgEditor.tsx';
+import SvgEditor from '@/components/template-editor/SvgEditor/SvgEditor.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import {
@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
+import { assignFabricObjectsToColorItemsInLayer } from '@/lib/fabric.ts';
 import { svgLayerToColorElement } from '@/lib/template-editor.ts';
 import { cn } from '@/lib/utils.ts';
 import { SvgLayer } from '@/models/svg-editor.ts';
@@ -25,10 +26,13 @@ export default function ColorElementsOptionsCard({
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const {
-    state: { template },
+    state: { template, canvas },
     currentLayer: currentTemplateLayer,
     updateLayer,
   } = useTemplateEditorContext();
+
+  if (!currentTemplateLayer || currentTemplateLayer.type !== 'color')
+    return null;
 
   const initialSelectedLayerIds = useMemo(
     () => currentTemplateLayer?.colorElements.map((ce) => ce.id) || [],
@@ -38,7 +42,12 @@ export default function ColorElementsOptionsCard({
   const [selectedSvgLayers, setSelectedSvgLayers] = useState<SvgLayer[]>([]);
 
   function validate() {
-    if (!currentTemplateLayer) return;
+    if (
+      !currentTemplateLayer ||
+      currentTemplateLayer.type !== 'color' ||
+      !canvas
+    )
+      return;
 
     let colorElements = selectedSvgLayers.map(svgLayerToColorElement);
     // If there is only one group, flatten it to its subColorElements
@@ -46,10 +55,12 @@ export default function ColorElementsOptionsCard({
       colorElements = colorElements[0].subColorElements;
     }
 
-    updateLayer({
-      ...currentTemplateLayer,
-      colorElements,
-    });
+    const updatedLayer = assignFabricObjectsToColorItemsInLayer(
+      { ...currentTemplateLayer, colorElements },
+      canvas.getObjects()
+    );
+
+    updateLayer(updatedLayer);
     setShowDialog(false);
   }
 

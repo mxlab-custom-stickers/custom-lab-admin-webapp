@@ -1,4 +1,5 @@
 import { Color } from '@/models/color.ts';
+import { Image } from '@/models/image.ts';
 import { FabricObject } from 'fabric';
 
 export interface Template {
@@ -10,7 +11,7 @@ export interface Template {
   status: 'draft' | 'published' | 'archived';
 
   svgUrl: string;
-  layers: TemplateLayerColor[];
+  layers: TemplateLayer[];
 
   tags: string[];
   attributes: {
@@ -25,6 +26,7 @@ export interface Template {
 }
 
 export type TemplateLayerType = 'color' | 'image' | 'text' | 'background';
+export type TemplateLayer = TemplateLayerColor | TemplateLayerImage;
 
 export const templateLayerTypes: Record<TemplateLayerType, string> = {
   color: 'Couleur',
@@ -82,5 +84,20 @@ export interface TemplateLayerColor extends TemplateLayerBase {
       message: string;
       layerIdsToHide: string[];
     };
+  };
+}
+
+/**
+ * TemplateLayerImage
+ */
+export interface TemplateLayerImage extends TemplateLayerBase {
+  type: 'image';
+
+  images: Image[];
+
+  config: {
+    availableImages: { url: string }[];
+    allowImport: boolean;
+    clipWithLayerId: string | null; // Optional, used for clipping the image with another layer
   };
 }

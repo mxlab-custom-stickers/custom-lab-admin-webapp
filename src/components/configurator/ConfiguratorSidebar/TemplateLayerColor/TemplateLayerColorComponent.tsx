@@ -1,33 +1,22 @@
-import ColorElementList from '@/components/configurator/ColorElementList.tsx';
-import ColorPaletteCard from '@/components/configurator/ColorPaletteCard.tsx';
-import CurrentColorElement from '@/components/configurator/CurrentColorElement.tsx';
-import FocusSection from '@/components/configurator/FocusSection.tsx';
+import ColorElementList from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorElementList.tsx';
+import ColorPaletteCard from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPaletteCard.tsx';
+import CurrentColorElement from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/CurrentColorElement.tsx';
+import FocusSection from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/FocusSection.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
-import { cn } from '@/lib/utils.ts';
-import * as React from 'react';
 
-type ConfiguratorSidebarProps = React.ComponentPropsWithoutRef<'div'>;
-
-export default function ConfiguratorSidebar({
-  className,
-  ...props
-}: ConfiguratorSidebarProps) {
+export default function TemplateLayerColorComponent() {
   const { currentLayer, currentColorElement, setCurrentColorElementId } =
     useConfiguratorContext();
 
   const templateEditorContext = useOptionalTemplateEditorContext();
 
-  function goBack() {
-    if (!currentColorElement) return;
-    const { parentId } = currentColorElement;
-    setCurrentColorElementId(parentId);
-  }
+  if (currentLayer?.type !== 'color') return null;
 
-  function handleCurrentLayerNameChange(name: string) {
+  function handleNameChange(name: string) {
     if (!templateEditorContext) return;
     if (!currentLayer) return;
 
@@ -37,15 +26,21 @@ export default function ConfiguratorSidebar({
     });
   }
 
+  function goBack() {
+    if (!currentColorElement) return;
+    const { parentId } = currentColorElement;
+    setCurrentColorElementId(parentId);
+  }
+
   return (
-    <div className={cn('w-64 border-r bg-gray-50 p-2', className)} {...props}>
-      {currentLayer && !currentColorElement ? (
+    <div>
+      {!currentColorElement ? (
         <>
           <div className="my-2 flex items-center">
             <InvisibleInput
               className="!text-lg font-semibold"
-              value={currentLayer?.name}
-              onSubmit={handleCurrentLayerNameChange}
+              value={currentLayer.name}
+              onSubmit={handleNameChange}
             />
           </div>
 
@@ -76,13 +71,12 @@ export default function ConfiguratorSidebar({
             }
           />
         </>
-      ) : null}
-
-      {currentColorElement ? (
-        <BackButton className="mb-3" onClick={goBack} />
-      ) : null}
-
-      <CurrentColorElement />
+      ) : (
+        <>
+          <BackButton className="mb-3" onClick={goBack} />
+          <CurrentColorElement />
+        </>
+      )}
     </div>
   );
 }

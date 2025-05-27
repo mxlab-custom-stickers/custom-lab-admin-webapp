@@ -1,7 +1,7 @@
-import ColorElementList from '@/components/configurator/ColorElementList.tsx';
+import ColorElementList from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorElementList.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils.ts';
 import React from 'react';
 
 type ColorGroupComponentProps = React.ComponentPropsWithoutRef<'div'>;
@@ -18,11 +18,16 @@ export default function ColorGroupComponent({
 
   return colorGroup ? (
     <div className={cn(className)} {...props}>
-      <InvisibleInput
-        className="mb-3 !text-lg font-semibold"
-        value={colorGroup.name}
-        onSubmit={(value) => updateColorElement({ ...colorGroup, name: value })}
-      />
+      <div className="px-1">
+        <InvisibleInput
+          className="mb-3 !text-lg font-semibold"
+          value={colorGroup.name}
+          onSubmit={(value) =>
+            updateColorElement({ ...colorGroup, name: value })
+          }
+        />
+      </div>
+
       <ColorElementList
         colorElements={colorGroup.subColorElements}
         onColorElementClick={(colorElement) =>

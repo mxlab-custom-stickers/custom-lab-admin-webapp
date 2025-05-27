@@ -7,7 +7,7 @@ export function svgLayerToColorElement(svgLayer: SvgLayer): ColorElement {
     name: svgLayer.id,
   };
 
-  if (svgLayer.color) {
+  if (svgLayer.color && svgLayer.color !== 'none') {
     return {
       ...base,
       type: 'item',

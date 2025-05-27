@@ -1,5 +1,5 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
-import SidebarCard from '@/components/configurator/SidebarCard.tsx';
+import SidebarCard from '@/components/configurator/ConfiguratorSidebar/SidebarCard.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { compareColorsByLuminance } from '@/lib/colors.ts';
 import { getUniqueColorsFromLayer } from '@/lib/configurator.ts';
@@ -12,7 +12,7 @@ export default function ColorPaletteCard({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { currentLayer } = useConfiguratorContext();
 
-  if (!currentLayer) return null;
+  if (!currentLayer || currentLayer.type !== 'color') return null;
 
   const colors = useMemo(
     () => getUniqueColorsFromLayer(currentLayer).sort(compareColorsByLuminance),
@@ -26,7 +26,7 @@ export default function ColorPaletteCard({
         Change toutes les mêmes couleurs
       </div>
       <div className="flex flex-wrap items-center gap-1.5">
-        {colors.map((color, index) => (
+        {colors.sort(compareColorsByLuminance).map((color, index) => (
           <ColorChip
             key={color.id ? `${color.id}-${index}` : index}
             className="h-9 w-9"

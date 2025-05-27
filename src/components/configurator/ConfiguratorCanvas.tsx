@@ -28,7 +28,7 @@ export default function ConfiguratorCanvas({
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!currentLayer || !canvas) return;
+    if (!currentLayer || currentLayer.type !== 'color' || !canvas) return;
 
     // Reset all color items to be non-interactive
     getAllColorItemsFromTemplate(template).forEach((colorItem) => {

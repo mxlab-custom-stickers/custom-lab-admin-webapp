@@ -1,5 +1,6 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
-import SidebarCard from '@/components/configurator/SidebarCard.tsx';
+import SidebarCard from '@/components/configurator/ConfiguratorSidebar/SidebarCard.tsx';
+import { compareColorsByLuminance } from '@/lib/colors.ts';
 import { getAllColorGroupColors } from '@/lib/configurator.ts';
 import { cn } from '@/lib/utils.ts';
 import { ColorGroup } from '@/models/template.ts';
@@ -24,7 +25,7 @@ export default function ColorGroupCard({
     <SidebarCard className={cn(className)} {...props}>
       <div className="mb-2 text-sm">{colorGroup.name}</div>
       <div className="flex flex-wrap items-center gap-1.5">
-        {colors.map((color, index) => (
+        {colors.sort(compareColorsByLuminance).map((color, index) => (
           <ColorChip
             key={color.id ? `${color.id}-${index}` : index}
             className="h-9 w-9"

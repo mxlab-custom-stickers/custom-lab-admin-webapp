@@ -1,5 +1,5 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
-import ColorPicker from '@/components/configurator/ColorPicker.tsx';
+import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPicker.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { Color } from '@/models/color.ts';
@@ -17,7 +17,7 @@ export default function ColorItemComponent({
   const colorItem =
     currentColorElement?.type === 'item' ? currentColorElement : null;
 
-  if (!colorItem || !currentLayer) return null;
+  if (!colorItem || !currentLayer || currentLayer.type !== 'color') return null;
 
   function handleColorSelect(color: Color) {
     if (!currentColorElement || currentColorElement.type !== 'item') return;
@@ -26,7 +26,8 @@ export default function ColorItemComponent({
 
   return (
     <div className={className} {...props}>
-      <div className="mb-3 flex items-center gap-2">
+      <div className="mb-3 flex items-center px-1">
+        <ColorChip className="mr-1 shrink-0" color={colorItem.color} />
         <InvisibleInput
           className="!text-lg font-semibold"
           value={colorItem.name}
@@ -34,11 +35,10 @@ export default function ColorItemComponent({
             updateColorElement({ ...colorItem, name: value })
           }
         />
-        <ColorChip className="shrink-0" color={colorItem.color} />
       </div>
 
       <ColorPicker
-        className="mt-6"
+        className="mt-6 p-1"
         colors={currentLayer.config.availableColors}
         columns={currentLayer.config.columns}
         space={currentLayer.config.space}

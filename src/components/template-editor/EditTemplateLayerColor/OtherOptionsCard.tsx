@@ -17,7 +17,8 @@ export default function OtherOptionsCard({
   const { config } = currentLayer;
 
   function handleEnableColorPaletteChange(checked: boolean) {
-    if (!currentLayer) return;
+    if (!currentLayer || currentLayer.type !== 'color') return;
+
     updateLayer({
       ...currentLayer,
       config: { ...config, enableColorPalette: checked },
@@ -25,7 +26,8 @@ export default function OtherOptionsCard({
   }
 
   function handleEnableFocusChange(checked: boolean) {
-    if (!currentLayer) return;
+    if (!currentLayer || currentLayer.type !== 'color') return;
+
     updateLayer({
       ...currentLayer,
       config: { ...config, focus: { ...config.focus, enable: checked } },

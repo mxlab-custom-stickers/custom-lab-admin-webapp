@@ -32,6 +32,8 @@ export default function ColorsOptionsCard({
     updateLayer,
   } = useTemplateEditorContext();
 
+  if (!currentLayer || currentLayer.type !== 'color') return null;
+
   const [state, setState] = useState<ColorsConfiguratorState>(
     currentLayer?.config || {
       availableColors: [],
@@ -51,7 +53,7 @@ export default function ColorsOptionsCard({
   }, [currentLayer]);
 
   function validate() {
-    if (!currentLayer) return;
+    if (!currentLayer || currentLayer.type !== 'color') return;
     updateLayer({
       ...currentLayer,
       config: {

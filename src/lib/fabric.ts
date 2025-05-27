@@ -92,7 +92,7 @@ export function hideOrShowObjectsById(
   canvas.getObjects().forEach((obj) => {
     const id = obj.get('id');
     if (ids.includes(id)) {
-      obj.set('opacity', hide ? '0' : '1');
+      obj.set('opacity', hide ? '0' : '100');
     }
   });
 

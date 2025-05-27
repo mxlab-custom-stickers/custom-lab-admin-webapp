@@ -1,5 +1,5 @@
 import ColorChip from '@/components/colors/ColorChip.tsx';
-import ColorPicker from '@/components/configurator/ColorPicker.tsx';
+import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPicker.tsx';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Label } from '@/components/ui/label.tsx';

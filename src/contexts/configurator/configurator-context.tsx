@@ -10,11 +10,7 @@ import {
   getAllColorItemsFromLayer,
   updateColorElementInTemplate,
 } from '@/lib/configurator.ts';
-import {
-  ColorElement,
-  Template,
-  TemplateLayerColor,
-} from '@/models/template.ts';
+import { ColorElement, Template, TemplateLayer } from '@/models/template.ts';
 import { Canvas } from 'fabric';
 import React, {
   createContext,
@@ -34,9 +30,9 @@ export const ConfiguratorContext = createContext<{
   updateTemplate: (template: Template) => void;
 
   // Current layer
-  currentLayer: TemplateLayerColor | undefined;
+  currentLayer: TemplateLayer | undefined;
   setCurrentLayerId: (layerId: string | undefined) => void;
-  updateLayer: (layer: TemplateLayerColor) => void;
+  updateLayer: (layer: TemplateLayer) => void;
 
   // Current color element
   currentColorElement: CurrentColorElement | undefined;
@@ -62,7 +58,6 @@ export function ConfiguratorProvider({
     currentLayerId: undefined,
     currentColorElementId: undefined,
     canvas: undefined,
-    colorItemMap: new Map(),
   } as ConfiguratorState);
 
   const currentLayer = useMemo(
@@ -71,7 +66,12 @@ export function ConfiguratorProvider({
   );
 
   const currentColorElement: CurrentColorElement = useMemo(() => {
-    if (!currentLayer || !state.currentColorElementId) return undefined;
+    if (
+      !currentLayer ||
+      currentLayer.type !== 'color' ||
+      !state.currentColorElementId
+    )
+      return undefined;
 
     if (state.currentColorElementId === 'color-palette') {
       return {
@@ -112,7 +112,7 @@ export function ConfiguratorProvider({
     dispatch({ type: 'SET_CURRENT_COLOR_ELEMENT_ID', payload: undefined });
   }
 
-  function updateLayer(layer: TemplateLayerColor) {
+  function updateLayer(layer: TemplateLayer) {
     const updatedTemplate = {
       ...state.template,
       layers: state.template.layers.map((l) =>
@@ -176,6 +176,9 @@ export function ConfiguratorProvider({
   }
 
   function setCanvas(canvas: Canvas) {
+    if (templateEditorContext) {
+      templateEditorContext.setCanvas(canvas);
+    }
     dispatch({ type: 'SET_CANVAS', payload: canvas });
   }
 
