@@ -49,12 +49,12 @@ export default function ColorPalette() {
 
   return (
     <div className="mt-1">
-      <div className="mb-1 text-xs">
+      <div className="text-muted-foreground mb-1 text-xs">
         Modifie en une seule fois toutes les mêmes couleurs
       </div>
       <Accordion type="single" collapsible>
         {colors.map((color, index) => (
-          <AccordionItem key={color.id} value={`color-${index}`}>
+          <AccordionItem key={color.id || color.value} value={`color-${index}`}>
             <AccordionTrigger className="items-center">
               <div className="flex items-center">
                 <ColorChip className="mr-2" color={color} />

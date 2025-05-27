@@ -96,7 +96,11 @@ export function ConfiguratorProvider({
   }, [currentLayerIdProp]);
 
   function updateTemplate(template: Template) {
-    dispatch({ type: 'SET_TEMPLATE', payload: template });
+    if (templateEditorContext) {
+      templateEditorContext.updateTemplate(template);
+    } else {
+      dispatch({ type: 'SET_TEMPLATE', payload: template });
+    }
   }
 
   function setCurrentLayerId(layerId: string | undefined) {
@@ -105,6 +109,7 @@ export function ConfiguratorProvider({
     } else {
       dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: layerId });
     }
+    dispatch({ type: 'SET_CURRENT_COLOR_ELEMENT_ID', payload: undefined });
   }
 
   function updateLayer(layer: TemplateLayerColor) {

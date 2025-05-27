@@ -54,7 +54,11 @@ export function TemplateEditorProvider({
   const [lastSavedTemplateState, setLastSavedTemplateState] =
     useState<Template>(templateProp);
   const isDirty = useMemo(
-    () => !isEqual(state.template, lastSavedTemplateState),
+    () =>
+      !isEqual(
+        stripFabricObjectsFromTemplate(state.template),
+        stripFabricObjectsFromTemplate(lastSavedTemplateState)
+      ),
     [state, lastSavedTemplateState]
   );
 
@@ -92,6 +96,7 @@ export function TemplateEditorProvider({
         layer.id === updates.id ? updates : layer
       ),
     };
+
     dispatch({ type: 'UPDATE_TEMPLATE', payload: updatedTemplate });
   }
 

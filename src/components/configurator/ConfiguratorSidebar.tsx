@@ -1,6 +1,7 @@
 import ColorElementList from '@/components/configurator/ColorElementList.tsx';
 import ColorPaletteCard from '@/components/configurator/ColorPaletteCard.tsx';
 import CurrentColorElement from '@/components/configurator/CurrentColorElement.tsx';
+import FocusSection from '@/components/configurator/FocusSection.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
@@ -48,19 +49,25 @@ export default function ConfiguratorSidebar({
             />
           </div>
 
-          <div>
-            <ColorPaletteCard
-              onClick={() => setCurrentColorElementId('color-palette')}
-            />
-            <div className="my-2 grid grid-cols-[40%_20%_40%] items-center px-3">
-              <Separator />
-              <span className="upercase text-center text-sm font-medium">
-                ou
-              </span>
-              <Separator />
+          <FocusSection />
+
+          {currentLayer.config.enableColorPalette ? (
+            <div>
+              <ColorPaletteCard
+                onClick={() => setCurrentColorElementId('color-palette')}
+              />
+              <div className="my-2 grid grid-cols-[40%_20%_40%] items-center px-3">
+                <Separator />
+                <span className="upercase text-center text-sm font-medium">
+                  ou
+                </span>
+                <Separator />
+              </div>
+              <div className="text-muted-foreground p-2 text-xs">
+                Modifie les couleurs par éléments
+              </div>
             </div>
-            <div className="p-2 text-xs">Modifie les couleurs par éléments</div>
-          </div>
+          ) : null}
 
           <ColorElementList
             colorElements={currentLayer.colorElements}

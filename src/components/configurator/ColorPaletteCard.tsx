@@ -22,7 +22,9 @@ export default function ColorPaletteCard({
   return (
     <SidebarCard className={cn(className)} {...props}>
       <div className="text-sm font-semibold">Palette de couleurs</div>
-      <div className="mb-2 text-xs">Change toutes les mêmes couleurs</div>
+      <div className="text-muted-foreground mb-2 text-xs">
+        Change toutes les mêmes couleurs
+      </div>
       <div className="flex flex-wrap items-center gap-1.5">
         {colors.map((color, index) => (
           <ColorChip

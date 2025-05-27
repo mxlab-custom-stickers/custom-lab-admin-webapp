@@ -77,6 +77,10 @@ export interface TemplateLayerColor extends TemplateLayerBase {
     columns: number;
     space: number;
     enableColorPalette: boolean;
-    enableFocus: boolean;
+    focus: {
+      enable: boolean;
+      message: string;
+      layerIdsToHide: string[];
+    };
   };
 }

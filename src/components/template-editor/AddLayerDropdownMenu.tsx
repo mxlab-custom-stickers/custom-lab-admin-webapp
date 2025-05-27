@@ -36,6 +36,12 @@ export default function AddLayerDropdownMenu() {
         availableColors: [],
         columns: 5,
         space: 2,
+        enableColorPalette: false,
+        focus: {
+          enable: false,
+          message: 'Activer le focus',
+          layerIdsToHide: [],
+        },
       },
     };
 

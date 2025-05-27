@@ -3,7 +3,7 @@ import {
   ColorItem,
   TemplateLayerColor,
 } from '@/models/template.ts';
-import { FabricObject } from 'fabric';
+import { Canvas, FabricObject } from 'fabric';
 
 /**
  * Recursively updates ColorItems in a ColorElement tree by assigning matching FabricObjects
@@ -82,6 +82,21 @@ export function isSvgShape(obj: FabricObject): boolean {
   ];
 
   return shapeTypes.includes(obj.get('type'));
+}
+
+export function hideOrShowObjectsById(
+  canvas: Canvas,
+  ids: string[],
+  hide: boolean
+): void {
+  canvas.getObjects().forEach((obj) => {
+    const id = obj.get('id');
+    if (ids.includes(id)) {
+      obj.set('opacity', hide ? '0' : '1');
+    }
+  });
+
+  canvas.requestRenderAll();
 }
 
 /**
