@@ -1,12 +1,24 @@
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
-import { brightenHexColor } from '@/lib/colors.ts';
 import {
   collectColorItems,
   getAllColorItemsFromTemplate,
+  getAllImagesFromTemplate,
+  resetInteractivity,
+  updateImagesInTemplate,
 } from '@/lib/configurator.ts';
-import { assignFabricObjectsToColorItemsInLayer } from '@/lib/fabric.ts';
+import {
+  assignFabricObjectsToColorItemsInLayer,
+  clipImageLayerToColorLayer,
+  drawImageOnCanvas,
+  makeColorItemInteractive,
+  makeImageInteractive,
+  renderSVGToCanvas,
+  resizeCanvasToWrapper,
+  setupZoomAndPan,
+} from '@/lib/fabric.ts';
 import { cn } from '@/lib/utils.ts';
-import { Canvas, loadSVGFromURL, Point } from 'fabric';
+import { Template, TemplateLayerImage } from '@/models/template.ts';
+import { Canvas } from 'fabric';
 import { useEffect, useRef } from 'react';
 
 type ConfiguratorCanvasProps = {
@@ -17,295 +29,127 @@ export default function ConfiguratorCanvas({
   wrapperClassName,
 }: ConfiguratorCanvasProps) {
   const {
-    state: { template, canvas },
+    state: { template, canvas, currentLayerId },
     updateTemplate,
     setCanvas,
     currentLayer,
     setCurrentColorElementId,
   } = useConfiguratorContext();
 
+  const templateRef = useRef<Template>(template);
+
+  useEffect(() => {
+    templateRef.current = template;
+  }, [template]);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!currentLayer || currentLayer.type !== 'color' || !canvas) return;
+    if (!currentLayer || !canvas) return;
 
-    // Reset all color items to be non-interactive
-    getAllColorItemsFromTemplate(template).forEach((colorItem) => {
-      const objects = colorItem?.fabricObjects;
-      if (!objects || objects.length === 0) return;
+    requestAnimationFrame(() => {
+      if (canvas.getObjects().length === 0) return;
 
-      objects.forEach((obj) => {
-        obj.set({
-          evented: false,
-          perPixelTargetFind: false,
-          targetFindTolerance: 0,
-          hoverCursor: 'default',
+      resetInteractivity(template);
+
+      if (currentLayer.type === 'color') {
+        // Activate interactivity for color items
+        collectColorItems(currentLayer.colorElements).forEach((colorItem) => {
+          makeColorItemInteractive(colorItem, canvas, setCurrentColorElementId);
         });
-        obj.off();
-      });
+      } else if (currentLayer.type === 'image') {
+        // Activate interactivity for images
+        currentLayer.images.forEach((image) =>
+          makeImageInteractive(image, (modifiedImage) => {
+            const updatedTemplate = updateImagesInTemplate(
+              templateRef.current,
+              [modifiedImage]
+            );
+            updateTemplate(updatedTemplate);
+          })
+        );
+      }
+
+      canvas.requestRenderAll();
     });
-
-    // Make color items in the current layer interactive
-    collectColorItems(currentLayer.colorElements).forEach((colorItem) => {
-      const objects = colorItem?.fabricObjects;
-      if (!objects || objects.length === 0) return;
-
-      objects.forEach((obj) => {
-        obj.set({
-          evented: true,
-          perPixelTargetFind: true,
-          targetFindTolerance: 0,
-          hoverCursor: 'pointer',
-        });
-
-        const hoverColor = brightenHexColor(colorItem.color.value, 50);
-        obj.on('mouseover', () => {
-          objects.forEach((o) => {
-            o.set('fill', hoverColor);
-          });
-          canvas.requestRenderAll();
-        });
-
-        obj.on('mouseout', () => {
-          objects.forEach((o) => {
-            o.set('fill', colorItem.color.value);
-          });
-          canvas.requestRenderAll();
-        });
-
-        obj.on('mousedown', () => {
-          setCurrentColorElementId(colorItem.id);
-        });
-      });
-    });
-  }, [template.layers, currentLayer]);
+  }, [template.layers, currentLayerId]);
 
   useEffect(() => {
     const wrapperEl = wrapperRef.current;
     const canvasEl = canvasRef.current;
-
-    if (!wrapperEl || !canvasEl) {
-      return;
-    }
+    if (!wrapperEl || !canvasEl) return;
 
     const initCanvas = new Canvas(canvasEl);
 
-    let width = wrapperEl.clientWidth;
-    let height = wrapperEl.clientHeight;
+    const resize = () => resizeCanvasToWrapper(initCanvas, wrapperEl);
+    resize();
+    window.addEventListener('resize', resize);
 
-    const resizeCanvas = () => {
-      width = wrapperEl.clientWidth;
-      height = wrapperEl.clientHeight;
-      initCanvas.setWidth(width);
-      initCanvas.setHeight(height);
-    };
-    resizeCanvas();
+    setupZoomAndPan(initCanvas);
 
-    window.addEventListener('resize', resizeCanvas);
+    // Initialize the canvas with the template data
+    const init = async () => {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
 
-    loadSVGFromURL(template.svgUrl).then((svgData) => {
-      const { options } = svgData;
-      const objects = svgData.objects.filter((obj) => obj !== null);
+      let updatedTemplate;
 
-      objects.forEach((obj) => {
-        obj.set({
-          selectable: false,
-          evented: false,
-          hasControls: false,
-          hasBorders: false,
-          lockMovementX: true,
-          lockMovementY: true,
-          lockScalingX: true,
-          lockScalingY: true,
-          lockRotation: true,
-        });
-        initCanvas.add(obj);
-      });
-
-      // Calculate scale to fit the canvas viewport
-      const bounds = {
-        width: options.width,
-        height: options.height,
-        left: 0,
-        top: 0,
-      };
-
-      const scaleX = initCanvas.getWidth()! / bounds.width;
-      const scaleY = initCanvas.getHeight()! / bounds.height;
-      const scale = Math.min(scaleX, scaleY);
-
-      // Reset viewport transform and apply scaling
-      initCanvas.setViewportTransform([scale, 0, 0, scale, 0, 0]);
-
-      // Calculate translation to center the SVG
-      const dx =
-        initCanvas.getWidth()! / 2 - (bounds.left + bounds.width / 2) * scale;
-      const dy =
-        initCanvas.getHeight()! / 2 - (bounds.top + bounds.height / 2) * scale;
-      initCanvas.relativePan(new Point(dx, dy));
-
-      // cloneAllObjectsFromColorItemMap(
-      //   filterMap(
-      //     colorItemMap,
-      //     (colorItem) => !['Selle'].includes(colorItem.id)
-      //   )
-      // ).then((clonedObjects) => {
-      //   FabricImage.fromURL(MXlabLogo).then((img) => {
-      //     const clipGroup = new Group(clonedObjects);
-      //     clipGroup.set({
-      //       absolutePositioned: true,
-      //       selectable: false,
-      //       evented: false,
-      //       hasControls: false,
-      //       hasBorders: false,
-      //       lockMovementX: true,
-      //       lockMovementY: true,
-      //       lockScalingX: true,
-      //       lockScalingY: true,
-      //       lockRotation: true,
-      //       visible: true,
-      //       opacity: 0,
-      //     });
-      //
-      //     initCanvas.add(clipGroup);
-      //     initCanvas.sendObjectToBack(clipGroup);
-      //
-      //     img.set({
-      //       absolutePositioned: true,
-      //       clipPath: clipGroup,
-      //       left: 0,
-      //       top: -50,
-      //     });
-      //     initCanvas.add(img);
-      //     initCanvas.bringObjectToFront(img);
-      //     initCanvas.requestRenderAll();
-      //
-      //     initCanvas.on('object:added', () => {
-      //       // Ensure the MXlab logo stays on top
-      //       initCanvas.bringObjectToFront(img);
-      //     });
-      //   });
-      // });
-
-      const updatedTemplateColorLayers = template.layers
-        .filter((layer) => layer.type === 'color')
-        .map((layer) => assignFabricObjectsToColorItemsInLayer(layer, objects));
-
-      const updatedTemplate = {
-        ...template,
-        layers: template.layers.map((layer) => {
-          const updated = updatedTemplateColorLayers.find(
-            (l) => l.id === layer.id
-          );
-          return updated ?? layer;
-        }),
-      };
-
-      updateTemplate(updatedTemplate);
-
-      getAllColorItemsFromTemplate(updatedTemplate).forEach((colorItem) => {
-        const objects = colorItem?.fabricObjects;
-        if (!objects || objects.length === 0) return;
-
-        objects.forEach((obj) => {
-          obj.set('fill', colorItem.color.value);
-        });
-      });
-
-      initCanvas.requestRenderAll();
-    });
-
-    // Zoom on mouse wheel
-    initCanvas.on('mouse:wheel', (opt) => {
-      const delta = opt.e.deltaY;
-      let zoom = initCanvas.getZoom();
-      zoom *= 0.999 ** delta;
-
-      // Clamp zoom
-      zoom = Math.min(Math.max(zoom, 0.1), 10);
-
-      initCanvas.zoomToPoint(
-        new Point({ x: opt.e.offsetX, y: opt.e.offsetY }),
-        zoom
+      // Draw the SVG template onto the canvas
+      const objects = await renderSVGToCanvas(initCanvas, template.svgUrl);
+      // Assign the fabric objects to color items in the template layers
+      const updatedColorLayers = template.layers.map((layer) =>
+        layer.type === 'color'
+          ? assignFabricObjectsToColorItemsInLayer(layer, objects)
+          : layer
       );
-      opt.e.preventDefault();
-      opt.e.stopPropagation();
-      initCanvas.requestRenderAll();
+
+      updatedTemplate = { ...templateRef.current, layers: updatedColorLayers };
+
+      // Update the fabric objects with the color items colors
+      getAllColorItemsFromTemplate(updatedTemplate).forEach((item) => {
+        item.fabricObjects?.forEach((obj) => obj.set('fill', item.color.value));
+      });
+
+      // Draw all the template images on the canvas and assign them to their respective fabric images
+      const images = await Promise.all(
+        getAllImagesFromTemplate(updatedTemplate).map(async (image) =>
+          drawImageOnCanvas(initCanvas, image)
+        )
+      );
+
+      updatedTemplate = updateImagesInTemplate(updatedTemplate, images);
+
+      // Clip image layers with corresponding color layers if specified in their config
+      await Promise.all(
+        (
+          updatedTemplate.layers.filter(
+            (layer) =>
+              layer.type === 'image' && layer.config.clipWithLayerId !== null
+          ) as TemplateLayerImage[]
+        ).map((layer) => {
+          const clipWithLayer = updatedTemplate.layers.find(
+            (l) => l.id === layer.config.clipWithLayerId
+          );
+          if (!clipWithLayer || clipWithLayer.type !== 'color') return;
+          return clipImageLayerToColorLayer(initCanvas, layer, clipWithLayer);
+        })
+      );
+
+      return updatedTemplate;
+    };
+
+    init().then((updatedTemplate) => {
+      updateTemplate(updatedTemplate);
+      initCanvas.renderAll();
+      setCanvas(initCanvas);
     });
-
-    let isPanning = false;
-    let lastPosX = 0;
-    let lastPosY = 0;
-
-    initCanvas.on('mouse:down', (opt) => {
-      if (opt.target) {
-        isPanning = false;
-        return;
-      }
-      isPanning = true;
-
-      const e = opt.e;
-      // Narrow to MouseEvent or PointerEvent
-      if ('clientX' in e && 'clientY' in e) {
-        lastPosX = (e as MouseEvent | PointerEvent).clientX;
-        lastPosY = (e as MouseEvent | PointerEvent).clientY;
-      } else {
-        // Fallback for touch events (take first touch)
-        const touchEvent = e as TouchEvent;
-        if (touchEvent.touches && touchEvent.touches.length > 0) {
-          lastPosX = touchEvent.touches[0].clientX;
-          lastPosY = touchEvent.touches[0].clientY;
-        }
-      }
-
-      initCanvas.selection = false;
-    });
-
-    initCanvas.on('mouse:move', (opt) => {
-      if (!isPanning) return;
-
-      const e = opt.e;
-
-      let clientX: number | undefined;
-      let clientY: number | undefined;
-
-      if ('clientX' in e && 'clientY' in e) {
-        clientX = (e as MouseEvent | PointerEvent).clientX;
-        clientY = (e as MouseEvent | PointerEvent).clientY;
-      } else {
-        const touchEvent = e as TouchEvent;
-        if (touchEvent.touches && touchEvent.touches.length > 0) {
-          clientX = touchEvent.touches[0].clientX;
-          clientY = touchEvent.touches[0].clientY;
-        }
-      }
-
-      if (clientX === undefined || clientY === undefined) return;
-
-      const vpt = initCanvas.viewportTransform!;
-      vpt[4] += clientX - lastPosX;
-      vpt[5] += clientY - lastPosY;
-      initCanvas.requestRenderAll();
-
-      lastPosX = clientX;
-      lastPosY = clientY;
-    });
-
-    initCanvas.on('mouse:up', () => {
-      isPanning = false;
-      initCanvas.selection = true; // Re-enable selection
-    });
-
-    initCanvas.renderAll();
-    setCanvas(initCanvas);
 
     // Expose the canvas instance to the global window object for debugging
     (window as any).__fabricCanvas = initCanvas;
 
     return () => {
-      initCanvas.dispose();
-      window.removeEventListener('resize', resizeCanvas);
+      initCanvas?.dispose();
+      window.removeEventListener('resize', resize);
     };
   }, []);
 

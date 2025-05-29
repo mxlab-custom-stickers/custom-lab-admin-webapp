@@ -17,46 +17,33 @@ import { cn } from '@/lib/utils.ts';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 
-export default function TemplateLayerSelector({
-  triggerClassName,
-}: {
+type TemplateLayerSelectorProps = {
   triggerClassName?: string;
-}) {
+  value: string[];
+  onChange: (value: string[]) => void;
+};
+
+export default function TemplateLayerSelector({
+  value,
+  onChange,
+  triggerClassName,
+}: TemplateLayerSelectorProps) {
   const {
     state: {
       template: { layers },
       currentLayerId,
     },
-    currentLayer,
-    updateLayer,
   } = useTemplateEditorContext();
-
-  if (!currentLayer || currentLayer.type !== 'color') return null;
-
-  const {
-    config: { focus },
-  } = currentLayer;
 
   const [open, setOpen] = useState<boolean>(false);
 
   function handleLayerSelect(layerId: string) {
-    if (!currentLayer || currentLayer.type !== 'color') return;
-
-    const isLayerAlreadyPresent = focus.layerIdsToHide.includes(layerId);
-    const updatedLayerIdsToHide = isLayerAlreadyPresent
-      ? focus.layerIdsToHide.filter((id) => id !== layerId)
-      : [...focus.layerIdsToHide, layerId];
-
-    updateLayer({
-      ...currentLayer,
-      config: {
-        ...currentLayer.config,
-        focus: {
-          ...focus,
-          layerIdsToHide: updatedLayerIdsToHide,
-        },
-      },
-    });
+    if (value.includes(layerId)) {
+      onChange(value.filter((id) => id !== layerId));
+    } else {
+      onChange([...value, layerId]);
+    }
+    setOpen(false);
   }
 
   return (
@@ -69,9 +56,9 @@ export default function TemplateLayerSelector({
           className="w-[200px] justify-between"
         >
           <span className="line-clamp-1">
-            {focus.layerIdsToHide.length
+            {value.length
               ? layers
-                  .filter((layer) => focus.layerIdsToHide.includes(layer.id))
+                  .filter((layer) => value.includes(layer.id))
                   .map((layer) => layer.name)
                   .join(', ')
               : 'Sélectionne les calques'}
@@ -91,16 +78,14 @@ export default function TemplateLayerSelector({
                   <CommandItem
                     key={layer.id}
                     value={layer.id}
-                    onSelect={() => handleLayerSelect(layer.id)}
+                    onSelect={handleLayerSelect}
                   >
                     <LayerIcon type={layer.type} />
                     <div className="line-clamp-1">{layer.name}</div>
                     <Check
                       className={cn(
                         'ml-auto',
-                        focus.layerIdsToHide.includes(layer.id)
-                          ? 'opacity-100'
-                          : 'opacity-0'
+                        value.includes(layer.id) ? 'opacity-100' : 'opacity-0'
                       )}
                     />
                   </CommandItem>

@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card.tsx';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils.ts';
 import React from 'react';
 
 export default function OptionsCard({

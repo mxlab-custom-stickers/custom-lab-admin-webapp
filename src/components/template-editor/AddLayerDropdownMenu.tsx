@@ -61,6 +61,7 @@ export default function AddLayerDropdownMenu() {
             availableImages: [],
             allowImport: true,
             clipWithLayerId: null,
+            allowStretch: false,
           },
         };
         break;

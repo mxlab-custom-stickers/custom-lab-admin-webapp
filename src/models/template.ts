@@ -99,5 +99,6 @@ export interface TemplateLayerImage extends TemplateLayerBase {
     availableImages: { url: string }[];
     allowImport: boolean;
     clipWithLayerId: string | null; // Optional, used for clipping the image with another layer
+    allowStretch: boolean; // Whether the image can be stretched
   };
 }

@@ -36,13 +36,11 @@ export default function TemplateLayerColorComponent() {
     <div>
       {!currentColorElement ? (
         <>
-          <div className="my-2 flex items-center">
-            <InvisibleInput
-              className="!text-lg font-semibold"
-              value={currentLayer.name}
-              onSubmit={handleNameChange}
-            />
-          </div>
+          <InvisibleInput
+            className="my-2 !text-lg font-semibold"
+            value={currentLayer.name}
+            onSubmit={handleNameChange}
+          />
 
           <FocusSection />
 

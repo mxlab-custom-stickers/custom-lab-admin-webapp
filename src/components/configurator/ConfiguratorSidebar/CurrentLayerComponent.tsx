@@ -1,4 +1,5 @@
 import TemplateLayerColorComponent from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/TemplateLayerColorComponent.tsx';
+import TemplateLayerImageComponent from '@/components/configurator/ConfiguratorSidebar/TemplateLayerImage/TemplateLayerImageComponent.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { cn } from '@/lib/utils.ts';
 import { TemplateLayerType } from '@/models/template.ts';
@@ -6,7 +7,7 @@ import React, { ReactNode } from 'react';
 
 const currentLayerComponents: Record<TemplateLayerType, ReactNode> = {
   color: <TemplateLayerColorComponent />,
-  image: <div />,
+  image: <TemplateLayerImageComponent />,
   text: <div>Text Layer</div>,
   background: <div>Background Layer</div>,
 };

@@ -16,8 +16,12 @@ import { Color } from '@/models/color.ts';
 import { useMemo } from 'react';
 
 export default function ColorPalette() {
-  const { currentLayer, currentColorElement, updateLayer } =
-    useConfiguratorContext();
+  const {
+    state: { canvas },
+    currentLayer,
+    currentColorElement,
+    updateLayer,
+  } = useConfiguratorContext();
 
   if (
     !currentLayer ||
@@ -43,6 +47,16 @@ export default function ColorPalette() {
       ...item,
       color: newColor,
     }));
+
+    if (canvas) {
+      updatedColorItems.forEach((colorItem) => {
+        colorItem.fabricObjects?.forEach((obj) => {
+          obj.set('fill', colorItem.color.value);
+        });
+      });
+      canvas.requestRenderAll();
+    }
+
     const updatedLayer = updateColorItemsInLayer(
       currentLayer,
       updatedColorItems

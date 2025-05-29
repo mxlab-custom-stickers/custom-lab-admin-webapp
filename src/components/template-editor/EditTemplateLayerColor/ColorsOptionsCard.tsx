@@ -1,7 +1,7 @@
-import OptionsCard from '@/components/template-editor/EditTemplateLayerColor/OptionsCard.tsx';
 import TemplateLayerColorColorsConfigurator, {
   ColorsConfiguratorState,
 } from '@/components/template-editor/EditTemplateLayerColor/TemplateLayerColorColorsConfigurator.tsx';
+import OptionsCard from '@/components/template-editor/OptionsCard.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import {

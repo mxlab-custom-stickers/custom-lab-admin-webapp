@@ -1,4 +1,4 @@
-import OptionsCard from '@/components/template-editor/EditTemplateLayerColor/OptionsCard.tsx';
+import OptionsCard from '@/components/template-editor/OptionsCard.tsx';
 import TemplateLayerSelector from '@/components/template-editor/TemplateLayerSelector.tsx';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Label } from '@/components/ui/label';
@@ -34,6 +34,21 @@ export default function OtherOptionsCard({
     });
   }
 
+  function handleLayerIdsToHideChange(layerIds: string[]) {
+    if (!currentLayer || currentLayer.type !== 'color') return;
+
+    updateLayer({
+      ...currentLayer,
+      config: {
+        ...currentLayer.config,
+        focus: {
+          ...config.focus,
+          layerIdsToHide: layerIds,
+        },
+      },
+    });
+  }
+
   return (
     <OptionsCard className={className} {...props}>
       <CardHeader>
@@ -64,7 +79,10 @@ export default function OtherOptionsCard({
                 <div className="text-muted-foreground text-xs">
                   Sélectionne les calques à cacher
                 </div>
-                <TemplateLayerSelector />
+                <TemplateLayerSelector
+                  value={config.focus.layerIdsToHide}
+                  onChange={handleLayerIdsToHideChange}
+                />
               </div>
             ) : null}
           </div>

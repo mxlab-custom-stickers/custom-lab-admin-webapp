@@ -1,4 +1,9 @@
+import {
+  makeColorItemNonInteractive,
+  makeImageNonInteractive,
+} from '@/lib/fabric.ts';
 import { Color } from '@/models/color.ts';
+import { Image } from '@/models/image.ts';
 import {
   ColorElement,
   ColorGroup,
@@ -6,6 +11,15 @@ import {
   Template,
   TemplateLayerColor,
 } from '@/models/template.ts';
+
+/**
+ * Resets interactivity on all color items and images
+ * by making them non-interactive on the canvas.
+ */
+export function resetInteractivity(template: Template) {
+  getAllColorItemsFromTemplate(template).forEach(makeColorItemNonInteractive);
+  getAllImagesFromTemplate(template).forEach(makeImageNonInteractive);
+}
 
 export function getAllColorGroupColors(colorGroup: ColorGroup): Color[] {
   return colorGroup.subColorElements.reduce<Color[]>((acc, child) => {
@@ -82,6 +96,38 @@ export function updateColorElementInTemplate(
     return {
       ...layer,
       colorElements: updatedColorElements,
+    };
+  });
+
+  return {
+    ...template,
+    layers: updatedLayers,
+  };
+}
+
+/**
+ * Updates multiple images within the image layers of a template.
+ *
+ * For each image in the `updates` array, this function finds the matching image
+ * (by `id`) in the image layers of the template and replaces it with the updated one.
+ *
+ * @param {Template} template - The template containing layers with images.
+ * @param {Image[]} updates - An array of updated image objects to replace existing ones.
+ * @returns {Template} - A new template object with the updated image layers.
+ */
+export function updateImagesInTemplate(
+  template: Template,
+  updates: Image[]
+): Template {
+  const updatedLayers = template.layers.map((layer) => {
+    if (layer.type !== 'image') return layer;
+
+    return {
+      ...layer,
+      images: layer.images.map((img) => {
+        const updated = updates.find((u) => u.id === img.id);
+        return updated ?? img;
+      }),
     };
   });
 
@@ -221,4 +267,17 @@ export function getColorItemsByColor(
   search(layer.colorElements);
 
   return result;
+}
+
+export function getAllImagesFromTemplate(template: Template): Image[] {
+  return template.layers
+    .filter(
+      (
+        layer
+      ): layer is Template['layers'][number] & {
+        type: 'image';
+        images: Image[];
+      } => layer.type === 'image'
+    )
+    .flatMap((layer) => layer.images);
 }

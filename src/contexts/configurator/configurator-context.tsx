@@ -7,7 +7,6 @@ import {
 import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import {
   findColorElementById,
-  getAllColorItemsFromLayer,
   updateColorElementInTemplate,
 } from '@/lib/configurator.ts';
 import { ColorElement, Template, TemplateLayer } from '@/models/template.ts';
@@ -120,21 +119,6 @@ export function ConfiguratorProvider({
       ),
     };
 
-    if (layer.type === 'color') {
-      // Retrieve all color items from the layer that have a different fill color
-      const updatedColorItems = getAllColorItemsFromLayer(layer).filter(
-        (colorItem) =>
-          colorItem.color.value !== colorItem.fabricObjects?.[0]?.get('fill')
-      );
-
-      updatedColorItems.forEach((colorItem) => {
-        colorItem.fabricObjects?.forEach((obj) => {
-          obj.set('fill', colorItem.color.value);
-        });
-      });
-      state.canvas?.requestRenderAll();
-    }
-
     if (templateEditorContext) {
       templateEditorContext.updateTemplate(updatedTemplate);
     } else {
@@ -158,15 +142,15 @@ export function ConfiguratorProvider({
       updates
     );
 
-    if (
-      updates.type === 'item' &&
-      updates.color.value !== updates.fabricObjects?.[0]?.get('fill')
-    ) {
-      updates.fabricObjects?.forEach((obj) => {
-        obj.set('fill', updates.color.value);
-        state.canvas?.requestRenderAll();
-      });
-    }
+    // if (
+    //   updates.type === 'item' &&
+    //   updates.color.value !== updates.fabricObjects?.[0]?.get('fill')
+    // ) {
+    //   updates.fabricObjects?.forEach((obj) => {
+    //     obj.set('fill', updates.color.value);
+    //     state.canvas?.requestRenderAll();
+    //   });
+    // }
 
     if (templateEditorContext) {
       templateEditorContext.updateTemplate(updatedTemplate);

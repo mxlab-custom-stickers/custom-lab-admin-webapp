@@ -1,4 +1,4 @@
-import OptionsCard from '@/components/template-editor/EditTemplateLayerColor/OptionsCard.tsx';
+import OptionsCard from '@/components/template-editor/OptionsCard.tsx';
 import SvgEditor from '@/components/template-editor/SvgEditor/SvgEditor.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';

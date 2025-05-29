@@ -1,5 +1,8 @@
+import ImagesOptionsCard from '@/components/template-editor/EditTemplateLayerImage/ImagesOptionsCard.tsx';
+import OtherOptionsCard from '@/components/template-editor/EditTemplateLayerImage/OtherOptionsCard.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
+import ClipWithOptionsCard from './ClipWithOptionsCard.tsx';
 
 export default function EditTemplateLayerImage() {
   const { currentLayer, updateLayer } = useTemplateEditorContext();
@@ -20,6 +23,10 @@ export default function EditTemplateLayerImage() {
         value={currentLayer?.name}
         onSubmit={updateCurrentLayerName}
       />
+
+      <ImagesOptionsCard />
+      <ClipWithOptionsCard />
+      <OtherOptionsCard />
     </div>
   );
 }

@@ -11,8 +11,12 @@ export default function ColorItemComponent({
   className,
   ...props
 }: ColorItemComponentProps) {
-  const { currentColorElement, currentLayer, updateColorElement } =
-    useConfiguratorContext();
+  const {
+    state: { canvas },
+    currentColorElement,
+    currentLayer,
+    updateColorElement,
+  } = useConfiguratorContext();
 
   const colorItem =
     currentColorElement?.type === 'item' ? currentColorElement : null;
@@ -21,6 +25,14 @@ export default function ColorItemComponent({
 
   function handleColorSelect(color: Color) {
     if (!currentColorElement || currentColorElement.type !== 'item') return;
+
+    if (canvas) {
+      currentColorElement.fabricObjects?.forEach((obj) => {
+        obj.set('fill', color.value);
+      });
+      canvas.requestRenderAll();
+    }
+
     updateColorElement({ ...currentColorElement, color });
   }
 

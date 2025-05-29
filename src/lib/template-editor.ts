@@ -26,11 +26,12 @@ export function svgLayerToColorElement(svgLayer: SvgLayer): ColorElement {
 }
 
 /**
- * Removes all `fabricObjects` from each ColorItem in a Template.
+ * Removes all `fabricObjects` from each ColorItem
+ * and `fabricImage` from each Image in a Template.
  * Intended to be used before saving the template to a database.
  *
  * @param template - The Template to clean
- * @returns A new Template with all `fabricObjects` properties removed from ColorItems
+ * @returns A new Template with all transient Fabric data removed
  */
 export function stripFabricObjectsFromTemplate(template: Template): Template {
   const cleanColorElements = (elements: ColorElement[]): ColorElement[] => {
@@ -52,12 +53,21 @@ export function stripFabricObjectsFromTemplate(template: Template): Template {
   };
 
   const cleanedLayers = template.layers.map((layer) => {
-    if (layer.type !== 'color') return layer;
+    if (layer.type === 'color') {
+      return {
+        ...layer,
+        colorElements: cleanColorElements(layer.colorElements),
+      };
+    }
 
-    return {
-      ...layer,
-      colorElements: cleanColorElements(layer.colorElements),
-    };
+    if (layer.type === 'image') {
+      return {
+        ...layer,
+        images: layer.images.map(({ fabricImage, ...img }) => img),
+      };
+    }
+
+    return layer;
   });
 
   return {

@@ -7,12 +7,12 @@ type LayerBarProps = React.ComponentPropsWithoutRef<'div'>;
 
 export default function LayersBar({ className, ...props }: LayerBarProps) {
   const {
-    state: {
-      template: { layers },
-    },
+    state: { template },
     currentLayer,
     setCurrentLayerId,
   } = useConfiguratorContext();
+
+  const { layers } = template;
 
   function handleLayerClick(layerId: string) {
     setCurrentLayerId(layerId);

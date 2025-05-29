@@ -18,10 +18,21 @@ type ColorItemsAccordionProps = {
 export default function ColorItemsAccordion({
   colorItems,
 }: ColorItemsAccordionProps) {
-  const { currentLayer, updateColorElement } = useConfiguratorContext();
+  const {
+    state: { canvas },
+    currentLayer,
+    updateColorElement,
+  } = useConfiguratorContext();
   if (!currentLayer || currentLayer.type !== 'color') return null;
 
   function handleColorSelect(colorItem: ColorItem, color: Color) {
+    if (canvas) {
+      colorItem.fabricObjects?.forEach((obj) => {
+        obj.set('fill', color.value);
+      });
+      canvas.requestRenderAll();
+    }
+
     updateColorElement({ ...colorItem, color });
   }
 
