@@ -37,7 +37,7 @@ export default function TemplateLayerImageComponent() {
   }, [currentLayer.id]);
 
   async function handleImagePick(image: FileNode) {
-    if (currentLayer?.type !== 'image') return;
+    if (currentLayer?.type !== 'image' || !canvas) return;
 
     const newImage: Image = {
       id: generateId(),
@@ -52,15 +52,13 @@ export default function TemplateLayerImageComponent() {
       scaleY: 1,
     };
 
-    if (canvas) {
-      await drawImageOnCanvas(canvas, newImage);
-    }
+    const newImageWithFabricImage = await drawImageOnCanvas(canvas, newImage);
 
     setOpenDialog(false);
 
     updateLayer({
       ...currentLayer,
-      images: [...currentLayer.images, newImage],
+      images: [...currentLayer.images, newImageWithFabricImage],
     });
   }
 

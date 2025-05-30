@@ -142,16 +142,6 @@ export function ConfiguratorProvider({
       updates
     );
 
-    // if (
-    //   updates.type === 'item' &&
-    //   updates.color.value !== updates.fabricObjects?.[0]?.get('fill')
-    // ) {
-    //   updates.fabricObjects?.forEach((obj) => {
-    //     obj.set('fill', updates.color.value);
-    //     state.canvas?.requestRenderAll();
-    //   });
-    // }
-
     if (templateEditorContext) {
       templateEditorContext.updateTemplate(updatedTemplate);
     } else {

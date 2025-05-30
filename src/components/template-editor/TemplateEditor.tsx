@@ -29,7 +29,7 @@ export default function TemplateEditor() {
                   <ConfiguratorSidebar className="row-span-2 h-full overflow-auto @max-[385px]:w-full" />
 
                   <div className="relative h-full w-full @max-[385px]:order-first">
-                    <ConfiguratorCanvas wrapperClassName="absolute top-0 left-0 right-0 bottom-0 bg-white" />
+                    <ConfiguratorCanvas wrapperClassName="absolute top-0 left-0 right-0 bottom-0 bg-[radial-gradient(circle,_#ccc,_#ddd,_#eee,_#fff)]" />
                   </div>
 
                   <ConfiguratorLayersBar />
