@@ -17,6 +17,7 @@ import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as TemplateEditorIdImport } from './routes/template-editor/$id'
 import { Route as AppTemplatesImport } from './routes/_app/templates'
 import { Route as AppImagesImport } from './routes/_app/images'
+import { Route as AppFontsImport } from './routes/_app/fonts'
 import { Route as AppColorsImport } from './routes/_app/colors'
 import { Route as AppSettingsThemeImport } from './routes/_app/settings/theme'
 import { Route as AppSettingsGeneralImport } from './routes/_app/settings/general'
@@ -56,6 +57,12 @@ const AppTemplatesRoute = AppTemplatesImport.update({
 const AppImagesRoute = AppImagesImport.update({
   id: '/images',
   path: '/images',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppFontsRoute = AppFontsImport.update({
+  id: '/fonts',
+  path: '/fonts',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -99,6 +106,13 @@ declare module '@tanstack/react-router' {
       path: '/colors'
       fullPath: '/colors'
       preLoaderRoute: typeof AppColorsImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/fonts': {
+      id: '/_app/fonts'
+      path: '/fonts'
+      fullPath: '/fonts'
+      preLoaderRoute: typeof AppFontsImport
       parentRoute: typeof AppRouteImport
     }
     '/_app/images': {
@@ -164,6 +178,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteRouteChildren {
   AppColorsRoute: typeof AppColorsRoute
+  AppFontsRoute: typeof AppFontsRoute
   AppImagesRoute: typeof AppImagesRoute
   AppTemplatesRoute: typeof AppTemplatesRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -174,6 +189,7 @@ interface AppRouteRouteChildren {
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppColorsRoute: AppColorsRoute,
+  AppFontsRoute: AppFontsRoute,
   AppImagesRoute: AppImagesRoute,
   AppTemplatesRoute: AppTemplatesRoute,
   AppIndexRoute: AppIndexRoute,
@@ -189,6 +205,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AppRouteRouteWithChildren
   '/colors': typeof AppColorsRoute
+  '/fonts': typeof AppFontsRoute
   '/images': typeof AppImagesRoute
   '/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
@@ -201,6 +218,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/colors': typeof AppColorsRoute
+  '/fonts': typeof AppFontsRoute
   '/images': typeof AppImagesRoute
   '/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
@@ -215,6 +233,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_app': typeof AppRouteRouteWithChildren
   '/_app/colors': typeof AppColorsRoute
+  '/_app/fonts': typeof AppFontsRoute
   '/_app/images': typeof AppImagesRoute
   '/_app/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
@@ -230,6 +249,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/colors'
+    | '/fonts'
     | '/images'
     | '/templates'
     | '/template-editor/$id'
@@ -241,6 +261,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/colors'
+    | '/fonts'
     | '/images'
     | '/templates'
     | '/template-editor/$id'
@@ -253,6 +274,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/_app/colors'
+    | '/_app/fonts'
     | '/_app/images'
     | '/_app/templates'
     | '/template-editor/$id'
@@ -295,6 +317,7 @@ export const routeTree = rootRoute
       "filePath": "_app/route.tsx",
       "children": [
         "/_app/colors",
+        "/_app/fonts",
         "/_app/images",
         "/_app/templates",
         "/_app/",
@@ -305,6 +328,10 @@ export const routeTree = rootRoute
     },
     "/_app/colors": {
       "filePath": "_app/colors.tsx",
+      "parent": "/_app"
+    },
+    "/_app/fonts": {
+      "filePath": "_app/fonts.tsx",
       "parent": "/_app"
     },
     "/_app/images": {

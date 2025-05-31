@@ -1,9 +1,5 @@
 import { AppSidebar } from '@/components/app-sidebar.tsx';
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar.tsx';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar.tsx';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_app')({
@@ -15,14 +11,10 @@ function AppLayoutComponent() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
+        <div className="flex justify-center">
+          <div className="max-w-6xl flex-1 justify-center px-6 pt-2 pb-0">
+            <Outlet />
           </div>
-        </header>
-
-        <div className="p-6 pt-2">
-          <Outlet />
         </div>
       </SidebarInset>
     </SidebarProvider>

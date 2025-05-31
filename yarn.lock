@@ -4143,6 +4143,7 @@ __metadata:
     eslint-plugin-react-refresh: "npm:^0.4.19"
     fabric: "npm:^6.6.5"
     firebase: "npm:^11.7.3"
+    fitty: "npm:^2.4.2"
     globals: "npm:^15.15.0"
     lodash: "npm:^4.17.21"
     lucide-react: "npm:^0.484.0"
@@ -5024,6 +5025,13 @@ __metadata:
     "@firebase/util": "npm:1.11.3"
     "@firebase/vertexai": "npm:1.2.4"
   checksum: 10c0/896fd5f45f4ab2e5a8ae31f9d46cff67f591d087c24e9ecb3daa00226c160ff10394e027b936814d06e7bae63030573dba4b6156a027159645312e1554b6d9a9
+  languageName: node
+  linkType: hard
+
+"fitty@npm:^2.4.2":
+  version: 2.4.2
+  resolution: "fitty@npm:2.4.2"
+  checksum: 10c0/6134364601849b50e8c60018e6310ac8022aee18462b90b1f798ad2fec3c1dca331e142f77f162a81c32d72f27b706b77cb6425504bd58a834a78d6e4aff5c4b
   languageName: node
   linkType: hard
 

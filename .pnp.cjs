@@ -69,6 +69,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-react-refresh", "virtual:37c0d1ad50ad702caa973590ff529778362a403a52c510e8dba200439f59a09bcd6566352d5679ce030fb199919a7192de1bd756c682e22b35c6a0f86ec9a6ca#npm:0.4.19"],\
           ["fabric", "npm:6.6.5"],\
           ["firebase", "npm:11.7.3"],\
+          ["fitty", "npm:2.4.2"],\
           ["globals", "npm:15.15.0"],\
           ["lodash", "npm:4.17.21"],\
           ["lucide-react", "virtual:37c0d1ad50ad702caa973590ff529778362a403a52c510e8dba200439f59a09bcd6566352d5679ce030fb199919a7192de1bd756c682e22b35c6a0f86ec9a6ca#npm:0.484.0"],\
@@ -5895,6 +5896,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-react-refresh", "virtual:37c0d1ad50ad702caa973590ff529778362a403a52c510e8dba200439f59a09bcd6566352d5679ce030fb199919a7192de1bd756c682e22b35c6a0f86ec9a6ca#npm:0.4.19"],\
           ["fabric", "npm:6.6.5"],\
           ["firebase", "npm:11.7.3"],\
+          ["fitty", "npm:2.4.2"],\
           ["globals", "npm:15.15.0"],\
           ["lodash", "npm:4.17.21"],\
           ["lucide-react", "virtual:37c0d1ad50ad702caa973590ff529778362a403a52c510e8dba200439f59a09bcd6566352d5679ce030fb199919a7192de1bd756c682e22b35c6a0f86ec9a6ca#npm:0.484.0"],\
@@ -6916,6 +6918,15 @@ const RAW_RUNTIME_STATE =
           ["@firebase/storage-compat", "virtual:b91b92952f34fb2adcc2a5a2737148aaddac1a2f092ca80e4a7923a601f798bd0e0415e2cf8211a80d91816eac2f376d82514c923cc7981e1e5f5c337bfa38f2#npm:0.3.20"],\
           ["@firebase/util", "npm:1.11.3"],\
           ["@firebase/vertexai", "virtual:b91b92952f34fb2adcc2a5a2737148aaddac1a2f092ca80e4a7923a601f798bd0e0415e2cf8211a80d91816eac2f376d82514c923cc7981e1e5f5c337bfa38f2#npm:1.2.4"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["fitty", [\
+      ["npm:2.4.2", {\
+        "packageLocation": "../../../.yarn/berry/cache/fitty-npm-2.4.2-61211d429e-10c0.zip/node_modules/fitty/",\
+        "packageDependencies": [\
+          ["fitty", "npm:2.4.2"]\
         ],\
         "linkType": "HARD"\
       }]\

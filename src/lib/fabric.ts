@@ -14,6 +14,7 @@ import {
   Group,
   loadSVGFromURL,
   Point,
+  Textbox,
 } from 'fabric';
 
 export function resizeCanvasToWrapper(canvas: Canvas, wrapperEl: HTMLElement) {
@@ -417,5 +418,11 @@ export async function unclipImageLayer(
     canvas.remove(clipGroup);
   }
 
+  canvas.requestRenderAll();
+}
+
+export function addText(canvas: Canvas) {
+  const text = new Textbox('Hello World', {});
+  canvas.add(text);
   canvas.requestRenderAll();
 }

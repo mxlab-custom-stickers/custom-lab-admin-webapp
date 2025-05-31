@@ -26,7 +26,10 @@ export interface Template {
 }
 
 export type TemplateLayerType = 'color' | 'image' | 'text' | 'background';
-export type TemplateLayer = TemplateLayerColor | TemplateLayerImage;
+export type TemplateLayer =
+  | TemplateLayerColor
+  | TemplateLayerImage
+  | TemplateLayerText;
 
 export const templateLayerTypes: Record<TemplateLayerType, string> = {
   color: 'Couleur',
@@ -100,5 +103,19 @@ export interface TemplateLayerImage extends TemplateLayerBase {
     allowImport: boolean;
     clipWithLayerId: string | null; // Optional, used for clipping the image with another layer
     allowStretch: boolean; // Whether the image can be stretched
+  };
+}
+
+/**
+ * TemplateLayerText
+ */
+export interface TemplateLayerText extends TemplateLayerBase {
+  type: 'text';
+
+  texts: Text[];
+
+  config: {
+    availableFonts: string[];
+    availableColors: Color[];
   };
 }

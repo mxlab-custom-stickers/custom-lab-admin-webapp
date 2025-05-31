@@ -1,4 +1,10 @@
-import { Blocks, Images, LayoutDashboard, Palette } from 'lucide-react';
+import {
+  Blocks,
+  Images,
+  LayoutDashboard,
+  Palette,
+  TypeOutline,
+} from 'lucide-react';
 import * as React from 'react';
 
 import { NavMain } from '@/components/nav-main';
@@ -21,6 +27,7 @@ const data = {
     { title: 'Templates', icon: Blocks, url: '/templates' },
     { title: 'Couleurs', icon: Palette, url: '/colors' },
     { title: 'Images', icon: Images, url: '/images' },
+    { title: 'Polices', icon: TypeOutline, url: '/fonts' },
   ],
   user: { name: 'Nelson', email: 'nelson@mxlab.fr', avatar: nelson },
 };

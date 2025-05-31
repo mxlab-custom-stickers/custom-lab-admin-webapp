@@ -34,7 +34,7 @@ export function AppSwitcher() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center overflow-hidden rounded-sm">
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-sm">
                 <AppIcon app={currentApp} />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -88,7 +88,7 @@ export function AppSwitcher() {
 
 function AppIcon({ app }: { app: App }) {
   return app.icon ? (
-    <img src={app.icon} alt={app.name} />
+    <img className="rounded-sm" src={app.icon} alt={app.name} />
   ) : (
     getInitials(app.name)
   );

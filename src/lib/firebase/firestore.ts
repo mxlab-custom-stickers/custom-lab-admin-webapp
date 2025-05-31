@@ -1,6 +1,7 @@
 import { db } from '@/lib/firebase/firebase.ts';
 import { App } from '@/models/settings.ts';
 import { Template } from '@/models/template.ts';
+import { Font } from '@/models/text.ts';
 import {
   collection,
   doc,
@@ -40,4 +41,15 @@ export async function getTemplatesByAppId(appId: string): Promise<Template[]> {
   const q = query(templatesRef, where('appId', '==', appId));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => doc.data() as Template);
+}
+
+export async function addFont(font: Font) {
+  await setDoc(doc(db, 'fonts', font.id), font);
+}
+
+export async function getFontsByAppId(appId: string): Promise<Font[]> {
+  const fontsRef = collection(db, 'fonts');
+  const q = query(fontsRef, where('appId', '==', appId));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => doc.data() as Font);
 }

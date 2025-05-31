@@ -24,7 +24,7 @@ export default function AddLayerDropdownMenu() {
   } = useTemplateEditorContext();
 
   function handleLayerTypeSelect(layerType: TemplateLayerType) {
-    if (layerType !== 'color' && layerType !== 'image') return;
+    if (layerType === 'background') return;
 
     let newLayer: TemplateLayer;
 
@@ -62,6 +62,20 @@ export default function AddLayerDropdownMenu() {
             allowImport: true,
             clipWithLayerId: null,
             allowStretch: false,
+          },
+        };
+        break;
+      }
+      case 'text': {
+        newLayer = {
+          type: 'text',
+          id: `text-layer-${template.layers.length + 1}`,
+          name: `Calque de texte ${template.layers.length + 1}`,
+          order: template.layers.length + 1,
+          texts: [],
+          config: {
+            availableColors: [],
+            availableFonts: [],
           },
         };
         break;

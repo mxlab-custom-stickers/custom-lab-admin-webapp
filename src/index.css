@@ -118,3 +118,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .no-search-clear::-webkit-search-cancel-button {
+    display: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}

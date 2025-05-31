@@ -11,6 +11,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   const [currentApp, _setCurrentApp] = useState<App | undefined>(getCurrentApp);
   const [apps, setApps] = useState<App[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   function getCurrentApp(): App | undefined {
     const app = localStorage.getItem('custom-lab-admin:current-app');
@@ -35,7 +36,9 @@ function RootComponent() {
   }, []);
 
   return currentApp ? (
-    <AppContext.Provider value={{ apps, currentApp, setCurrentApp }}>
+    <AppContext.Provider
+      value={{ apps, currentApp, setCurrentApp, loading, setLoading }}
+    >
       <Outlet />
       {/*<TanStackRouterDevtools />*/}
     </AppContext.Provider>
