@@ -1,6 +1,7 @@
 import { countAvailableFontStyles } from '@/lib/fonts.ts';
 import { cn } from '@/lib/utils.ts';
 import { Font } from '@/models/text.ts';
+import { Link } from '@tanstack/react-router';
 import React from 'react';
 
 type FontListProps = React.ComponentPropsWithoutRef<'div'> & {
@@ -17,8 +18,13 @@ export default function FontList({
       {fonts
         .sort((a, b) => (a.name < b.name ? -1 : 1))
         .map((font) => (
-          <div key={font.id} className="rounded border-b pt-4">
-            <div className="px-2 text-sm">
+          <Link
+            to="/fonts/$id"
+            params={{ id: font.id }}
+            key={font.id}
+            className="block rounded border-b pt-4 hover:bg-gray-200"
+          >
+            <div className="px-2 text-sm whitespace-nowrap">
               <span className="mr-2 font-semibold">{font.name}</span>{' '}
               <FontStylesCount font={font} />
             </div>
@@ -29,7 +35,7 @@ export default function FontList({
               Custom Lab 2 by MXlab, the best configurator for your graphic
               kits.
             </div>
-          </div>
+          </Link>
         ))}
     </div>
   );

@@ -22,7 +22,7 @@ export async function loadFont(font: Font) {
         await fontFace.load();
         document.fonts.add(fontFace);
         loadedFontKeys.add(key);
-        console.log(
+        console.debug(
           `Loaded font: ${font.name} (${style.weight} ${style.style})`
         );
         return fontFace;

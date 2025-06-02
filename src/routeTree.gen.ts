@@ -17,11 +17,12 @@ import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as TemplateEditorIdImport } from './routes/template-editor/$id'
 import { Route as AppTemplatesImport } from './routes/_app/templates'
 import { Route as AppImagesImport } from './routes/_app/images'
-import { Route as AppFontsImport } from './routes/_app/fonts'
 import { Route as AppColorsImport } from './routes/_app/colors'
+import { Route as AppFontsIndexImport } from './routes/_app/fonts/index'
 import { Route as AppSettingsThemeImport } from './routes/_app/settings/theme'
 import { Route as AppSettingsGeneralImport } from './routes/_app/settings/general'
 import { Route as AppSettingsCustomLabImport } from './routes/_app/settings/custom-lab'
+import { Route as AppFontsIdImport } from './routes/_app/fonts/$id'
 
 // Create/Update Routes
 
@@ -60,15 +61,15 @@ const AppImagesRoute = AppImagesImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 
-const AppFontsRoute = AppFontsImport.update({
-  id: '/fonts',
-  path: '/fonts',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-
 const AppColorsRoute = AppColorsImport.update({
   id: '/colors',
   path: '/colors',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppFontsIndexRoute = AppFontsIndexImport.update({
+  id: '/fonts/',
+  path: '/fonts/',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -90,6 +91,12 @@ const AppSettingsCustomLabRoute = AppSettingsCustomLabImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 
+const AppFontsIdRoute = AppFontsIdImport.update({
+  id: '/fonts/$id',
+  path: '/fonts/$id',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -106,13 +113,6 @@ declare module '@tanstack/react-router' {
       path: '/colors'
       fullPath: '/colors'
       preLoaderRoute: typeof AppColorsImport
-      parentRoute: typeof AppRouteImport
-    }
-    '/_app/fonts': {
-      id: '/_app/fonts'
-      path: '/fonts'
-      fullPath: '/fonts'
-      preLoaderRoute: typeof AppFontsImport
       parentRoute: typeof AppRouteImport
     }
     '/_app/images': {
@@ -150,6 +150,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TemplateEditorIndexImport
       parentRoute: typeof rootRoute
     }
+    '/_app/fonts/$id': {
+      id: '/_app/fonts/$id'
+      path: '/fonts/$id'
+      fullPath: '/fonts/$id'
+      preLoaderRoute: typeof AppFontsIdImport
+      parentRoute: typeof AppRouteImport
+    }
     '/_app/settings/custom-lab': {
       id: '/_app/settings/custom-lab'
       path: '/settings/custom-lab'
@@ -171,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsThemeImport
       parentRoute: typeof AppRouteImport
     }
+    '/_app/fonts/': {
+      id: '/_app/fonts/'
+      path: '/fonts'
+      fullPath: '/fonts'
+      preLoaderRoute: typeof AppFontsIndexImport
+      parentRoute: typeof AppRouteImport
+    }
   }
 }
 
@@ -178,24 +192,26 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteRouteChildren {
   AppColorsRoute: typeof AppColorsRoute
-  AppFontsRoute: typeof AppFontsRoute
   AppImagesRoute: typeof AppImagesRoute
   AppTemplatesRoute: typeof AppTemplatesRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppFontsIdRoute: typeof AppFontsIdRoute
   AppSettingsCustomLabRoute: typeof AppSettingsCustomLabRoute
   AppSettingsGeneralRoute: typeof AppSettingsGeneralRoute
   AppSettingsThemeRoute: typeof AppSettingsThemeRoute
+  AppFontsIndexRoute: typeof AppFontsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppColorsRoute: AppColorsRoute,
-  AppFontsRoute: AppFontsRoute,
   AppImagesRoute: AppImagesRoute,
   AppTemplatesRoute: AppTemplatesRoute,
   AppIndexRoute: AppIndexRoute,
+  AppFontsIdRoute: AppFontsIdRoute,
   AppSettingsCustomLabRoute: AppSettingsCustomLabRoute,
   AppSettingsGeneralRoute: AppSettingsGeneralRoute,
   AppSettingsThemeRoute: AppSettingsThemeRoute,
+  AppFontsIndexRoute: AppFontsIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -205,43 +221,46 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AppRouteRouteWithChildren
   '/colors': typeof AppColorsRoute
-  '/fonts': typeof AppFontsRoute
   '/images': typeof AppImagesRoute
   '/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
   '/': typeof AppIndexRoute
   '/template-editor': typeof TemplateEditorIndexRoute
+  '/fonts/$id': typeof AppFontsIdRoute
   '/settings/custom-lab': typeof AppSettingsCustomLabRoute
   '/settings/general': typeof AppSettingsGeneralRoute
   '/settings/theme': typeof AppSettingsThemeRoute
+  '/fonts': typeof AppFontsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/colors': typeof AppColorsRoute
-  '/fonts': typeof AppFontsRoute
   '/images': typeof AppImagesRoute
   '/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
   '/': typeof AppIndexRoute
   '/template-editor': typeof TemplateEditorIndexRoute
+  '/fonts/$id': typeof AppFontsIdRoute
   '/settings/custom-lab': typeof AppSettingsCustomLabRoute
   '/settings/general': typeof AppSettingsGeneralRoute
   '/settings/theme': typeof AppSettingsThemeRoute
+  '/fonts': typeof AppFontsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_app': typeof AppRouteRouteWithChildren
   '/_app/colors': typeof AppColorsRoute
-  '/_app/fonts': typeof AppFontsRoute
   '/_app/images': typeof AppImagesRoute
   '/_app/templates': typeof AppTemplatesRoute
   '/template-editor/$id': typeof TemplateEditorIdRoute
   '/_app/': typeof AppIndexRoute
   '/template-editor/': typeof TemplateEditorIndexRoute
+  '/_app/fonts/$id': typeof AppFontsIdRoute
   '/_app/settings/custom-lab': typeof AppSettingsCustomLabRoute
   '/_app/settings/general': typeof AppSettingsGeneralRoute
   '/_app/settings/theme': typeof AppSettingsThemeRoute
+  '/_app/fonts/': typeof AppFontsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -249,40 +268,43 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/colors'
-    | '/fonts'
     | '/images'
     | '/templates'
     | '/template-editor/$id'
     | '/'
     | '/template-editor'
+    | '/fonts/$id'
     | '/settings/custom-lab'
     | '/settings/general'
     | '/settings/theme'
+    | '/fonts'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/colors'
-    | '/fonts'
     | '/images'
     | '/templates'
     | '/template-editor/$id'
     | '/'
     | '/template-editor'
+    | '/fonts/$id'
     | '/settings/custom-lab'
     | '/settings/general'
     | '/settings/theme'
+    | '/fonts'
   id:
     | '__root__'
     | '/_app'
     | '/_app/colors'
-    | '/_app/fonts'
     | '/_app/images'
     | '/_app/templates'
     | '/template-editor/$id'
     | '/_app/'
     | '/template-editor/'
+    | '/_app/fonts/$id'
     | '/_app/settings/custom-lab'
     | '/_app/settings/general'
     | '/_app/settings/theme'
+    | '/_app/fonts/'
   fileRoutesById: FileRoutesById
 }
 
@@ -317,21 +339,18 @@ export const routeTree = rootRoute
       "filePath": "_app/route.tsx",
       "children": [
         "/_app/colors",
-        "/_app/fonts",
         "/_app/images",
         "/_app/templates",
         "/_app/",
+        "/_app/fonts/$id",
         "/_app/settings/custom-lab",
         "/_app/settings/general",
-        "/_app/settings/theme"
+        "/_app/settings/theme",
+        "/_app/fonts/"
       ]
     },
     "/_app/colors": {
       "filePath": "_app/colors.tsx",
-      "parent": "/_app"
-    },
-    "/_app/fonts": {
-      "filePath": "_app/fonts.tsx",
       "parent": "/_app"
     },
     "/_app/images": {
@@ -352,6 +371,10 @@ export const routeTree = rootRoute
     "/template-editor/": {
       "filePath": "template-editor/index.tsx"
     },
+    "/_app/fonts/$id": {
+      "filePath": "_app/fonts/$id.tsx",
+      "parent": "/_app"
+    },
     "/_app/settings/custom-lab": {
       "filePath": "_app/settings/custom-lab.tsx",
       "parent": "/_app"
@@ -362,6 +385,10 @@ export const routeTree = rootRoute
     },
     "/_app/settings/theme": {
       "filePath": "_app/settings/theme.tsx",
+      "parent": "/_app"
+    },
+    "/_app/fonts/": {
+      "filePath": "_app/fonts/index.tsx",
       "parent": "/_app"
     }
   }

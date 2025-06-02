@@ -4148,6 +4148,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     lucide-react: "npm:^0.484.0"
     nanoid: "npm:^5.1.5"
+    next-themes: "npm:^0.4.6"
     prettier: "npm:^3.5.3"
     prettier-plugin-organize-imports: "npm:^4.1.0"
     prettier-plugin-tailwindcss: "npm:^0.6.11"
@@ -4155,6 +4156,7 @@ __metadata:
     react-dom: "npm:^19.0.0"
     react-dropzone: "npm:^14.3.8"
     react-svg: "npm:^16.3.0"
+    sonner: "npm:^2.0.4"
     tailwind-merge: "npm:^3.0.2"
     tailwindcss: "npm:^4.0.17"
     tiny-invariant: "npm:^1.3.3"
@@ -6423,6 +6425,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-themes@npm:^0.4.6":
+  version: 0.4.6
+  resolution: "next-themes@npm:0.4.6"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+  checksum: 10c0/83590c11d359ce7e4ced14f6ea9dd7a691d5ce6843fe2dc520fc27e29ae1c535118478d03e7f172609c41b1ef1b8da6b8dd2d2acd6cd79cac1abbdbd5b99f2c4
+  languageName: node
+  linkType: hard
+
 "node-fetch@npm:^2.6.7":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
@@ -7520,6 +7532,16 @@ __metadata:
     seroval: "npm:^1.1.0"
     seroval-plugins: "npm:^1.1.0"
   checksum: 10c0/9008282891709178a42296418a4118e5bdf04efb31a4d783c68b490ff450d5dc02515ccb7d6252cca8f64e8376adf74a18b62480329f4cd00db4ebcf0f1551af
+  languageName: node
+  linkType: hard
+
+"sonner@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "sonner@npm:2.0.4"
+  peerDependencies:
+    react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+    react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+  checksum: 10c0/b4936b4e97ac0f6e325b0ccf77ec982e56374017f44de54f41fe647929c151d1e7b4c616b553b3231aae5e09d94b55f6b1eba2fbf4faafa4d4a554b06cc494a5
   languageName: node
   linkType: hard
 

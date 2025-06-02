@@ -53,3 +53,8 @@ export async function getFontsByAppId(appId: string): Promise<Font[]> {
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => doc.data() as Font);
 }
+
+export async function getFontById(id: string): Promise<Font | undefined> {
+  const snapshot = await getDoc(doc(db, 'fonts', id));
+  return snapshot.exists() ? (snapshot.data() as Font) : undefined;
+}

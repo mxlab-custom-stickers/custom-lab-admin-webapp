@@ -15,7 +15,7 @@ export default function Header({ className, children, ...props }: HeaderProps) {
       {...props}
     >
       <SidebarTrigger className="-ml-1" />
-      <Separator className="mr-2 !h-6" orientation="vertical" />
+      <Separator className="mr-2 !h-4" orientation="vertical" />
       {children}
     </header>
   );
