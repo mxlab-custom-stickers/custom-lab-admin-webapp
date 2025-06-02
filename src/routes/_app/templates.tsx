@@ -1,4 +1,12 @@
+import Header from '@/components/layout/Header.tsx';
+import MainContent from '@/components/layout/MainContent.tsx';
 import TemplateCard from '@/components/templates/TemplateCard.tsx';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { useAppContext } from '@/contexts/app-context.ts';
 import { getTemplatesByAppId } from '@/lib/firebase/firestore.ts';
@@ -24,21 +32,36 @@ function RouteComponent() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Mes Templates</h1>
+      <Header>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbPage className="line-clamp-1">
+                Templates
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
-        <Button asChild>
+        <Button asChild className="ml-auto">
           <Link to="/template-editor">
             <Plus /> Nouveau template
           </Link>
         </Button>
-      </div>
-
-      <div className="mt-6 grid grid-cols-3 gap-4">
-        {templates.map((template) => (
-          <TemplateCard key={template.id} template={template} />
-        ))}
-      </div>
+      </Header>
+      <MainContent>
+        {templates.length ? (
+          <div className="mt-6 grid grid-cols-3 gap-4">
+            {templates.map((template) => (
+              <TemplateCard key={template.id} template={template} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-muted-foreground text-sm">
+            Aucun template trouvé
+          </div>
+        )}
+      </MainContent>
     </div>
   );
 }

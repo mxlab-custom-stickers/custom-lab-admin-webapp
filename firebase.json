@@ -5,6 +5,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
+    "site": "custom-lab-admin-dev",
     "public": "dist",
     "ignore": [
       "firebase.json",

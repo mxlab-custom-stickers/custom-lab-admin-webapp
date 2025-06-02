@@ -1,3 +1,4 @@
+import StatusBadge from '@/components/ui/StatusBadge.tsx';
 import { countAvailableFontStyles } from '@/lib/fonts.ts';
 import { cn } from '@/lib/utils.ts';
 import { Font } from '@/models/text.ts';
@@ -22,11 +23,12 @@ export default function FontList({
             to="/fonts/$id"
             params={{ id: font.id }}
             key={font.id}
-            className="block rounded border-b pt-4 hover:bg-gray-200"
+            className="block border-b pt-4 hover:rounded hover:bg-gray-200"
           >
-            <div className="px-2 text-sm whitespace-nowrap">
-              <span className="mr-2 font-semibold">{font.name}</span>{' '}
+            <div className="flex items-center gap-2 px-2 text-sm whitespace-nowrap">
+              <span className="font-semibold">{font.name}</span>{' '}
               <FontStylesCount font={font} />
+              <StatusBadge className="ml-auto" status={font.status} />
             </div>
             <div
               className="line-clamp-1 px-2 text-4xl leading-18"

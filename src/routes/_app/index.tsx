@@ -1,3 +1,12 @@
+import Header from '@/components/layout/Header.tsx';
+import MainContent from '@/components/layout/MainContent.tsx';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb.tsx';
+import TypographyH1 from '@/components/ui/typography/TypographyH1.tsx';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_app/')({
@@ -7,9 +16,22 @@ export const Route = createFileRoute('/_app/')({
 function RouteComponent() {
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-semibold">Dashboard</h1>
-      <div>Bonjour Nelson ✌️</div>
-      <div>Bienvenue sur Custom Lab 2.</div>
+      <Header>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbPage className="line-clamp-1">
+                Dashboard
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </Header>
+
+      <MainContent>
+        <TypographyH1 className="mb-4">Bonjour Nelson 👋</TypographyH1>
+        <div>Bienvenue sur Custom Lab 2 🔥</div>
+      </MainContent>
     </div>
   );
 }

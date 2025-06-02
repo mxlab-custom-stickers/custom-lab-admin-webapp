@@ -11,9 +11,7 @@ function AppLayoutComponent() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <div className="mx-auto max-w-6xl flex-1 px-3 pt-2 pb-0 md:px-6">
-          <Outlet />
-        </div>
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,3 +1,5 @@
+import { Status } from '@/models/common.ts';
+
 export interface Text {
   id: string;
   value: string; // The text content
@@ -18,7 +20,7 @@ export interface Font {
 
   digitsOnly: boolean;
 
-  status: 'active' | 'inactive' | 'archived'; // Status of the font
+  status: Status;
 }
 
 // Metadata for the font styles

@@ -27,7 +27,7 @@ export function SearchInput({
   };
 
   return (
-    <div className={cn('relative h-10 w-full max-w-md', wrapperClassName)}>
+    <div className={cn('relative h-10 max-w-md', wrapperClassName)}>
       <Search
         className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
         size={16}
