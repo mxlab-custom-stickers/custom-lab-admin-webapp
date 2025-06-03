@@ -15,7 +15,7 @@ export default function FontList({
   ...props
 }: FontListProps) {
   return (
-    <div className={cn(className)} {...props}>
+    <div className={cn('flex flex-col gap-1', className)} {...props}>
       {fonts
         .sort((a, b) => (a.name < b.name ? -1 : 1))
         .map((font) => (
@@ -23,10 +23,10 @@ export default function FontList({
             to="/fonts/$id"
             params={{ id: font.id }}
             key={font.id}
-            className="block border-b pt-4 hover:rounded hover:bg-gray-200"
+            className="block border-b pt-3 hover:rounded hover:bg-gray-200"
           >
             <div className="flex items-center gap-2 px-2 text-sm whitespace-nowrap">
-              <span className="font-semibold">{font.name}</span>{' '}
+              <div className="font-semibold">{font.name}</div>{' '}
               <FontStylesCount font={font} />
               <StatusBadge className="ml-auto" status={font.status} />
             </div>

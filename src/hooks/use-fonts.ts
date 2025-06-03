@@ -5,7 +5,6 @@ import { Font } from '@/models/text.ts';
 import { useEffect, useMemo, useState } from 'react';
 
 // module-level cache (only lasts while app is in memory)
-// cache fonts by app ID
 let fontCache: Record<string, Font[] | null> = {};
 
 export function useFonts() {
@@ -30,7 +29,6 @@ export function useFonts() {
       const fonts = await getFontsByAppId(currentApp.id);
       await Promise.all(fonts.map((font) => loadFont(font)));
 
-      // cache the loaded fonts
       fontCache[currentApp.id] = fonts;
       setFonts(fonts);
     };
@@ -39,10 +37,11 @@ export function useFonts() {
   }, [currentApp.id]);
 
   const filteredFonts = useMemo(() => {
-    if (!search.trim()) return fonts;
-
     const query = search.toLowerCase();
-    return fonts.filter((font) => font.name.toLowerCase().includes(query));
+
+    return fonts
+      .filter((font) => font.name.toLowerCase().includes(query))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }, [fonts, search]);
 
   return { fonts: filteredFonts, loading, search, setSearch };

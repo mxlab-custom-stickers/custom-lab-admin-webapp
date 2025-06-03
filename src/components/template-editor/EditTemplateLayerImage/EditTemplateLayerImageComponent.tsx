@@ -4,7 +4,7 @@ import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import ClipWithOptionsCard from './ClipWithOptionsCard.tsx';
 
-export default function EditTemplateLayerImage() {
+export default function EditTemplateLayerImageComponent() {
   const { currentLayer, updateLayer } = useTemplateEditorContext();
 
   if (!currentLayer || currentLayer.type !== 'image') {
