@@ -1,5 +1,6 @@
 import { Color } from '@/models/color.ts';
 import { Image } from '@/models/image.ts';
+import { Text } from '@/models/text.ts';
 import { FabricObject } from 'fabric';
 
 export interface Template {

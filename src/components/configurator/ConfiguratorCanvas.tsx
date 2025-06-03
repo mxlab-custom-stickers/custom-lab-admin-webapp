@@ -3,15 +3,19 @@ import {
   collectColorItems,
   getAllColorItemsFromTemplate,
   getAllImagesFromTemplate,
+  getAllTextsFromTemplate,
   resetInteractivity,
   updateImagesInTemplate,
+  updateTextsInTemplate,
 } from '@/lib/configurator.ts';
 import {
   assignFabricObjectsToColorItemsInLayer,
   clipImageLayerToColorLayer,
   drawImageOnCanvas,
+  drawTextOnCanvas,
   makeColorItemInteractive,
   makeImageInteractive,
+  makeTextInteractive,
   renderSVGToCanvas,
   resizeCanvasToWrapper,
   setupZoomAndPan,
@@ -69,6 +73,16 @@ export default function ConfiguratorCanvas({
             updateTemplate(updatedTemplate);
           })
         );
+      } else if (currentLayer.type === 'text') {
+        // Activate interactivity for text objects
+        currentLayer.texts.forEach((text) => {
+          makeTextInteractive(text, (modifiedText) => {
+            const updatedTemplate = updateTextsInTemplate(templateRef.current, [
+              modifiedText,
+            ]);
+            updateTemplate(updatedTemplate);
+          });
+        });
       }
 
       canvas.requestRenderAll();
@@ -116,8 +130,14 @@ export default function ConfiguratorCanvas({
           drawImageOnCanvas(initCanvas, image)
         )
       );
-
       updatedTemplate = updateImagesInTemplate(updatedTemplate, images);
+
+      // Draw all the texts on the canvas and assign them to their respective fabric text objects
+      const texts = getAllTextsFromTemplate(updatedTemplate).map((text) => ({
+        ...text,
+        fabricText: drawTextOnCanvas(initCanvas, text),
+      }));
+      updatedTemplate = updateTextsInTemplate(updatedTemplate, texts);
 
       // Clip image layers with corresponding color layers if specified in their config
       await Promise.all(

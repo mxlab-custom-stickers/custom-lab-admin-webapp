@@ -84,7 +84,7 @@ export default function ColorsOptionsCard({
             ))}
           </div>
         ) : (
-          <div>Aucune couleur ajoutée</div>
+          <div className="text-muted-foreground">Aucune couleur ajoutée</div>
         )}
 
         <Dialog open={showDialog} onOpenChange={setShowDialog}>

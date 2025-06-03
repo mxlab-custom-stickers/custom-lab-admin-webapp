@@ -1,6 +1,7 @@
 import {
   makeColorItemNonInteractive,
   makeImageNonInteractive,
+  makeTextNonInteractive,
 } from '@/lib/fabric.ts';
 import { Color } from '@/models/color.ts';
 import { Image } from '@/models/image.ts';
@@ -10,7 +11,9 @@ import {
   ColorItem,
   Template,
   TemplateLayerColor,
+  TemplateLayerText,
 } from '@/models/template.ts';
+import { Text } from '@/models/text.ts';
 
 /**
  * Resets interactivity on all color items and images
@@ -19,6 +22,7 @@ import {
 export function resetInteractivity(template: Template) {
   getAllColorItemsFromTemplate(template).forEach(makeColorItemNonInteractive);
   getAllImagesFromTemplate(template).forEach(makeImageNonInteractive);
+  getAllTextsFromTemplate(template).forEach(makeTextNonInteractive);
 }
 
 export function getAllColorGroupColors(colorGroup: ColorGroup): Color[] {
@@ -129,6 +133,38 @@ export function updateImagesInTemplate(
         return updated ?? img;
       }),
     };
+  });
+
+  return {
+    ...template,
+    layers: updatedLayers,
+  };
+}
+
+/**
+ * Updates multiple texts within the text layers of a template.
+ *
+ * For each text in the `updates` array, this function finds the matching text
+ * (by `id`) in the text layers of the template and replaces it with the updated one.
+ *
+ * @param {Template} template - The template containing layers with texts.
+ * @param {Text[]} updates - An array of updated text objects to replace existing ones.
+ * @returns {Template} - A new template object with the updated text layers.
+ */
+export function updateTextsInTemplate(
+  template: Template,
+  updates: Text[]
+): Template {
+  const updatedLayers = template.layers.map((layer) => {
+    if (layer.type !== 'text') return layer;
+
+    return {
+      ...layer,
+      texts: layer.texts.map((text) => {
+        const updated = updates.find((u) => u.id === text.id);
+        return updated ?? text;
+      }),
+    } satisfies TemplateLayerText;
   });
 
   return {
@@ -280,4 +316,10 @@ export function getAllImagesFromTemplate(template: Template): Image[] {
       } => layer.type === 'image'
     )
     .flatMap((layer) => layer.images);
+}
+
+export function getAllTextsFromTemplate(template: Template): Text[] {
+  return template.layers
+    .filter((layer): layer is TemplateLayerText => layer.type === 'text')
+    .flatMap((textLayer) => textLayer.texts);
 }

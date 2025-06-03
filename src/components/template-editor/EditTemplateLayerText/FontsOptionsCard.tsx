@@ -14,23 +14,70 @@ import {
 } from '@/components/ui/dialog.tsx';
 import { SelectAllCheckbox } from '@/components/ui/filters/SelectAllCheckbox.tsx';
 import { SearchInput } from '@/components/ui/SearchInput.tsx';
+import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { useFonts } from '@/hooks/use-fonts.ts';
 import { Font } from '@/models/text.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function FontsOptionsCard() {
+  const { currentLayer, updateLayer } = useTemplateEditorContext();
+  if (!currentLayer || currentLayer.type !== 'text') {
+    return null; // Return null if the current layer is not a text layer
+  }
+
   const { fonts, search, setSearch } = useFonts();
 
-  const [selectedFonts, setSelectedFonts] = useState<Font[]>([]);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [selectedFonts, setSelectedFonts] = useState<Font[]>(() =>
+    initSelectedFonts()
+  );
+
+  /**
+   * Initializes the selected fonts based on the current layer's configuration.
+   */
+  function initSelectedFonts(): Font[] {
+    return currentLayer?.type === 'text'
+      ? currentLayer.config.availableFonts
+          .map((fontName) => fonts.find((f) => f.name === fontName))
+          .filter((font) => font !== undefined) || []
+      : [];
+  }
+
+  useEffect(() => {
+    setSelectedFonts(initSelectedFonts());
+  }, [fonts]);
+
+  function validate() {
+    if (currentLayer?.type !== 'text') return;
+
+    updateLayer({
+      ...currentLayer,
+      config: {
+        ...currentLayer.config,
+        availableFonts: selectedFonts.map((f) => f.name),
+      },
+    });
+    setShowDialog(false);
+  }
 
   return (
     <OptionsCard>
       <CardHeader>
-        <CardTitle>Polices</CardTitle>
+        <CardTitle>
+          Polices ({currentLayer.config.availableFonts.length})
+        </CardTitle>
       </CardHeader>
 
       <CardContent>
-        <Dialog>
+        {currentLayer.config.availableFonts.length > 0 ? (
+          <div className="text-muted-foreground line-clamp-3">
+            {currentLayer.config.availableFonts.join(', ')}
+          </div>
+        ) : (
+          <div className="text-muted-foreground">Aucune police ajoutée</div>
+        )}
+
+        <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
             <Button className="w-full" variant="outline">
               Configurer les polices
@@ -78,7 +125,9 @@ export default function FontsOptionsCard() {
                   Annuler
                 </Button>
               </DialogClose>
-              <Button>Valider</Button>
+              <Button onClick={validate} disabled={selectedFonts.length === 0}>
+                Valider
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

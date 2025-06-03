@@ -7,6 +7,7 @@ import {
   TemplateLayerColor,
   TemplateLayerImage,
 } from '@/models/template.ts';
+import { Text } from '@/models/text.ts';
 import {
   Canvas,
   FabricImage,
@@ -259,6 +260,13 @@ export async function drawImageOnCanvas(
     absolutePositioned: true,
   });
 
+  fabricImage.setControlsVisibility({
+    mt: false,
+    ml: false,
+    mr: false,
+    mb: false,
+  });
+
   canvas.add(fabricImage);
   canvas.bringObjectToFront(fabricImage);
   canvas.requestRenderAll();
@@ -358,6 +366,61 @@ export function makeImageInteractive(
   });
 }
 
+export function makeTextNonInteractive(text: Text) {
+  const { fabricText } = text;
+
+  if (!fabricText) return;
+
+  fabricText.set({
+    selectable: false,
+    evented: false,
+  });
+  fabricText.off('modified');
+  fabricText.off('editing:exited');
+}
+
+export function makeTextInteractive(
+  text: Text,
+  onModified: (modifiedText: Text) => void
+) {
+  const { fabricText } = text;
+
+  if (!fabricText) return;
+
+  fabricText.set({
+    selectable: true,
+    evented: true,
+  });
+
+  fabricText.on('editing:exited', function () {
+    onModified({ ...text, value: fabricText.text });
+  });
+
+  fabricText.on('modified', function (e) {
+    if (!e.transform) return;
+
+    console.log('modifed');
+    const {
+      transform: { target },
+    } = e;
+
+    const updatedText = {
+      ...text,
+      x: target.left,
+      y: target.top,
+      angle: target.angle,
+      scaleX: target.scaleX,
+      scaleY: target.scaleY,
+      skewX: target.skewX,
+      skewY: target.skewY,
+    };
+
+    onModified(updatedText);
+  });
+
+  return fabricText;
+}
+
 export async function clipImageLayerToColorLayer(
   canvas: Canvas,
   imageLayer: TemplateLayerImage,
@@ -421,8 +484,25 @@ export async function unclipImageLayer(
   canvas.requestRenderAll();
 }
 
-export function addText(canvas: Canvas) {
-  const text = new Textbox('Hello World', {});
-  canvas.add(text);
+export function drawTextOnCanvas(canvas: Canvas, text: Text): Textbox {
+  const fabricText = new Textbox(text.value, {
+    id: text.id,
+    fontFamily: text.fontFamily,
+    fontSize: text.fontSize,
+    left: text.x, // Default position, can be adjusted
+    top: text.y, // Default position, can be adjusted
+    width: text.width,
+    height: text.height,
+    angle: text.angle,
+    scaleX: text.scaleX,
+    scaleY: text.scaleY,
+    skewX: text.skewX,
+    skewY: text.skewY,
+  });
+
+  canvas.add(fabricText);
+  canvas.bringObjectToFront(fabricText);
   canvas.requestRenderAll();
+
+  return fabricText;
 }

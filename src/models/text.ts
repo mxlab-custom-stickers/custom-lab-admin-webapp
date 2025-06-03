@@ -1,10 +1,23 @@
 import { Status } from '@/models/common.ts';
+import { Textbox } from 'fabric';
 
 export interface Text {
   id: string;
   value: string; // The text content
-  font: Font;
-  fontSize: number; // Font size in pixels
+  fontFamily: string;
+  fontSize: number;
+
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  angle: number;
+  scaleX: number;
+  scaleY: number;
+  skewX: number;
+  skewY: number;
+
+  fabricText?: Textbox;
 }
 
 /**

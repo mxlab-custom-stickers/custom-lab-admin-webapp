@@ -67,6 +67,13 @@ export function stripFabricObjectsFromTemplate(template: Template): Template {
       };
     }
 
+    if (layer.type === 'text') {
+      return {
+        ...layer,
+        texts: layer.texts.map(({ fabricText, ...text }) => text),
+      };
+    }
+
     return layer;
   });
 
