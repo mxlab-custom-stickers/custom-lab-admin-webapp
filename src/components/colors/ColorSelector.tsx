@@ -1,156 +1,140 @@
-import ColorChip from '@/components/colors/ColorChip.tsx';
-import ColorPaletteCard from '@/components/colors/ColorPaletteCard.tsx';
-import { Button } from '@/components/ui/button.tsx';
+import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
+import { Checkbox } from '@/components/ui/checkbox.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { ScrollArea } from '@/components/ui/scroll-area.tsx';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs.tsx';
-import { compareColorsByLuminance } from '@/lib/colors.ts';
-import { cn } from '@/lib/utils.ts';
+import { useControlledState } from '@/hooks/use-controlled-state.ts';
+import {
+  arePaletteColorsAvailable,
+  compareColorsByLuminance,
+} from '@/lib/colors.ts';
 import { Color, ColorPalette } from '@/models/color.ts';
-import { Plus } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 type ColorSelectorProps = React.ComponentPropsWithoutRef<'div'> & {
-  colorPalettes: ColorPalette[];
-  colors: Color[];
-
-  selectedColorPalettes?: ColorPalette[];
-  selectedColors?: Color[];
-
-  onChange?: ({
-    colorPalettes,
-    colors,
-  }: {
-    colorPalettes: ColorPalette[];
+  config: {
+    palettes: ColorPalette[];
     colors: Color[];
-  }) => void;
+  };
+
+  value?: Color[];
+  onValueChange?: (value: Color[]) => void;
 };
 
 export default function ColorSelector({
   className,
-  colorPalettes,
-  colors,
-  selectedColorPalettes: selectedColorPalettesProp,
-  selectedColors: selectedColorsProp,
-  onChange,
+  value: valueProp,
+  onValueChange,
+  config: { palettes, colors },
   ...props
 }: ColorSelectorProps) {
-  const [selectedColorPalettes, setSelectedColorPalettes] = useState<
-    ColorPalette[]
-  >([]);
-  const [selectedColors, setSelectedColors] = useState<Color[]>([]);
+  const [value, setValue] = useControlledState<Color[]>(
+    valueProp,
+    onValueChange,
+    []
+  );
 
-  useEffect(() => {
-    if (selectedColorPalettesProp !== undefined) {
-      setSelectedColorPalettes(selectedColorPalettesProp);
-    }
-  }, [selectedColorPalettesProp]);
-
-  useEffect(() => {
-    if (selectedColorsProp !== undefined) {
-      setSelectedColors(selectedColorsProp);
-    }
-  }, [selectedColorsProp]);
-
-  function handleColorPaletteSelect(colorPalette: ColorPalette) {
-    let changes: ColorPalette[] = [];
-
-    if (selectedColorPalettes.find((p) => p.id === colorPalette.id)) {
-      changes = selectedColorPalettes.filter((p) => p.id !== colorPalette.id);
-    } else {
-      changes = [...selectedColorPalettes, colorPalette];
-    }
-
-    setSelectedColorPalettes(changes);
-    onChange?.({ colorPalettes: changes, colors: selectedColors });
+  function addPaletteSelect(palette: ColorPalette) {
+    // Add all colors from the palette that are not already in the value
+    const paletteColorsToAdd = palette.colors.filter(
+      (color) => !value.some((c) => c.id === color.id)
+    );
+    setValue([...value, ...paletteColorsToAdd]);
   }
 
+  function removePaletteSelect(palette: ColorPalette) {
+    // Remove all colors from the palette from the value
+    const newValue = value.filter(
+      (color) =>
+        !palette.colors.some((paletteColor) => paletteColor.id === color.id)
+    );
+    setValue(newValue);
+  }
   function handleColorSelect(color: Color) {
-    let changes: Color[] = [];
+    const newValue = value.some((c) => c.id === color.id)
+      ? value.filter((c) => c.id !== color.id)
+      : [...value, color];
 
-    if (selectedColors.find((c) => c.id === color.id)) {
-      changes = selectedColors.filter((p) => p.id !== color.id);
-    } else {
-      changes = [...selectedColors, color];
-    }
-
-    setSelectedColors(changes);
-    onChange?.({ colorPalettes: selectedColorPalettes, colors: changes });
+    setValue(newValue);
   }
 
   return (
-    <div className={cn(className)} {...props}>
-      <Tabs defaultValue="palettes" className="gap-4">
-        <TabsList className="w-full">
-          <TabsTrigger value="palettes">
-            Palettes{' '}
-            {selectedColorPalettes.length
-              ? `(${selectedColorPalettes.length})`
-              : null}
-          </TabsTrigger>
-
-          <TabsTrigger value="colors">
-            Couleurs{' '}
-            {selectedColors.length ? `(${selectedColors.length})` : null}
-          </TabsTrigger>
+    <div className={className} {...props}>
+      <Tabs defaultValue="palettes" className="h-full">
+        <TabsList className="mb-2">
+          <TabsTrigger value="palettes">Palettes</TabsTrigger>
+          <TabsTrigger value="colors">Couleurs</TabsTrigger>
         </TabsList>
 
         {/* Palettes */}
-        <TabsContent value="palettes">
-          <div className="grid grid-cols-2 gap-2">
-            {colorPalettes.map((colorPalette) => (
-              <ColorPaletteCard
-                key={colorPalette.id}
-                colorPalette={colorPalette}
-                onClick={() => handleColorPaletteSelect(colorPalette)}
-                selectable
-                selected={
-                  !!selectedColorPalettes.find(
-                    (cp) => cp.id === colorPalette.id
-                  )
-                }
-              />
-            ))}
-          </div>
+        <TabsContent value="palettes" className="h-full overflow-hidden">
+          <ScrollArea className="h-full overflow-y-auto">
+            <div className="grid grid-cols-1 gap-8 px-1 pr-4">
+              {palettes.map((palette) => (
+                <div key={palette.id} className="flex flex-col">
+                  <Label className="flex items-center hover:underline">
+                    <div className="flex-1">
+                      <div className="text-base font-semibold">
+                        {palette.name}
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        {palette.description}
+                      </div>
+                    </div>
+                    <Checkbox
+                      className="h-5 w-5 [&_svg]:h-4 [&_svg]:w-4"
+                      onCheckedChange={(checked) =>
+                        checked
+                          ? addPaletteSelect(palette)
+                          : removePaletteSelect(palette)
+                      }
+                      checked={arePaletteColorsAvailable(palette, value)}
+                    />
+                  </Label>
 
-          {colorPalettes.length === 0 ? (
-            <div>Aucune palette de couleur enregistrée</div>
-          ) : null}
-
-          <div className="mt-4 flex justify-end">
-            <Button>
-              <Plus />
-              Nouvelle palette
-            </Button>
-          </div>
+                  <div className="mt-2 grid grid-cols-8 gap-2">
+                    {palette.colors
+                      .sort(compareColorsByLuminance)
+                      .map((color) => (
+                        <div key={color.id}>
+                          <ColorSwatch className="w-full" color={color} />
+                          <div className="mt-1 line-clamp-2 text-center text-xs">
+                            {color.name}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
         </TabsContent>
 
         {/* Colors */}
-        <TabsContent value="colors">
-          <div className="grid grid-cols-10 gap-3">
-            {colors.sort(compareColorsByLuminance).map((color) => (
-              <ColorChip
-                key={color.id}
-                className="w-full"
-                color={color}
-                onClick={() => handleColorSelect(color)}
-                selectable
-                selected={!!selectedColors.find((c) => c.id === color.id)}
-              />
-            ))}
-          </div>
-
-          {colors.length === 0 ? <div>Aucune couleur enregistrée</div> : null}
-
-          <div className="mt-4 flex justify-end">
-            <Button>
-              <Plus />
-              Nouvelle couleur
-            </Button>
-          </div>
+        <TabsContent value="colors" className="h-full overflow-hidden">
+          <ScrollArea className="h-full overflow-y-auto">
+            <div className="grid grid-cols-8 gap-2 p-1 pr-4">
+              {colors.sort(compareColorsByLuminance).map((color) => (
+                <div key={color.id}>
+                  <ColorSwatch
+                    color={color}
+                    className="w-full"
+                    selectable
+                    selected={value.some((c) => c.id === color.id)}
+                    onClick={() => handleColorSelect(color)}
+                  />
+                  <div className="mt-1 line-clamp-2 text-center text-xs">
+                    {color.name}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
         </TabsContent>
       </Tabs>
     </div>

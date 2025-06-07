@@ -381,6 +381,7 @@ export function makeTextNonInteractive(text: Text) {
 
 export function makeTextInteractive(
   text: Text,
+  onSelected: (selected: boolean) => void,
   onModified: (modifiedText: Text) => void
 ) {
   const { fabricText } = text;
@@ -392,14 +393,15 @@ export function makeTextInteractive(
     evented: true,
   });
 
+  fabricText.on('selected', () => onSelected(true));
+  fabricText.on('deselected', () => onSelected(false));
+
   fabricText.on('editing:exited', function () {
     onModified({ ...text, value: fabricText.text });
   });
 
   fabricText.on('modified', function (e) {
     if (!e.transform) return;
-
-    console.log('modifed');
     const {
       transform: { target },
     } = e;
@@ -408,6 +410,8 @@ export function makeTextInteractive(
       ...text,
       x: target.left,
       y: target.top,
+      width: target.width,
+      height: target.height,
       angle: target.angle,
       scaleX: target.scaleX,
       scaleY: target.scaleY,
@@ -485,10 +489,20 @@ export async function unclipImageLayer(
 }
 
 export function drawTextOnCanvas(canvas: Canvas, text: Text): Textbox {
+  const defaultFonts = ['monospace', 'sans-serif', 'serif'];
+
   const fabricText = new Textbox(text.value, {
     id: text.id,
-    fontFamily: text.fontFamily,
+    fontFamily: text.font?.name || defaultFonts.join(', '),
     fontSize: text.fontSize,
+    textAlign: text.textAlign,
+    fontWeight: text.fontWeight,
+    fontStyle: text.fontStyle,
+    lineHeight: text.lineHeight,
+    charSpacing: text.charSpacing,
+    fill: text.color.value,
+    stroke: text.strokeColor?.value || '',
+    strokeWidth: text.strokeWidth,
     left: text.x, // Default position, can be adjusted
     top: text.y, // Default position, can be adjusted
     width: text.width,

@@ -1,4 +1,5 @@
-import ColorChip from '@/components/colors/ColorChip.tsx';
+import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
+import { useControlledState } from '@/hooks/use-controlled-state.ts';
 import { compareColorsByLuminance } from '@/lib/colors.ts';
 import { cn } from '@/lib/utils.ts';
 import { Color } from '@/models/color.ts';
@@ -6,22 +7,29 @@ import React from 'react';
 
 type ColorPickerProps = React.ComponentPropsWithoutRef<'div'> & {
   colors: Color[];
-  columns: number;
-  space: number;
 
-  selectedColor?: Color;
-  onSelectColor?: (color: Color) => void;
+  columns?: number;
+  space?: number;
+
+  value?: Color;
+  onValueChange?: (color: Color) => void;
 };
 
 export default function ColorPicker({
   className,
   colors,
-  columns,
-  space,
-  selectedColor,
-  onSelectColor,
+  columns = 5,
+  space = 2,
+  value: valueProp,
+  onValueChange,
   ...props
 }: ColorPickerProps) {
+  const [value, setValue] = useControlledState<Color>(
+    valueProp,
+    onValueChange,
+    undefined
+  );
+
   return (
     <div
       className={cn(`grid`, className)}
@@ -32,14 +40,13 @@ export default function ColorPicker({
       {...props}
     >
       {colors.sort(compareColorsByLuminance).map((color) => (
-        <ColorChip
+        <ColorSwatch
           key={color.id}
           className="w-full"
           color={color}
           selectable
-          showTooltip={false}
-          selected={color.id === selectedColor?.id}
-          onClick={() => onSelectColor?.(color)}
+          selected={color.id === value?.id}
+          onClick={() => setValue(color)}
         />
       ))}
     </div>

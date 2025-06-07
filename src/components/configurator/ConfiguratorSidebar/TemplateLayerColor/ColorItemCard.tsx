@@ -1,4 +1,4 @@
-import ColorChip from '@/components/colors/ColorChip.tsx';
+import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
 import SidebarCard from '@/components/configurator/ConfiguratorSidebar/SidebarCard.tsx';
 import { cn } from '@/lib/utils.ts';
 import { ColorItem } from '@/models/template.ts';
@@ -17,7 +17,7 @@ export default function ColorItemCard({
     <SidebarCard className={cn(className)} {...props}>
       <div className="flex items-center">
         <div className="flex-1">{colorItem.name}</div>
-        <ColorChip color={colorItem.color} />
+        <ColorSwatch color={colorItem.color} />
       </div>
     </SidebarCard>
   );

@@ -1,4 +1,4 @@
-import ColorChip from '@/components/colors/ColorChip.tsx';
+import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
 import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPicker.tsx';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Input } from '@/components/ui/input.tsx';
@@ -210,7 +210,7 @@ export default function TemplateLayerColorColorsConfigurator({
                     .sort(compareColorsByLuminance)
                     .map((color) => (
                       <div key={color.id}>
-                        <ColorChip className="w-full" color={color} />
+                        <ColorSwatch className="w-full" color={color} />
                         <div className="mt-1 line-clamp-2 text-center text-xs">
                           {color.name}
                         </div>
@@ -227,7 +227,7 @@ export default function TemplateLayerColorColorsConfigurator({
           <div className="grid grid-cols-8 gap-2 px-1">
             {allColors.sort(compareColorsByLuminance).map((color) => (
               <div key={color.id}>
-                <ColorChip
+                <ColorSwatch
                   className="w-full"
                   color={color}
                   selectable

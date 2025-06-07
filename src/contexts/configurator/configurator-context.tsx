@@ -8,8 +8,10 @@ import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/tem
 import {
   findColorElementById,
   updateColorElementInTemplate,
+  updateTextsInTemplate,
 } from '@/lib/configurator.ts';
 import { ColorElement, Template, TemplateLayer } from '@/models/template.ts';
+import { Text } from '@/models/text';
 import { Canvas } from 'fabric';
 import React, {
   createContext,
@@ -37,6 +39,10 @@ export const ConfiguratorContext = createContext<{
   currentColorElement: CurrentColorElement | undefined;
   setCurrentColorElementId: (currentColorElementId: string | undefined) => void;
   updateColorElement: (updatedElement: ColorElement) => void;
+
+  currentText: Text | undefined;
+  setCurrentTextId: (textId: string | undefined) => void;
+  updateText: (updatedText: Text) => void;
 } | null>(null);
 
 type ConfiguratorProviderProps = {
@@ -56,6 +62,7 @@ export function ConfiguratorProvider({
     template,
     currentLayerId: undefined,
     currentColorElementId: undefined,
+    currentTextId: undefined,
     canvas: undefined,
   } as ConfiguratorState);
 
@@ -85,6 +92,11 @@ export function ConfiguratorProvider({
       state.currentColorElementId
     );
   }, [currentLayer, state.currentColorElementId]);
+
+  const currentText: Text | undefined = useMemo(() => {
+    if (!currentLayer || currentLayer.type !== 'text') return undefined;
+    return currentLayer.texts.find((t) => t.id === state.currentTextId);
+  }, [currentLayer, state.currentTextId]);
 
   useEffect(() => {
     dispatch({ type: 'SET_TEMPLATE', payload: template });
@@ -133,13 +145,13 @@ export function ConfiguratorProvider({
   /**
    * Update a ColorElement by its id within a Template.
    *
-   * @param updates - The updated ColorElement
+   * @param updatedElement - The updated ColorElement
    * @returns A new Template with the updated ColorElement
    */
-  function updateColorElement(updates: ColorElement) {
+  function updateColorElement(updatedElement: ColorElement) {
     const updatedTemplate = updateColorElementInTemplate(
       state.template,
-      updates
+      updatedElement
     );
 
     if (templateEditorContext) {
@@ -147,6 +159,21 @@ export function ConfiguratorProvider({
     } else {
       dispatch({ type: 'SET_TEMPLATE', payload: { ...updatedTemplate } });
     }
+  }
+
+  function updateText(updatedText: Text) {
+    const { template } = state;
+    const updatedTemplate = updateTextsInTemplate(template, [updatedText]);
+
+    if (templateEditorContext) {
+      templateEditorContext.updateTemplate(updatedTemplate);
+    } else {
+      dispatch({ type: 'SET_TEMPLATE', payload: { ...updatedTemplate } });
+    }
+  }
+
+  function setCurrentTextId(textId: string | undefined) {
+    dispatch({ type: 'SET_CURRENT_TEXT_ID', payload: textId });
   }
 
   function setCanvas(canvas: Canvas) {
@@ -168,6 +195,9 @@ export function ConfiguratorProvider({
         currentColorElement,
         setCurrentColorElementId,
         updateColorElement,
+        currentText,
+        setCurrentTextId,
+        updateText,
         setCanvas,
       }}
     >

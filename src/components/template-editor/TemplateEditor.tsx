@@ -1,6 +1,7 @@
 import ConfiguratorCanvas from '@/components/configurator/ConfiguratorCanvas.tsx';
 import ConfiguratorSidebar from '@/components/configurator/ConfiguratorSidebar/ConfiguratorSidebar.tsx';
 import ConfiguratorLayersBar from '@/components/configurator/LayersBar.tsx';
+import Toolbar from '@/components/configurator/Toolbar/Toolbar.tsx';
 import TemplateEditorHeader from '@/components/template-editor/TemplateEditorHeader.tsx';
 import TemplateEditorSidebar from '@/components/template-editor/TemplateEditorSidebar.tsx';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar.tsx';
@@ -30,6 +31,7 @@ export default function TemplateEditor() {
 
                   <div className="relative h-full w-full @max-[385px]:order-first">
                     <ConfiguratorCanvas wrapperClassName="absolute top-0 left-0 right-0 bottom-0 bg-[radial-gradient(circle,_#ccc,_#ddd,_#eee,_#fff)]" />
+                    <Toolbar />
                   </div>
 
                   <ConfiguratorLayersBar />

@@ -10,9 +10,9 @@ export default function ConfiguratorSidebar({
   ...props
 }: ConfiguratorSidebarProps) {
   return (
-    <div className={cn('w-64 border-r bg-gray-50', className)} {...props}>
+    <div className={cn('w-64 border-r bg-white', className)} {...props}>
       <div className="flex h-full flex-col overflow-hidden">
-        <CurrentLayerComponent className="flex-1 overflow-y-auto p-2" />
+        <CurrentLayerComponent className="flex-1 overflow-y-auto p-3" />
         <SidebarFooter />
       </div>
     </div>

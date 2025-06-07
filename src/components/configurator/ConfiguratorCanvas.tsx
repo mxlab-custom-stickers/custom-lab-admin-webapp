@@ -22,6 +22,7 @@ import {
 } from '@/lib/fabric.ts';
 import { cn } from '@/lib/utils.ts';
 import { Template, TemplateLayerImage } from '@/models/template.ts';
+import * as fabric from 'fabric';
 import { Canvas } from 'fabric';
 import { useEffect, useRef } from 'react';
 
@@ -38,6 +39,7 @@ export default function ConfiguratorCanvas({
     setCanvas,
     currentLayer,
     setCurrentColorElementId,
+    setCurrentTextId,
   } = useConfiguratorContext();
 
   const templateRef = useRef<Template>(template);
@@ -76,12 +78,19 @@ export default function ConfiguratorCanvas({
       } else if (currentLayer.type === 'text') {
         // Activate interactivity for text objects
         currentLayer.texts.forEach((text) => {
-          makeTextInteractive(text, (modifiedText) => {
-            const updatedTemplate = updateTextsInTemplate(templateRef.current, [
-              modifiedText,
-            ]);
-            updateTemplate(updatedTemplate);
-          });
+          makeTextInteractive(
+            text,
+            (selected) => {
+              setCurrentTextId(selected ? text.id : undefined);
+            },
+            (modifiedText) => {
+              const updatedTemplate = updateTextsInTemplate(
+                templateRef.current,
+                [modifiedText]
+              );
+              updateTemplate(updatedTemplate);
+            }
+          );
         });
       }
 
@@ -95,6 +104,16 @@ export default function ConfiguratorCanvas({
     if (!wrapperEl || !canvasEl) return;
 
     const initCanvas = new Canvas(canvasEl);
+
+    const controlsColor = 'oklch(70.7% 0.165 254.624)';
+    fabric.InteractiveFabricObject.ownDefaults = {
+      ...fabric.InteractiveFabricObject.ownDefaults,
+      cornerStrokeColor: controlsColor,
+      cornerColor: controlsColor,
+      borderColor: controlsColor,
+      transparentCorners: false,
+      padding: 8,
+    };
 
     const resize = () => resizeCanvasToWrapper(initCanvas, wrapperEl);
     resize();

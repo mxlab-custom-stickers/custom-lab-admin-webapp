@@ -1,11 +1,22 @@
+import { Color } from '@/models/color.ts';
 import { Status } from '@/models/common.ts';
 import { Textbox } from 'fabric';
 
 export interface Text {
   id: string;
   value: string; // The text content
-  fontFamily: string;
+
+  font: Font | null; // If no custom font is provided, the default browser font will be used
   fontSize: number;
+  textAlign: 'left' | 'center' | 'right';
+  fontWeight: 'light' | 'normal' | 'bold';
+  fontStyle: 'italic' | 'normal';
+  lineHeight: number;
+  charSpacing: number;
+
+  color: Color;
+  strokeColor: Color | null;
+  strokeWidth: number;
 
   width: number;
   height: number;

@@ -12,6 +12,7 @@ import React from 'react';
 
 type ColorChipProps = Omit<React.ComponentPropsWithoutRef<'div'>, 'color'> & {
   color: Color;
+
   selected?: boolean;
   selectable?: boolean;
   showTooltip?: boolean;
@@ -20,7 +21,7 @@ type ColorChipProps = Omit<React.ComponentPropsWithoutRef<'div'>, 'color'> & {
 /**
  * Tooltip wrapper.
  */
-export default function ColorChip({
+export default function ColorSwatch({
   className,
   color,
   showTooltip = false,

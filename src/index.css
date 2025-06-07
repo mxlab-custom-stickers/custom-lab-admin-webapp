@@ -120,9 +120,21 @@
 }
 
 @layer utilities {
+  /* Hide the search clear button in search inputs */
   .no-search-clear::-webkit-search-cancel-button {
     display: none;
     -webkit-appearance: none;
     appearance: none;
+  }
+
+  /* Hide the spinner in number inputs */
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .no-spinner {
+    -moz-appearance: textfield; /* Firefox */
   }
 }

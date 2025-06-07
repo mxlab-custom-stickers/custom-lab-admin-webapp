@@ -10,7 +10,7 @@ export default function OptionsCard({
   return (
     <Card
       className={cn(
-        'gap-2 border-none py-4 shadow-none *:px-4',
+        'gap-2 border-none py-4 *:px-4',
         '[&>div[data-slot=card-header]]:gap-0.5',
         '[&>div[data-slot=card-content]]:flex [&>div[data-slot=card-content]]:flex-col [&>div[data-slot=card-content]]:gap-2'
       )}

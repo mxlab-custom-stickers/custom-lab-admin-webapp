@@ -1,4 +1,4 @@
-import ColorChip from '@/components/colors/ColorChip.tsx';
+import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
 import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPicker.tsx';
 import {
   Accordion,
@@ -44,7 +44,7 @@ export default function ColorItemsAccordion({
           <AccordionItem key={colorItem.id} value={colorItem.id}>
             <AccordionTrigger className="items-center px-1 py-0">
               <div className="flex items-center">
-                <ColorChip className="mr-2" color={colorItem.color} />
+                <ColorSwatch className="mr-2" color={colorItem.color} />
                 <div
                   className="flex h-14 flex-1 items-center"
                   onClick={(e) => e.stopPropagation()}
@@ -68,8 +68,8 @@ export default function ColorItemsAccordion({
                 colors={currentLayer.config.availableColors}
                 columns={currentLayer.config.columns}
                 space={currentLayer.config.space}
-                selectedColor={colorItem.color}
-                onSelectColor={(color) => handleColorSelect(colorItem, color)}
+                value={colorItem.color}
+                onValueChange={(color) => handleColorSelect(colorItem, color)}
               />
             </AccordionContent>
           </AccordionItem>

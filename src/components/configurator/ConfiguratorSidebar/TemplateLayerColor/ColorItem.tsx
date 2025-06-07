@@ -1,4 +1,4 @@
-import ColorChip from '@/components/colors/ColorChip.tsx';
+import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
 import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPicker.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
@@ -39,7 +39,7 @@ export default function ColorItemComponent({
   return (
     <div className={className} {...props}>
       <div className="mb-3 flex items-center px-1">
-        <ColorChip className="mr-1 shrink-0" color={colorItem.color} />
+        <ColorSwatch className="mr-1 shrink-0" color={colorItem.color} />
         <InvisibleInput
           className="!text-lg font-semibold"
           value={colorItem.name}
@@ -54,8 +54,8 @@ export default function ColorItemComponent({
         colors={currentLayer.config.availableColors}
         columns={currentLayer.config.columns}
         space={currentLayer.config.space}
-        selectedColor={colorItem.color}
-        onSelectColor={handleColorSelect}
+        value={colorItem.color}
+        onValueChange={handleColorSelect}
       />
     </div>
   );

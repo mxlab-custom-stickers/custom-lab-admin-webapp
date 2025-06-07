@@ -1,3 +1,4 @@
+import ColorsOptionsCard from '@/components/template-editor/ColorsOptionsCard.tsx';
 import FontsOptionsCard from '@/components/template-editor/EditTemplateLayerText/FontsOptionsCard.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
@@ -23,6 +24,7 @@ export default function EditTemplateLayerTextComponent() {
       />
 
       <FontsOptionsCard />
+      <ColorsOptionsCard layer={currentLayer} />
     </div>
   );
 }

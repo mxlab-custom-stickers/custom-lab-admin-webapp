@@ -1,3 +1,4 @@
+import CurrentTextEditor from '@/components/configurator/ConfiguratorSidebar/TemplateLayerText/CurrentTextEditor.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { drawTextOnCanvas } from '@/lib/fabric.ts';
@@ -9,6 +10,7 @@ export default function TemplateLayerTextComponent() {
     state: { canvas },
     currentLayer,
     updateLayer,
+    currentText,
   } = useConfiguratorContext();
 
   function addNewText() {
@@ -18,7 +20,15 @@ export default function TemplateLayerTextComponent() {
       id: generateId(),
       value: 'Mon Texte',
       fontSize: 64,
-      fontFamily: 'sans-serif',
+      font: null,
+      textAlign: 'left',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      lineHeight: 1,
+      charSpacing: 0,
+      color: { id: 'default-color', name: 'Black', value: '#000000' }, // Default color
+      strokeColor: null,
+      strokeWidth: 0,
       x: 100,
       y: 100,
       width: 300,
@@ -40,9 +50,13 @@ export default function TemplateLayerTextComponent() {
 
   return (
     <div>
-      <Button className="w-full" onClick={addNewText}>
-        Ajouter un texte
-      </Button>
+      {currentText ? (
+        <CurrentTextEditor />
+      ) : (
+        <Button className="w-full" onClick={addNewText}>
+          Ajouter un texte
+        </Button>
+      )}
     </div>
   );
 }

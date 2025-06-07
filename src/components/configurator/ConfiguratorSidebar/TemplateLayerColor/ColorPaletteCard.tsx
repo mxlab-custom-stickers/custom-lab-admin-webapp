@@ -1,4 +1,4 @@
-import ColorChip from '@/components/colors/ColorChip.tsx';
+import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
 import SidebarCard from '@/components/configurator/ConfiguratorSidebar/SidebarCard.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { compareColorsByLuminance } from '@/lib/colors.ts';
@@ -27,7 +27,7 @@ export default function ColorPaletteCard({
       </div>
       <div className="flex flex-wrap items-center gap-1.5">
         {colors.sort(compareColorsByLuminance).map((color, index) => (
-          <ColorChip
+          <ColorSwatch
             key={color.id ? `${color.id}-${index}` : index}
             className="h-9 w-9"
             color={color}
