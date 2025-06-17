@@ -51,7 +51,7 @@ type ConfiguratorProviderProps = {
   children: React.ReactNode;
 };
 
-export function ConfiguratorProvider({
+export function Configurator({
   template,
   currentLayerId: currentLayerIdProp,
   children,

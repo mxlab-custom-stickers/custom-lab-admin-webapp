@@ -12,7 +12,7 @@ import { useTemplateEditorContext } from '@/contexts/template-editor/template-ed
 import {
   TemplateLayer,
   TemplateLayerType,
-  templateLayerTypes,
+  templateLayerTypeLabels,
 } from '@/models/template.ts';
 import { Plus } from 'lucide-react';
 
@@ -96,11 +96,9 @@ export default function AddLayerDropdownMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Type de calque</DropdownMenuLabel>
-
         <DropdownMenuSeparator />
-
         <DropdownMenuGroup>
-          {Object.entries(templateLayerTypes).map(([key, value]) => (
+          {Object.entries(templateLayerTypeLabels).map(([key, value]) => (
             <DropdownMenuItem
               key={key}
               onSelect={() => handleLayerTypeSelect(key as TemplateLayerType)}

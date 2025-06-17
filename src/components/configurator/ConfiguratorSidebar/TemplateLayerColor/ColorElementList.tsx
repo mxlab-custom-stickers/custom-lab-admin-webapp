@@ -16,11 +16,12 @@ export default function ColorElementList({
   onColorElementClick,
   ...props
 }: ColorElementListProps) {
-  const showColorItemsAccordion = colorElements.every(
+  // Check if all color elements are of type 'item'
+  const isAllColorItems = colorElements.every(
     (colorElement) => colorElement.type === 'item'
   );
 
-  return showColorItemsAccordion ? (
+  return isAllColorItems ? (
     <ColorItemsAccordion colorItems={colorElements} />
   ) : (
     <div className={cn('flex flex-col gap-1.5', className)} {...props}>

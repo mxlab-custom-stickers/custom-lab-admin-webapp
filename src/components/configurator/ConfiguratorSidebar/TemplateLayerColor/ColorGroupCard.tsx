@@ -17,7 +17,7 @@ export default function ColorGroupCard({
   ...props
 }: ColorGroupCardProps) {
   const colors = useMemo(
-    () => getAllColorGroupColors(colorGroup),
+    () => getAllColorGroupColors(colorGroup).sort(compareColorsByLuminance),
     [colorGroup]
   );
 
@@ -25,7 +25,7 @@ export default function ColorGroupCard({
     <SidebarCard className={cn(className)} {...props}>
       <div className="mb-2 text-sm">{colorGroup.name}</div>
       <div className="flex flex-wrap items-center gap-1.5">
-        {colors.sort(compareColorsByLuminance).map((color, index) => (
+        {colors.map((color, index) => (
           <ColorSwatch
             key={color.id ? `${color.id}-${index}` : index}
             className="h-9 w-9"

@@ -22,7 +22,7 @@ export default function ColorGroupComponent({
         <InvisibleInput
           className="mb-3 !text-lg font-semibold"
           value={colorGroup.name}
-          onSubmit={(value) =>
+          onValueSubmit={(value) =>
             updateColorElement({ ...colorGroup, name: value })
           }
         />

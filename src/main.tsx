@@ -2,7 +2,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import ReactDOM from 'react-dom/client';
 
 // Import the generated route tree
-import { Toaster } from './components/ui/sonner';
+import { Toaster } from '@/components/ui/sonner';
 import './index.css';
 import { routeTree } from './routeTree.gen';
 

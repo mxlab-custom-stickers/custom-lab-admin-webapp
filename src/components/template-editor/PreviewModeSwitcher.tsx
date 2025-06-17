@@ -27,10 +27,12 @@ export default function PreviewModeSwitcher({
       <ToggleGroupItem value="desktop" aria-label="Toggle desktop preview mode">
         <Monitor className="h-4 w-4" />
       </ToggleGroupItem>
+
       {/* Mobile */}
       <ToggleGroupItem value="mobile" aria-label="Toggle mobile preview mode">
         <Smartphone className="h-4 w-4" />
       </ToggleGroupItem>
+
       {/* Fullscreen */}
       <ToggleGroupItem
         value="fullscreen"

@@ -1,35 +1,53 @@
 import { Input } from '@/components/ui/input.tsx';
+import { useControlledState } from '@/hooks/use-controlled-state.ts';
 import { cn } from '@/lib/utils.ts';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-type InvisibleInputProps = Omit<
-  React.ComponentPropsWithoutRef<'input'>,
-  'onSubmit'
-> & {
-  onSubmit?: (value: string) => void;
+type InvisibleInputProps = {
+  className?: string;
+  id?: string;
+  name?: string;
+  defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
+  onValueSubmit?: (value: string) => void;
+  onCancel?: () => void;
 };
 
+/**
+ * A styled input component that looks minimal/invisible and supports
+ * both controlled and uncontrolled usage. It auto-selects its content
+ * on focus and calls `onValueSubmit` on form submit or blur. Pressing
+ * Escape triggers `onCancel`, if provided.
+ */
 export default function InvisibleInput({
   className,
+  id,
+  name,
+  defaultValue = '',
   value: valueProp,
-  onChange,
-  onSubmit,
-  ...props
+  onValueChange,
+  onValueSubmit,
+  onCancel,
 }: InvisibleInputProps) {
-  const [value, setValue] = useState<string>(valueProp?.toString() ?? '');
+  const [value, setValue] = useControlledState(
+    valueProp,
+    onValueChange,
+    defaultValue || valueProp || ''
+  );
+
+  useEffect(() => {
+    setValue(defaultValue || '');
+  }, [defaultValue]);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (valueProp !== undefined) {
-      setValue(valueProp.toString());
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      onCancel?.();
+      inputRef.current?.blur();
     }
-  }, [valueProp]);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const newValue = e.target.value;
-    setValue(newValue);
-    onChange?.(e);
   }
 
   return (
@@ -39,28 +57,27 @@ export default function InvisibleInput({
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-
-        if (inputRef.current) {
-          inputRef.current.blur();
-        }
-
-        onSubmit?.(value);
+        inputRef.current?.blur();
+        onValueSubmit?.(value);
       }}
     >
       <Input
         ref={inputRef}
         className={cn(
-          'underline-offset-2 not-focus:border-none not-focus:bg-transparent not-focus:shadow-none hover:not-focus:underline',
+          'border-none bg-transparent underline-offset-2 shadow-none hover:underline focus:outline-none',
           className
         )}
+        id={id}
+        name={name}
         value={value}
-        onChange={handleChange}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onFocus={() => inputRef.current?.select()}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck={false}
         maxLength={512}
-        {...props}
       />
     </form>
   );

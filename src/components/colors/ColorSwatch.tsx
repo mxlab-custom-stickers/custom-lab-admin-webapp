@@ -31,19 +31,19 @@ export default function ColorSwatch({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Component className={className} color={color} {...props} />
+          <ColorChip className={className} color={color} {...props} />
         </TooltipTrigger>
         <TooltipContent>{color.name}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   ) : (
-    <Component className={className} color={color} {...props} />
+    <ColorChip className={className} color={color} {...props} />
   );
 }
 
 type Props = Omit<ColorChipProps, 'showTooltip'>;
 
-function Component({
+function ColorChip({
   className,
   color,
   selected,

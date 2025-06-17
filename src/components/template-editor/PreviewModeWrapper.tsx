@@ -1,5 +1,5 @@
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils.ts';
 import React from 'react';
 
 type PreviewModeWrapperProps = React.ComponentPropsWithoutRef<'div'>;
@@ -15,16 +15,24 @@ export default function PreviewModeWrapper({
   return (
     <div
       className={cn(
-        'h-full max-h-[calc(100svh-3.5rem-0.375rem-0.375rem)] w-full duration-200',
-        {
-          'max-w-full':
-            previewMode === 'desktop' || previewMode === 'fullscreen',
-          'max-h-[800px] max-w-sm': previewMode === 'mobile',
-        },
+        'grid h-full bg-gray-300 p-1.5',
+
         className
       )}
     >
-      {children}
+      <div
+        className={cn(
+          'h-full overflow-hidden rounded-lg bg-white transition-[max-width] duration-200',
+          { 'max-w-full': previewMode === 'fullscreen' },
+          { 'max-w-[calc(100svw-16rem-0.75rem)]': previewMode === 'desktop' },
+          {
+            'max-h-[800px] max-w-sm translate-x-[calc(50svw-50%)]':
+              previewMode === 'mobile',
+          }
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 }

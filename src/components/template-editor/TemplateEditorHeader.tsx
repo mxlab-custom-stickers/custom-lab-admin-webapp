@@ -24,7 +24,7 @@ export default function TemplateEditorHeader() {
       <InvisibleInput
         className="text-center !text-lg font-medium"
         value={template.name}
-        onSubmit={(name) => updateTemplate({ ...template, name })}
+        onValueSubmit={(name) => updateTemplate({ ...template, name })}
       />
 
       <div className="flex items-center justify-end gap-2">

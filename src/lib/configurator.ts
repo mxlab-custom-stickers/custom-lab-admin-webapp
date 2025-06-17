@@ -9,11 +9,15 @@ import {
   ColorElement,
   ColorGroup,
   ColorItem,
+  isTemplateLayerColor,
+  isTemplateLayerImage,
+  isTemplateLayerText,
   Template,
   TemplateLayerColor,
   TemplateLayerText,
 } from '@/models/template.ts';
 import { Text } from '@/models/text.ts';
+import { FabricObject } from 'fabric';
 
 /**
  * Resets interactivity on all color items and images
@@ -322,4 +326,39 @@ export function getAllTextsFromTemplate(template: Template): Text[] {
   return template.layers
     .filter((layer): layer is TemplateLayerText => layer.type === 'text')
     .flatMap((textLayer) => textLayer.texts);
+}
+
+/**
+ * Returns all FabricObjects from the template layers that match the given IDs.
+ */
+export function getAllFabricObjectsFromTemplate(
+  template: Template,
+  layerIds: string[]
+): FabricObject[] {
+  const result: FabricObject[] = [];
+
+  for (const layer of template.layers) {
+    if (!layerIds.includes(layer.id)) continue;
+
+    if (isTemplateLayerColor(layer)) {
+      const colorItems = collectColorItems(layer.colorElements);
+      for (const colorItem of colorItems) {
+        if (colorItem.fabricObjects) result.push(...colorItem.fabricObjects);
+      }
+    }
+
+    if (isTemplateLayerText(layer)) {
+      for (const text of layer.texts) {
+        if (text.fabricText) result.push(text.fabricText);
+      }
+    }
+
+    if (isTemplateLayerImage(layer)) {
+      for (const image of layer.images) {
+        if (image.fabricImage) result.push(image.fabricImage);
+      }
+    }
+  }
+
+  return result;
 }

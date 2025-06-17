@@ -2,7 +2,9 @@ import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
 import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPicker.tsx';
 import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
+import { useConfiguratorCanvas } from '@/hooks/use-configurator-canvas.ts';
 import { Color } from '@/models/color.ts';
+import { isTemplateLayerColor } from '@/models/template.ts';
 import React from 'react';
 
 type ColorItemComponentProps = React.ComponentPropsWithoutRef<'div'>;
@@ -11,29 +13,23 @@ export default function ColorItemComponent({
   className,
   ...props
 }: ColorItemComponentProps) {
-  const {
-    state: { canvas },
-    currentColorElement,
-    currentLayer,
-    updateColorElement,
-  } = useConfiguratorContext();
+  const { currentColorElement, currentLayer, updateColorElement } =
+    useConfiguratorContext();
+
+  const { setColorItemsColor } = useConfiguratorCanvas();
 
   const colorItem =
     currentColorElement?.type === 'item' ? currentColorElement : null;
 
-  if (!colorItem || !currentLayer || currentLayer.type !== 'color') return null;
+  if (!colorItem || !currentLayer || !isTemplateLayerColor(currentLayer))
+    return null;
 
   function handleColorSelect(color: Color) {
     if (!currentColorElement || currentColorElement.type !== 'item') return;
 
-    if (canvas) {
-      currentColorElement.fabricObjects?.forEach((obj) => {
-        obj.set('fill', color.value);
-      });
-      canvas.requestRenderAll();
-    }
-
-    updateColorElement({ ...currentColorElement, color });
+    const updatedColorItem = { ...currentColorElement, color };
+    setColorItemsColor([updatedColorItem]);
+    updateColorElement(updatedColorItem);
   }
 
   return (
@@ -43,7 +39,7 @@ export default function ColorItemComponent({
         <InvisibleInput
           className="!text-lg font-semibold"
           value={colorItem.name}
-          onSubmit={(value) =>
+          onValueSubmit={(value) =>
             updateColorElement({ ...colorItem, name: value })
           }
         />

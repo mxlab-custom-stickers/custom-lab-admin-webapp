@@ -8,7 +8,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog.tsx';
-import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { drawImageOnCanvas } from '@/lib/fabric.ts';
 import { FileNode, listFiles } from '@/lib/firebase/storage.ts';
@@ -64,11 +63,6 @@ export default function TemplateLayerImageComponent() {
 
   return (
     <div>
-      <InvisibleInput
-        className="my-2 !text-lg font-semibold"
-        value={currentLayer.name}
-      />
-
       <div className="p-2">
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogTrigger asChild>

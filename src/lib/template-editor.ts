@@ -28,6 +28,7 @@ export function svgLayerToColorElement(svgLayer: SvgLayer): ColorElement {
 /**
  * Removes all `fabricObjects` from each ColorItem
  * and `fabricImage` from each Image in a Template.
+ * and `fabricText` from each Text in a Template.
  * Intended to be used before saving the template to a database.
  *
  * @param template - The Template to clean

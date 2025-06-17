@@ -1,7 +1,7 @@
-import { useAppContext } from '@/contexts/app-context';
+import { useAppContext } from '@/contexts/app-context.ts';
 import { addFont } from '@/lib/firebase/firestore.ts';
-import { uploadFile } from '@/lib/firebase/storage';
-import { generateId } from '@/lib/nanoid';
+import { uploadFile } from '@/lib/firebase/storage.ts';
+import { generateId } from '@/lib/nanoid.ts';
 import {
   Font,
   FontStyle,
@@ -9,7 +9,7 @@ import {
   fontStyleStyles,
   fontStyles,
   fontWeights,
-} from '@/models/text';
+} from '@/models/text.ts';
 import { useState } from 'react';
 
 export type FontFormType = {

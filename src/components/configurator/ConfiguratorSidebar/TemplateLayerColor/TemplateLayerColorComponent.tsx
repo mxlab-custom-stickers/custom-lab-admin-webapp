@@ -1,80 +1,54 @@
 import ColorElementList from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorElementList.tsx';
-import ColorPaletteCard from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPaletteCard.tsx';
-import CurrentColorElement from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/CurrentColorElement.tsx';
-import FocusSection from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/FocusSection.tsx';
+import ColorGroupComponent from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorGroupComponent.tsx';
+import ColorItemComponent from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorItemComponent.tsx';
+import ColorLayerFocusControls from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorLayerFocusControls.tsx';
+import ColorPaletteComponent from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPaletteComponent.tsx';
+import { ColorPaletteSection } from '@/components/configurator/ConfiguratorSidebar/TemplateLayerColor/ColorPaletteSection.tsx';
 import BackButton from '@/components/ui/BackButton.tsx';
-import InvisibleInput from '@/components/ui/InvisibleInput.tsx';
-import { Separator } from '@/components/ui/separator.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
-import { useOptionalTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
+import { CurrentColorElementType } from '@/contexts/configurator/configurator-types.ts';
+import { isTemplateLayerColor } from '@/models/template.ts';
+import { ReactNode } from 'react';
+
+const currentColorElementComponents: Record<
+  CurrentColorElementType,
+  ReactNode
+> = {
+  group: <ColorGroupComponent />,
+  item: <ColorItemComponent />,
+  'color-palette': <ColorPaletteComponent />,
+};
 
 export default function TemplateLayerColorComponent() {
   const { currentLayer, currentColorElement, setCurrentColorElementId } =
     useConfiguratorContext();
 
-  const templateEditorContext = useOptionalTemplateEditorContext();
+  if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
 
-  if (currentLayer?.type !== 'color') return null;
-
-  function handleNameChange(name: string) {
-    if (!templateEditorContext) return;
-    if (!currentLayer) return;
-
-    templateEditorContext.updateLayer({
-      ...currentLayer,
-      name,
-    });
-  }
-
+  /**
+   * Navigate back to the parent color element.
+   */
   function goBack() {
     if (!currentColorElement) return;
     const { parentId } = currentColorElement;
     setCurrentColorElementId(parentId);
   }
 
-  return (
+  return !currentColorElement ? (
     <div>
-      {!currentColorElement ? (
-        <>
-          <InvisibleInput
-            className="my-2 !text-lg font-semibold"
-            value={currentLayer.name}
-            onSubmit={handleNameChange}
-          />
-
-          <FocusSection />
-
-          {currentLayer.config.enableColorPalette ? (
-            <div>
-              <ColorPaletteCard
-                onClick={() => setCurrentColorElementId('color-palette')}
-              />
-              <div className="my-2 grid grid-cols-[40%_20%_40%] items-center px-3">
-                <Separator />
-                <span className="upercase text-center text-sm font-medium">
-                  ou
-                </span>
-                <Separator />
-              </div>
-              <div className="text-muted-foreground p-2 text-xs">
-                Modifie les couleurs par éléments
-              </div>
-            </div>
-          ) : null}
-
-          <ColorElementList
-            colorElements={currentLayer.colorElements}
-            onColorElementClick={(colorElement) =>
-              setCurrentColorElementId(colorElement.id)
-            }
-          />
-        </>
-      ) : (
-        <>
-          <BackButton className="mb-3" onClick={goBack} />
-          <CurrentColorElement />
-        </>
-      )}
+      <ColorLayerFocusControls />
+      <ColorPaletteSection />
+      <ColorElementList
+        colorElements={currentLayer.colorElements}
+        onColorElementClick={(colorElement) =>
+          setCurrentColorElementId(colorElement.id)
+        }
+      />
+    </div>
+  ) : (
+    <div>
+      <BackButton className="mb-3" onClick={goBack} />
+      {currentColorElementComponents[currentColorElement.type]}
     </div>
   );
 }

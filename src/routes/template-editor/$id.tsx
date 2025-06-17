@@ -9,6 +9,7 @@ export const Route = createFileRoute('/template-editor/$id')({
   component: RouteComponent,
 });
 
+// TODO: add loading state and handle error when template not found
 function RouteComponent() {
   const { id } = Route.useParams();
 
