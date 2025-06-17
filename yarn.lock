@@ -4126,9 +4126,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"custom-lab-admin-webapp@workspace:.":
+"custom-lab-admin-webapp@workspace:apps/admin":
   version: 0.0.0-use.local
-  resolution: "custom-lab-admin-webapp@workspace:."
+  resolution: "custom-lab-admin-webapp@workspace:apps/admin"
   dependencies:
     "@eslint/js": "npm:^9.21.0"
     "@radix-ui/react-accordion": "npm:^1.2.11"
@@ -4196,6 +4196,12 @@ __metadata:
     typescript: "npm:~5.7.2"
     typescript-eslint: "npm:^8.24.1"
     vite: "npm:^6.2.0"
+  languageName: unknown
+  linkType: soft
+
+"custom-lab-monorepo@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "custom-lab-monorepo@workspace:."
   languageName: unknown
   linkType: soft
 
