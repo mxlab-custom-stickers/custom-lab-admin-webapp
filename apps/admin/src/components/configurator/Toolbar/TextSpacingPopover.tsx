@@ -1,11 +1,7 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { NumericInput } from '@/components/ui/NumericInput.tsx';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover.tsx';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { Slider } from '@/components/ui/slider.tsx';
 import { useControlledState } from '@/hooks/use-controlled-state.ts';
 import { RxLineHeight } from 'react-icons/rx';
@@ -52,9 +48,7 @@ export default function TextSpacingPopover({
                 value={[value.charSpacing]}
                 min={-200}
                 max={800}
-                onValueChange={(change) =>
-                  setValue({ ...value, charSpacing: change[0] })
-                }
+                onValueChange={(change) => setValue({ ...value, charSpacing: change[0] })}
               />
               <NumericInput
                 id="char-spacing-input"
@@ -63,9 +57,7 @@ export default function TextSpacingPopover({
                 min={-200}
                 max={800}
                 step={50}
-                onChange={(change) =>
-                  setValue({ ...value, charSpacing: change })
-                }
+                onChange={(change) => setValue({ ...value, charSpacing: change })}
               />
             </div>
           </div>
@@ -80,9 +72,7 @@ export default function TextSpacingPopover({
                 min={0.1}
                 max={2.5}
                 step={0.1}
-                onValueChange={(change) =>
-                  setValue({ ...value, lineHeight: change[0] })
-                }
+                onValueChange={(change) => setValue({ ...value, lineHeight: change[0] })}
               />
               <NumericInput
                 id="line-height-input"
@@ -91,9 +81,7 @@ export default function TextSpacingPopover({
                 min={0.1}
                 max={2.5}
                 step={0.1}
-                onChange={(change) =>
-                  setValue({ ...value, lineHeight: change })
-                }
+                onChange={(change) => setValue({ ...value, lineHeight: change })}
               />
             </div>
           </div>

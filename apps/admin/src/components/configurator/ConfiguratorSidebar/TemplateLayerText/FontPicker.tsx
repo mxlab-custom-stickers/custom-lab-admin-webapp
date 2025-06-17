@@ -9,16 +9,8 @@ type FontPickerProps = {
   onValueChange?: (value: Font) => void;
 };
 
-export default function FontPicker({
-  fonts,
-  value: valueProp,
-  onValueChange,
-}: FontPickerProps) {
-  const [value, setValue] = useControlledState<Font>(
-    valueProp,
-    onValueChange,
-    undefined
-  );
+export default function FontPicker({ fonts, value: valueProp, onValueChange }: FontPickerProps) {
+  const [value, setValue] = useControlledState<Font>(valueProp, onValueChange, undefined);
 
   return (
     <div className="flex flex-col">
@@ -26,7 +18,7 @@ export default function FontPicker({
         <div
           key={font.id}
           className={cn(
-            'flex cursor-pointer items-center rounded-md p-1 px-2 text-lg select-none hover:bg-gray-100'
+            'flex cursor-pointer select-none items-center rounded-md p-1 px-2 text-lg hover:bg-gray-100'
           )}
           style={{ fontFamily: font.name }}
           onClick={() => setValue(font)}

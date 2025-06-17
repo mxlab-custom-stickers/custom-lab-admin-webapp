@@ -20,8 +20,7 @@ export function svgLayerToColorElement(svgLayer: SvgLayer): ColorElement {
     ...base,
     type: 'group',
     parentId: svgLayer.parentId,
-    subColorElements:
-      svgLayer.children?.map((child) => svgLayerToColorElement(child)) || [],
+    subColorElements: svgLayer.children?.map((child) => svgLayerToColorElement(child)) || [],
   };
 }
 

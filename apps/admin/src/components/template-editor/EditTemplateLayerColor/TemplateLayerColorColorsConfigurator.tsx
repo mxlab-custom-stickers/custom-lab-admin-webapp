@@ -3,16 +3,8 @@ import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateL
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { Label } from '@/components/ui/label.tsx';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs.tsx';
-import {
-  arePaletteColorsAvailable,
-  compareColorsByLuminance,
-} from '@/lib/colors.ts';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
+import { arePaletteColorsAvailable, compareColorsByLuminance } from '@/lib/colors.ts';
 import { cn } from '@/lib/utils.ts';
 import { Color, ColorPalette } from '@/models/color';
 import { TemplateLayerColor } from '@/models/template.ts';
@@ -23,14 +15,13 @@ export type ColorsConfiguratorState = Pick<
   'availableColors' | 'columns' | 'space'
 >;
 
-type TemplateLayerColorColorsConfiguratorProps =
-  React.ComponentPropsWithoutRef<'div'> & {
-    allColorPalettes: ColorPalette[];
-    allColors: Color[];
+type TemplateLayerColorColorsConfiguratorProps = React.ComponentPropsWithoutRef<'div'> & {
+  allColorPalettes: ColorPalette[];
+  allColors: Color[];
 
-    state?: ColorsConfiguratorState;
-    onStateChange?: (state: ColorsConfiguratorState) => void;
-  };
+  state?: ColorsConfiguratorState;
+  onStateChange?: (state: ColorsConfiguratorState) => void;
+};
 
 export default function TemplateLayerColorColorsConfigurator({
   className,
@@ -55,9 +46,7 @@ export default function TemplateLayerColorColorsConfigurator({
   }, [stateProp]);
 
   function addColorPalette(palette: ColorPalette) {
-    const colorMap = new Map(
-      state.availableColors.map((color) => [color.id, color])
-    );
+    const colorMap = new Map(state.availableColors.map((color) => [color.id, color]));
 
     for (const color of palette.colors) {
       if (!colorMap.has(color.id)) {
@@ -81,9 +70,7 @@ export default function TemplateLayerColorColorsConfigurator({
 
     const newState = {
       ...state,
-      availableColors: state.availableColors.filter(
-        (color) => !paletteColorIds.has(color.id)
-      ),
+      availableColors: state.availableColors.filter((color) => !paletteColorIds.has(color.id)),
     };
 
     if (onStateChange) {
@@ -147,13 +134,7 @@ export default function TemplateLayerColorColorsConfigurator({
   }
 
   return (
-    <div
-      className={cn(
-        'grid h-[80svh] grid-cols-[min-content_auto] gap-14',
-        className
-      )}
-      {...props}
-    >
+    <div className={cn('grid h-[80svh] grid-cols-[min-content_auto] gap-14', className)} {...props}>
       {/* Preview */}
       <div className="flex h-full flex-col overflow-hidden">
         <div className="mb-2 text-center uppercase">Aperçu</div>
@@ -187,35 +168,24 @@ export default function TemplateLayerColorColorsConfigurator({
                 <div className="flex items-center">
                   <div className="flex-1">
                     <div className="font-semibold">{palette.name}</div>
-                    <div className="text-sm text-gray-600">
-                      {palette.description}
-                    </div>
+                    <div className="text-sm text-gray-600">{palette.description}</div>
                   </div>
                   <Checkbox
                     className="h-5 w-5 [&_svg]:h-4 [&_svg]:w-4"
                     onCheckedChange={(checked) =>
-                      checked
-                        ? addColorPalette(palette)
-                        : removeColorPalette(palette)
+                      checked ? addColorPalette(palette) : removeColorPalette(palette)
                     }
-                    checked={arePaletteColorsAvailable(
-                      palette,
-                      state.availableColors
-                    )}
+                    checked={arePaletteColorsAvailable(palette, state.availableColors)}
                   />
                 </div>
 
                 <div className="mt-2 grid grid-cols-8 gap-2">
-                  {palette.colors
-                    .sort(compareColorsByLuminance)
-                    .map((color) => (
-                      <div key={color.id}>
-                        <ColorSwatch className="w-full" color={color} />
-                        <div className="mt-1 line-clamp-2 text-center text-xs">
-                          {color.name}
-                        </div>
-                      </div>
-                    ))}
+                  {palette.colors.sort(compareColorsByLuminance).map((color) => (
+                    <div key={color.id}>
+                      <ColorSwatch className="w-full" color={color} />
+                      <div className="mt-1 line-clamp-2 text-center text-xs">{color.name}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
@@ -231,14 +201,10 @@ export default function TemplateLayerColorColorsConfigurator({
                   className="w-full"
                   color={color}
                   selectable
-                  selected={
-                    !!state.availableColors.find((c) => c.id === color.id)
-                  }
+                  selected={!!state.availableColors.find((c) => c.id === color.id)}
                   onClick={() => selectColor(color)}
                 />
-                <div className="mt-1 line-clamp-2 text-center text-xs">
-                  {color.name}
-                </div>
+                <div className="mt-1 line-clamp-2 text-center text-xs">{color.name}</div>
               </div>
             ))}
           </div>

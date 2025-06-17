@@ -8,11 +8,7 @@ type TemplateCardProps = React.ComponentPropsWithoutRef<'div'> & {
   template: Template;
 };
 
-export default function TemplateCard({
-  className,
-  template,
-  ...props
-}: TemplateCardProps) {
+export default function TemplateCard({ className, template, ...props }: TemplateCardProps) {
   return (
     <Link to="/template-editor/$id" params={{ id: template.id }}>
       <div
@@ -30,9 +26,7 @@ export default function TemplateCard({
 
         <div className="text-center">
           <TemplateStatusBadge status={template.status} />
-          <h2 className="mt-1 font-medium group-hover:underline">
-            {template.name}
-          </h2>
+          <h2 className="mt-1 font-medium group-hover:underline">{template.name}</h2>
         </div>
       </div>
     </Link>

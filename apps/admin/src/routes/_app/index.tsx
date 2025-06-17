@@ -20,9 +20,7 @@ function RouteComponent() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbPage className="line-clamp-1">
-                Dashboard
-              </BreadcrumbPage>
+              <BreadcrumbPage className="line-clamp-1">Dashboard</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

@@ -38,9 +38,7 @@ export function AppSwitcher() {
                 <AppIcon app={currentApp} />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {currentApp.name}
-                </span>
+                <span className="truncate font-semibold">{currentApp.name}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -52,9 +50,7 @@ export function AppSwitcher() {
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Apps
-            </DropdownMenuLabel>
+            <DropdownMenuLabel className="text-muted-foreground text-xs">Apps</DropdownMenuLabel>
 
             {apps.map((app) => (
               <DropdownMenuItem
@@ -75,9 +71,7 @@ export function AppSwitcher() {
               <div className="bg-background flex size-6 items-center justify-center rounded-md border">
                 <Plus className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">
-                Nouvelle app
-              </div>
+              <div className="text-muted-foreground font-medium">Nouvelle app</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

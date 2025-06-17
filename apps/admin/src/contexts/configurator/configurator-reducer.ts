@@ -3,10 +3,7 @@ import {
   ConfiguratorState,
 } from '@/contexts/configurator/configurator-types.ts';
 
-export function configuratorReducer(
-  state: ConfiguratorState,
-  action: ConfiguratorAction
-) {
+export function configuratorReducer(state: ConfiguratorState, action: ConfiguratorAction) {
   switch (action.type) {
     case 'SET_TEMPLATE': {
       return { ...state, template: action.payload };

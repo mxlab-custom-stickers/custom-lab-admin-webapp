@@ -22,10 +22,7 @@ export default function SvgLayerTree({
   const { svgLayers } = useSvgEditorContext();
 
   return (
-    <div
-      className={cn('flex w-full flex-col gap-0.5 text-sm', className)}
-      {...props}
-    >
+    <div className={cn('flex w-full flex-col gap-0.5 text-sm', className)} {...props}>
       {svgLayers.map((svgLayer) => (
         <SvgLayerItem key={svgLayer.id} svgLayer={svgLayer} depth={1} />
       ))}
@@ -40,8 +37,7 @@ const SvgLayerItem = React.memo(function SvgLayerItem({
   svgLayer: SvgLayer;
   depth: number;
 }) {
-  const { svgLayers, selectedLayers, setSelectedLayers } =
-    useSvgEditorContext();
+  const { svgLayers, selectedLayers, setSelectedLayers } = useSvgEditorContext();
 
   /**
    * Handles the click event on an SVG layer.
@@ -61,20 +57,12 @@ const SvgLayerItem = React.memo(function SvgLayerItem({
       let updatedSelectedLayers;
 
       if (hasSelectedParent(layer, svgLayers, selectedLayers)) {
-        updatedSelectedLayers = smartSelectLayer(
-          layer.id,
-          selectedLayers,
-          svgLayers
-        );
+        updatedSelectedLayers = smartSelectLayer(layer.id, selectedLayers, svgLayers);
       } else if (selectedLayers.find((l) => l.id === layer.id)) {
         // If the layer is already selected, remove it from the selection
         updatedSelectedLayers = selectedLayers.filter((l) => l.id !== layer.id);
       } else {
-        updatedSelectedLayers = selectLayerAndCleanDescendants(
-          layer.id,
-          selectedLayers,
-          svgLayers
-        );
+        updatedSelectedLayers = selectLayerAndCleanDescendants(layer.id, selectedLayers, svgLayers);
       }
 
       setSelectedLayers(updatedSelectedLayers);
@@ -96,9 +84,7 @@ const SvgLayerItem = React.memo(function SvgLayerItem({
       })}
     >
       <div
-        className={cn(
-          'mb-0.5 flex items-center justify-between rounded p-1 hover:bg-gray-200/80'
-        )}
+        className={cn('mb-0.5 flex items-center justify-between rounded p-1 hover:bg-gray-200/80')}
       >
         <div
           className="line-clamp-1 flex-1 cursor-pointer"
@@ -126,18 +112,12 @@ const SvgLayerItem = React.memo(function SvgLayerItem({
     </Collapsible>
   ) : (
     <div
-      className={cn(
-        'flex cursor-pointer items-center rounded p-1 hover:bg-gray-200/80',
-        {
-          'bg-gray-200 font-semibold': isSelected,
-        }
-      )}
+      className={cn('flex cursor-pointer items-center rounded p-1 hover:bg-gray-200/80', {
+        'bg-gray-200 font-semibold': isSelected,
+      })}
       onClick={() => handleLayerClick(svgLayer)}
     >
-      <div
-        className="line-clamp-1 flex-1"
-        style={{ paddingLeft: `${depth * 0.75}rem` }}
-      >
+      <div className="line-clamp-1 flex-1" style={{ paddingLeft: `${depth * 0.75}rem` }}>
         {svgLayer.id}
       </div>
 

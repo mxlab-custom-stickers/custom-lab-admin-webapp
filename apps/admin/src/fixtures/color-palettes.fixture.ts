@@ -27,10 +27,7 @@ export const COLOR_PALETTES_FIXTURE: ColorPalette[] = [
     name: 'Kits déco casque',
     description: 'Pour les kits déco casque',
 
-    colors: COLORS_FIXTURE.slice(
-      COLORS_FIXTURE.length / 2,
-      COLORS_FIXTURE.length - 7
-    ),
+    colors: COLORS_FIXTURE.slice(COLORS_FIXTURE.length / 2, COLORS_FIXTURE.length - 7),
 
     createdAt: '2025-03-02T23:59:59.999Z',
     createdBy: 'Bastien',

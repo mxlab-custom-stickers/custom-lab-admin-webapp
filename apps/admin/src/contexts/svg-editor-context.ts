@@ -13,8 +13,6 @@ type SvgEditorContextType = {
   setSelectedLayers: (layers: SvgLayer[]) => void;
 };
 
-export const SvgEditorContext = createContext<SvgEditorContextType>(
-  {} as SvgEditorContextType
-);
+export const SvgEditorContext = createContext<SvgEditorContextType>({} as SvgEditorContextType);
 
 export const useSvgEditorContext = () => useContext(SvgEditorContext);

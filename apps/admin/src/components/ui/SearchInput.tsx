@@ -8,11 +8,7 @@ type SearchInputProps = React.ComponentPropsWithoutRef<'input'> & {
   wrapperClassName?: string;
 };
 
-export function SearchInput({
-  className,
-  wrapperClassName,
-  ...props
-}: SearchInputProps) {
+export function SearchInput({ className, wrapperClassName, ...props }: SearchInputProps) {
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -29,7 +25,7 @@ export function SearchInput({
   return (
     <div className={cn('relative h-10 max-w-md', wrapperClassName)}>
       <Search
-        className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
+        className="text-muted-foreground pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
         size={16}
       />
       <Input
@@ -46,7 +42,7 @@ export function SearchInput({
         <Button
           variant="ghost"
           onClick={clearInput}
-          className="absolute top-1/2 right-2 h-6 w-6 -translate-y-1/2 rounded-full p-0"
+          className="absolute right-2 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full p-0"
           aria-label="Clear search"
         >
           <X />

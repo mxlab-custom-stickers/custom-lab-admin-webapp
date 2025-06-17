@@ -67,10 +67,7 @@ export default function OtherOptionsCard({
 
           <div>
             <Label>
-              <Switch
-                checked={config.focus.enable}
-                onCheckedChange={handleEnableFocusChange}
-              />
+              <Switch checked={config.focus.enable} onCheckedChange={handleEnableFocusChange} />
               Autoriser le focus
             </Label>
 

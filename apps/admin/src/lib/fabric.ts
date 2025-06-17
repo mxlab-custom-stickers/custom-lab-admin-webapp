@@ -8,15 +8,7 @@ import {
   TemplateLayerImage,
 } from '@/models/template.ts';
 import { Text } from '@/models/text.ts';
-import {
-  Canvas,
-  FabricImage,
-  FabricObject,
-  Group,
-  loadSVGFromURL,
-  Point,
-  Textbox,
-} from 'fabric';
+import { Canvas, FabricImage, FabricObject, Group, loadSVGFromURL, Point, Textbox } from 'fabric';
 
 export function resizeCanvasToWrapper(canvas: Canvas, wrapperEl: HTMLElement) {
   canvas.setWidth(wrapperEl.clientWidth);
@@ -85,10 +77,7 @@ export function setupZoomAndPan(canvas: Canvas) {
   });
 }
 
-export async function renderSVGToCanvas(
-  canvas: Canvas,
-  svgUrl: string
-): Promise<FabricObject[]> {
+export async function renderSVGToCanvas(canvas: Canvas, svgUrl: string): Promise<FabricObject[]> {
   const svgData = await loadSVGFromURL(svgUrl);
   const { options } = svgData;
   const objects = svgData.objects.filter((obj) => obj !== null);
@@ -113,10 +102,8 @@ export async function renderSVGToCanvas(
   const scale = Math.min(scaleX, scaleY);
   canvas.setViewportTransform([scale, 0, 0, scale, 0, 0]);
 
-  const dx =
-    canvas.getWidth()! / 2 - (options.left ?? options.width! / 2) * scale;
-  const dy =
-    canvas.getHeight()! / 2 - (options.top ?? options.height! / 2) * scale;
+  const dx = canvas.getWidth()! / 2 - (options.left ?? options.width! / 2) * scale;
+  const dy = canvas.getHeight()! / 2 - (options.top ?? options.height! / 2) * scale;
   canvas.relativePan(new Point(dx, dy));
 
   canvas.requestRenderAll();
@@ -147,9 +134,7 @@ function assignFabricObjectsToColorElements(
       };
     }
 
-    const matchingObjects = fabricObjects.filter(
-      (obj) => obj.get('id') === element.id
-    );
+    const matchingObjects = fabricObjects.filter((obj) => obj.get('id') === element.id);
 
     return {
       ...element,
@@ -190,24 +175,12 @@ export function assignFabricObjectsToColorItemsInLayer(
  * @returns True if the object is an SVG shape, false otherwise.
  */
 export function isSvgShape(obj: FabricObject): boolean {
-  const shapeTypes = [
-    'path',
-    'rect',
-    'circle',
-    'ellipse',
-    'polygon',
-    'polyline',
-    'line',
-  ];
+  const shapeTypes = ['path', 'rect', 'circle', 'ellipse', 'polygon', 'polyline', 'line'];
 
   return shapeTypes.includes(obj.get('type'));
 }
 
-export function hideOrShowObjectsById(
-  canvas: Canvas,
-  ids: string[],
-  hide: boolean
-): void {
+export function hideOrShowObjectsById(canvas: Canvas, ids: string[], hide: boolean): void {
   canvas.getObjects().forEach((obj) => {
     const id = obj.get('id');
     if (ids.includes(id)) {
@@ -228,9 +201,7 @@ export async function cloneAllObjectsFromColorItems(
   colorItems: ColorItem[]
 ): Promise<FabricObject[]> {
   const clonedObjectsArrays = await Promise.all(
-    colorItems.map((item) =>
-      Promise.all((item.fabricObjects ?? []).map((obj) => obj.clone()))
-    )
+    colorItems.map((item) => Promise.all((item.fabricObjects ?? []).map((obj) => obj.clone())))
   );
 
   // Flatten the array of arrays into a single array of cloned objects
@@ -244,10 +215,7 @@ export async function cloneAllObjectsFromColorItems(
  * @param image - The image data conforming to the Image interface.
  * @returns A Promise that resolves with the added FabricImage.
  */
-export async function drawImageOnCanvas(
-  canvas: Canvas,
-  image: Image
-): Promise<Image> {
+export async function drawImageOnCanvas(canvas: Canvas, image: Image): Promise<Image> {
   const fabricImage = await FabricImage.fromURL(image.url);
   fabricImage.set({
     id: image.id,
@@ -336,10 +304,7 @@ export function makeImageNonInteractive(image: Image) {
   image.fabricImage.off();
 }
 
-export function makeImageInteractive(
-  image: Image,
-  onModified: (modifiedImage: Image) => void
-) {
+export function makeImageInteractive(image: Image, onModified: (modifiedImage: Image) => void) {
   if (!image.fabricImage) return;
 
   image.fabricImage.set({
@@ -463,10 +428,7 @@ export async function clipImageLayerToColorLayer(
   });
 }
 
-export async function unclipImageLayer(
-  canvas: Canvas,
-  imageLayer: TemplateLayerImage
-) {
+export async function unclipImageLayer(canvas: Canvas, imageLayer: TemplateLayerImage) {
   imageLayer.images.forEach((image) => {
     if (!image.fabricImage) return;
 
@@ -477,9 +439,7 @@ export async function unclipImageLayer(
 
   const clipGroup = canvas
     .getObjects()
-    .find(
-      (obj) => obj.get('id') === `clip-${imageLayer.config.clipWithLayerId}`
-    );
+    .find((obj) => obj.get('id') === `clip-${imageLayer.config.clipWithLayerId}`);
 
   if (clipGroup) {
     canvas.remove(clipGroup);

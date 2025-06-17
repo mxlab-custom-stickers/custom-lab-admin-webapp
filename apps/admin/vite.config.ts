@@ -7,7 +7,11 @@ import { defineConfig } from 'vite';
 // https://vite.dev/config/
 export default defineConfig({
   cacheDir: '.vite',
-  plugins: [TanStackRouterVite({ target: 'react', autoCodeSplitting: true }), react(), tailwindcss()],
+  plugins: [
+    TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
+    react(),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

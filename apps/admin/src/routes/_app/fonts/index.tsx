@@ -50,9 +50,7 @@ function RouteComponent() {
             {fonts.length ? (
               <FontList fonts={fonts} />
             ) : (
-              <div className="text-muted-foreground pt-4 text-sm">
-                Aucune police trouvée
-              </div>
+              <div className="text-muted-foreground pt-4 text-sm">Aucune police trouvée</div>
             )}
           </div>
         )}

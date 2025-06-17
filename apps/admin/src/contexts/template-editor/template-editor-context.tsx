@@ -11,13 +11,7 @@ import { stripFabricObjectsFromTemplate } from '@/lib/template-editor.ts';
 import { Template, TemplateLayer } from '@/models/template.ts';
 import { Canvas } from 'fabric';
 import { isEqual } from 'lodash';
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useReducer,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useMemo, useReducer, useState } from 'react';
 
 const TemplateEditorContext = createContext<{
   state: TemplateEditorState;
@@ -54,8 +48,7 @@ export function TemplateEditorProvider({
     },
   });
 
-  const [lastSavedTemplateState, setLastSavedTemplateState] =
-    useState<Template>(templateProp);
+  const [lastSavedTemplateState, setLastSavedTemplateState] = useState<Template>(templateProp);
   const isDirty = useMemo(
     () =>
       !isEqual(
@@ -73,9 +66,7 @@ export function TemplateEditorProvider({
   async function saveTemplateState() {
     if (!isDirty) return;
     dispatch({ type: 'SET_IS_SAVING', payload: true });
-    await firestore.updateTemplate(
-      stripFabricObjectsFromTemplate(state.template)
-    );
+    await firestore.updateTemplate(stripFabricObjectsFromTemplate(state.template));
     dispatch({ type: 'SET_IS_SAVING', payload: false });
     setLastSavedTemplateState(state.template);
   }
@@ -99,9 +90,7 @@ export function TemplateEditorProvider({
   function updateLayer(updates: TemplateLayer) {
     const updatedTemplate = {
       ...state.template,
-      layers: state.template.layers.map((layer) =>
-        layer.id === updates.id ? updates : layer
-      ),
+      layers: state.template.layers.map((layer) => (layer.id === updates.id ? updates : layer)),
     };
 
     dispatch({ type: 'UPDATE_TEMPLATE', payload: updatedTemplate });
@@ -129,12 +118,9 @@ export function TemplateEditorProvider({
 export const useTemplateEditorContext = () => {
   const context = useContext(TemplateEditorContext);
   if (!context) {
-    throw new Error(
-      'useTemplateEditorContext must be used inside TemplateEditorProvider'
-    );
+    throw new Error('useTemplateEditorContext must be used inside TemplateEditorProvider');
   }
   return context;
 };
 
-export const useOptionalTemplateEditorContext = () =>
-  useContext(TemplateEditorContext);
+export const useOptionalTemplateEditorContext = () => useContext(TemplateEditorContext);

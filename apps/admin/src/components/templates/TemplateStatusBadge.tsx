@@ -17,8 +17,6 @@ const statusColors: Record<Template['status'], string> = {
   archived: 'bg-gray-500',
 };
 
-export default function TemplateStatusBadge({
-  status,
-}: TemplateStatusBadgeProps) {
+export default function TemplateStatusBadge({ status }: TemplateStatusBadgeProps) {
   return <Badge className={statusColors[status]}>{statusLabels[status]}</Badge>;
 }

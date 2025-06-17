@@ -24,11 +24,7 @@ export default function ColorPicker({
   onValueChange,
   ...props
 }: ColorPickerProps) {
-  const [value, setValue] = useControlledState<Color>(
-    valueProp,
-    onValueChange,
-    undefined
-  );
+  const [value, setValue] = useControlledState<Color>(valueProp, onValueChange, undefined);
 
   return (
     <div

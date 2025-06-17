@@ -27,10 +27,7 @@ export function NavMain({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild>
-                <Link
-                  to={item.url}
-                  activeProps={{ className: 'font-semibold bg-gray-200/50' }}
-                >
+                <Link to={item.url} activeProps={{ className: 'font-semibold bg-gray-200/50' }}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </Link>

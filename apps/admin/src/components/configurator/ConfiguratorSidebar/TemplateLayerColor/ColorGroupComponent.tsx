@@ -6,15 +6,11 @@ import React from 'react';
 
 type ColorGroupComponentProps = React.ComponentPropsWithoutRef<'div'>;
 
-export default function ColorGroupComponent({
-  className,
-  ...props
-}: ColorGroupComponentProps) {
+export default function ColorGroupComponent({ className, ...props }: ColorGroupComponentProps) {
   const { currentColorElement, setCurrentColorElementId, updateColorElement } =
     useConfiguratorContext();
 
-  const colorGroup =
-    currentColorElement?.type === 'group' ? currentColorElement : null;
+  const colorGroup = currentColorElement?.type === 'group' ? currentColorElement : null;
 
   return colorGroup ? (
     <div className={cn(className)} {...props}>
@@ -22,17 +18,13 @@ export default function ColorGroupComponent({
         <InvisibleInput
           className="mb-3 !text-lg font-semibold"
           value={colorGroup.name}
-          onValueSubmit={(value) =>
-            updateColorElement({ ...colorGroup, name: value })
-          }
+          onValueSubmit={(value) => updateColorElement({ ...colorGroup, name: value })}
         />
       </div>
 
       <ColorElementList
         colorElements={colorGroup.subColorElements}
-        onColorElementClick={(colorElement) =>
-          setCurrentColorElementId(colorElement.id)
-        }
+        onColorElementClick={(colorElement) => setCurrentColorElementId(colorElement.id)}
       />
     </div>
   ) : null;

@@ -61,8 +61,11 @@ export default function Dropzone({
     onDropProp?.(acceptedFiles);
   }, []);
 
-  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
-    useDropzone({ onDrop, accept: { 'image/svg+xml': ['.svg'] }, maxFiles: 1 });
+  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
+    onDrop,
+    accept: { 'image/svg+xml': ['.svg'] },
+    maxFiles: 1,
+  });
 
   const style = useMemo(
     () => ({
@@ -84,11 +87,7 @@ export default function Dropzone({
         ) : (
           <>
             <Upload size={64} />
-            {children ? (
-              children
-            ) : (
-              <p>Drag 'n' drop some files here, or click to select files</p>
-            )}
+            {children ? children : <p>Drag 'n' drop some files here, or click to select files</p>}
           </>
         )}
       </div>

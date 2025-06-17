@@ -22,10 +22,9 @@ export const useConfiguratorCanvas = () => {
   function focusColorLayer(layer: TemplateLayerColor, isFocusing: boolean) {
     if (!canvas) return;
 
-    const ids = getAllFabricObjectsFromTemplate(
-      template,
-      layer.config.focus.layerIdsToHide
-    ).map((obj) => obj.get('id'));
+    const ids = getAllFabricObjectsFromTemplate(template, layer.config.focus.layerIdsToHide).map(
+      (obj) => obj.get('id')
+    );
 
     hideOrShowObjectsById(canvas, ids, isFocusing);
   }

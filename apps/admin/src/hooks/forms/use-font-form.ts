@@ -58,9 +58,7 @@ export function useFontForm(initial?: FontFormType): {
 } {
   const { currentApp } = useAppContext();
 
-  const [formState, setFormState] = useState<FontFormType>(
-    initial || emptyFormState
-  );
+  const [formState, setFormState] = useState<FontFormType>(initial || emptyFormState);
 
   const [loading, setLoading] = useState(false);
 

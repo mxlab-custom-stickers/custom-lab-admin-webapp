@@ -85,10 +85,7 @@ function RouteComponent() {
           <StatusBadge status={font.status} />
         </div>
 
-        <div
-          className="p-12 text-center text-4xl"
-          style={{ fontFamily: font.name }}
-        >
+        <div className="p-12 text-center text-4xl" style={{ fontFamily: font.name }}>
           Custom Lab 2 by MXlab, the best configurator for your graphic kits.
         </div>
 

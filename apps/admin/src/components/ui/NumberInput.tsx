@@ -3,10 +3,7 @@ import { Input } from '@/components/ui/input.tsx';
 import { cn } from '@/lib/utils.ts';
 import React, { useEffect, useState } from 'react';
 
-type NumberInputProps = Omit<
-  React.ComponentPropsWithoutRef<'input'>,
-  'onChange' | 'value'
-> & {
+type NumberInputProps = Omit<React.ComponentPropsWithoutRef<'input'>, 'onChange' | 'value'> & {
   value?: number;
   onValueChange?: (value: number) => void;
   step?: number;
@@ -60,10 +57,7 @@ export default function NumberInput({
       </Button>
 
       <Input
-        className={cn(
-          'no-spinner w-10 rounded-none border-none p-0 text-center',
-          className
-        )}
+        className={cn('no-spinner w-10 rounded-none border-none p-0 text-center', className)}
         value={value}
         onChange={(e) => {
           const raw = e.target.value;

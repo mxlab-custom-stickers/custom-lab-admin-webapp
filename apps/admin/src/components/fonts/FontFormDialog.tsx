@@ -32,10 +32,7 @@ export default function FontFormDialog({ className }: { className?: string }) {
     resetForm,
   } = useFontForm();
 
-  function handleStyleChange(
-    e: React.ChangeEvent<HTMLInputElement>,
-    fontStyle: FontStyleType
-  ) {
+  function handleStyleChange(e: React.ChangeEvent<HTMLInputElement>, fontStyle: FontStyleType) {
     const file = e.target.files?.[0];
     if (file) updateStyle(file, fontStyle);
   }
@@ -63,11 +60,7 @@ export default function FontFormDialog({ className }: { className?: string }) {
           </DialogDescription>
         </DialogHeader>
 
-        <form
-          id="font-form"
-          className="flex flex-col gap-6"
-          onSubmit={handleSubmit}
-        >
+        <form id="font-form" className="flex flex-col gap-6" onSubmit={handleSubmit}>
           <Label className="flex flex-col items-start">
             Nom de la police
             <Input
@@ -78,15 +71,11 @@ export default function FontFormDialog({ className }: { className?: string }) {
             />
           </Label>
 
-          <div className="grid grid-cols-[auto_min-content] items-center rounded-md border p-3 shadow-xs">
-            <Label
-              htmlFor="digitsOnly"
-              className="flex flex-col items-start gap-0.5"
-            >
+          <div className="shadow-xs grid grid-cols-[auto_min-content] items-center rounded-md border p-3">
+            <Label htmlFor="digitsOnly" className="flex flex-col items-start gap-0.5">
               Police numérique uniquement
               <span className="text-muted-foreground text-xs">
-                Indique si la police sera utilisée uniquement pour afficher des
-                numéros
+                Indique si la police sera utilisée uniquement pour afficher des numéros
               </span>
             </Label>
 
@@ -124,15 +113,11 @@ export default function FontFormDialog({ className }: { className?: string }) {
                   <div
                     className="line-clamp-1 h-12 truncate p-1 font-[font-form-preview] text-2xl"
                     style={{
-                      fontWeight:
-                        formState.styles[style as FontStyleType]!.weight,
-                      fontStyle:
-                        formState.styles[style as FontStyleType]!.style,
+                      fontWeight: formState.styles[style as FontStyleType]!.weight,
+                      fontStyle: formState.styles[style as FontStyleType]!.style,
                     }}
                   >
-                    {formState.digitsOnly
-                      ? '0123456789'
-                      : 'Custom Lab 2 by MXlab'}
+                    {formState.digitsOnly ? '0123456789' : 'Custom Lab 2 by MXlab'}
                   </div>
                 ) : (
                   <div className="h-12" />

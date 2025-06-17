@@ -36,9 +36,7 @@ function RootComponent() {
   }, []);
 
   return currentApp ? (
-    <AppContext.Provider
-      value={{ apps, currentApp, setCurrentApp, loading, setLoading }}
-    >
+    <AppContext.Provider value={{ apps, currentApp, setCurrentApp, loading, setLoading }}>
       <Outlet />
       {/*<TanStackRouterDevtools />*/}
     </AppContext.Provider>

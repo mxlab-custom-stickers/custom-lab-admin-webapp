@@ -54,10 +54,7 @@ export default function SvgEditor({
       }}
     >
       <div
-        className={cn(
-          'grid h-[80svh] grid-cols-[auto_min-content] gap-y-2',
-          className
-        )}
+        className={cn('grid h-[80svh] grid-cols-[auto_min-content] gap-y-2', className)}
         {...props}
       >
         <Svg wrapperClassName="self-center" svgUrl={svgUrl} />

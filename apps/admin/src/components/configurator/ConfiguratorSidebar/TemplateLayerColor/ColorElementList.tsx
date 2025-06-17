@@ -17,9 +17,7 @@ export default function ColorElementList({
   ...props
 }: ColorElementListProps) {
   // Check if all color elements are of type 'item'
-  const isAllColorItems = colorElements.every(
-    (colorElement) => colorElement.type === 'item'
-  );
+  const isAllColorItems = colorElements.every((colorElement) => colorElement.type === 'item');
 
   return isAllColorItems ? (
     <ColorItemsAccordion colorItems={colorElements} />

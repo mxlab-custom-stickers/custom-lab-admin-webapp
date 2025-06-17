@@ -9,13 +9,7 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb.tsx';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { COLOR_PALETTES_FIXTURE } from '@/fixtures/color-palettes.fixture.ts';
 import { COLORS_FIXTURE } from '@/fixtures/colors.fixture.ts';
 import { createFileRoute } from '@tanstack/react-router';
@@ -43,9 +37,7 @@ function RouteComponent() {
           <Card>
             <CardHeader className="relative">
               <CardTitle>Couleurs</CardTitle>
-              <CardDescription>
-                {COLORS_FIXTURE.length} couleurs enregistrées
-              </CardDescription>
+              <CardDescription>{COLORS_FIXTURE.length} couleurs enregistrées</CardDescription>
 
               <Button className="absolute -top-2 right-4">
                 <Plus />
@@ -71,10 +63,7 @@ function RouteComponent() {
             <CardContent className="max-h-[600px] overflow-auto">
               <div className="grid grid-cols-2 gap-4">
                 {COLOR_PALETTES_FIXTURE.map((colorPalette) => (
-                  <ColorPaletteCard
-                    key={colorPalette.id}
-                    colorPalette={colorPalette}
-                  />
+                  <ColorPaletteCard key={colorPalette.id} colorPalette={colorPalette} />
                 ))}
               </div>
             </CardContent>

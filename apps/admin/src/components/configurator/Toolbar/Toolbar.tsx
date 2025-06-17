@@ -13,7 +13,7 @@ export default function Toolbar({
   return children || currentText ? (
     <div
       className={cn(
-        'absolute top-2 left-1/2 z-50 flex h-11 min-w-xs -translate-x-1/2 items-center justify-center gap-2 rounded-md bg-white p-1 shadow-lg',
+        'min-w-xs absolute left-1/2 top-2 z-50 flex h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-md bg-white p-1 shadow-lg',
         className
       )}
       {...props}

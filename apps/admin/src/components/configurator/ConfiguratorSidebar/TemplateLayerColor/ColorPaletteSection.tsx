@@ -30,9 +30,7 @@ export function ColorPaletteSection() {
     <div>
       <SidebarCard onClick={() => setCurrentColorElementId('color-palette')}>
         <div className="text-sm font-semibold">Palette de couleurs</div>
-        <div className="text-muted-foreground mb-2 text-xs">
-          Change toutes les mêmes couleurs
-        </div>
+        <div className="text-muted-foreground mb-2 text-xs">Change toutes les mêmes couleurs</div>
         <div className="flex flex-wrap items-center gap-1.5">
           {colors.map((color, index) => (
             <ColorSwatch
@@ -50,9 +48,7 @@ export function ColorPaletteSection() {
         <Separator />
       </div>
 
-      <div className="text-muted-foreground p-2 text-xs">
-        Modifie les couleurs par éléments
-      </div>
+      <div className="text-muted-foreground p-2 text-xs">Modifie les couleurs par éléments</div>
     </div>
   ) : null;
 }

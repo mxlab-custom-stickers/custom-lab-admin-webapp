@@ -30,9 +30,7 @@ type ConfiguratorCanvasProps = {
   wrapperClassName?: string;
 };
 
-export default function ConfiguratorCanvas({
-  wrapperClassName,
-}: ConfiguratorCanvasProps) {
+export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCanvasProps) {
   const {
     state: { template, canvas, currentLayerId },
     updateTemplate,
@@ -68,10 +66,7 @@ export default function ConfiguratorCanvas({
         // Activate interactivity for images
         currentLayer.images.forEach((image) =>
           makeImageInteractive(image, (modifiedImage) => {
-            const updatedTemplate = updateImagesInTemplate(
-              templateRef.current,
-              [modifiedImage]
-            );
+            const updatedTemplate = updateImagesInTemplate(templateRef.current, [modifiedImage]);
             updateTemplate(updatedTemplate);
           })
         );
@@ -84,10 +79,7 @@ export default function ConfiguratorCanvas({
               setCurrentTextId(selected ? text.id : undefined);
             },
             (modifiedText) => {
-              const updatedTemplate = updateTextsInTemplate(
-                templateRef.current,
-                [modifiedText]
-              );
+              const updatedTemplate = updateTextsInTemplate(templateRef.current, [modifiedText]);
               updateTemplate(updatedTemplate);
             }
           );
@@ -131,9 +123,7 @@ export default function ConfiguratorCanvas({
       const objects = await renderSVGToCanvas(initCanvas, template.svgUrl);
       // Assign the fabric objects to color items in the template layers
       const updatedColorLayers = template.layers.map((layer) =>
-        layer.type === 'color'
-          ? assignFabricObjectsToColorItemsInLayer(layer, objects)
-          : layer
+        layer.type === 'color' ? assignFabricObjectsToColorItemsInLayer(layer, objects) : layer
       );
 
       updatedTemplate = { ...templateRef.current, layers: updatedColorLayers };
@@ -162,8 +152,7 @@ export default function ConfiguratorCanvas({
       await Promise.all(
         (
           updatedTemplate.layers.filter(
-            (layer) =>
-              layer.type === 'image' && layer.config.clipWithLayerId !== null
+            (layer) => layer.type === 'image' && layer.config.clipWithLayerId !== null
           ) as TemplateLayerImage[]
         ).map((layer) => {
           const clipWithLayer = updatedTemplate.layers.find(
@@ -194,11 +183,7 @@ export default function ConfiguratorCanvas({
 
   return (
     <div ref={wrapperRef} className={cn('h-full w-full', wrapperClassName)}>
-      <canvas
-        id="configurator-canvas"
-        ref={canvasRef}
-        className="h-full w-full"
-      />
+      <canvas id="configurator-canvas" ref={canvasRef} className="h-full w-full" />
     </div>
   );
 }

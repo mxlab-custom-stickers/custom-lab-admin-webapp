@@ -8,10 +8,7 @@ export default function TypographyH1({
 }: React.ComponentPropsWithoutRef<'h1'>) {
   return (
     <h1
-      className={cn(
-        'scroll-m-20 text-4xl font-extrabold tracking-tight text-balance',
-        className
-      )}
+      className={cn('scroll-m-20 text-balance text-4xl font-extrabold tracking-tight', className)}
       {...props}
     >
       {children}

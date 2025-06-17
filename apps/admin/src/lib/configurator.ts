@@ -70,11 +70,7 @@ export function updateColorElementById(
     } else if (element.type === 'group') {
       return {
         ...element,
-        subColorElements: updateColorElementById(
-          element.subColorElements,
-          id,
-          updateFn
-        ),
+        subColorElements: updateColorElementById(element.subColorElements, id, updateFn),
       };
     }
     return element;
@@ -88,18 +84,14 @@ export function updateColorElementById(
  * @param updates - The updated ColorElement
  * @returns A new Template with the updated ColorElement
  */
-export function updateColorElementInTemplate(
-  template: Template,
-  updates: ColorElement
-): Template {
+export function updateColorElementInTemplate(template: Template, updates: ColorElement): Template {
   const updatedLayers = template.layers.map((layer) => {
     if (layer.type !== 'color') return layer;
 
-    const updatedColorElements = updateColorElementById(
-      layer.colorElements,
-      updates.id,
-      (el) => ({ ...el, ...updates })
-    );
+    const updatedColorElements = updateColorElementById(layer.colorElements, updates.id, (el) => ({
+      ...el,
+      ...updates,
+    }));
 
     return {
       ...layer,
@@ -123,10 +115,7 @@ export function updateColorElementInTemplate(
  * @param {Image[]} updates - An array of updated image objects to replace existing ones.
  * @returns {Template} - A new template object with the updated image layers.
  */
-export function updateImagesInTemplate(
-  template: Template,
-  updates: Image[]
-): Template {
+export function updateImagesInTemplate(template: Template, updates: Image[]): Template {
   const updatedLayers = template.layers.map((layer) => {
     if (layer.type !== 'image') return layer;
 
@@ -155,10 +144,7 @@ export function updateImagesInTemplate(
  * @param {Text[]} updates - An array of updated text objects to replace existing ones.
  * @returns {Template} - A new template object with the updated text layers.
  */
-export function updateTextsInTemplate(
-  template: Template,
-  updates: Text[]
-): Template {
+export function updateTextsInTemplate(template: Template, updates: Text[]): Template {
   const updatedLayers = template.layers.map((layer) => {
     if (layer.type !== 'text') return layer;
 
@@ -245,9 +231,7 @@ export function getAllColorItemsFromTemplate(template: Template): ColorItem[] {
  * @param layer - The TemplateLayerColor to extract ColorItems from
  * @returns An array of ColorItem objects found in the layer
  */
-export function getAllColorItemsFromLayer(
-  layer: TemplateLayerColor
-): ColorItem[] {
+export function getAllColorItemsFromLayer(layer: TemplateLayerColor): ColorItem[] {
   return collectColorItems(layer.colorElements);
 }
 
@@ -286,10 +270,7 @@ export function getUniqueColorsFromLayer(layer: TemplateLayerColor): Color[] {
  * @param colorValue - The hex color string to match (e.g., "#FFFFFF")
  * @returns An array of matching ColorItem objects
  */
-export function getColorItemsByColor(
-  layer: TemplateLayerColor,
-  colorValue: string
-): ColorItem[] {
+export function getColorItemsByColor(layer: TemplateLayerColor, colorValue: string): ColorItem[] {
   const result: ColorItem[] = [];
 
   const search = (elements: ColorElement[]) => {

@@ -2,17 +2,9 @@ import ColorSwatch from '@/components/colors/ColorSwatch.tsx';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { ScrollArea } from '@/components/ui/scroll-area.tsx';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs.tsx';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
 import { useControlledState } from '@/hooks/use-controlled-state.ts';
-import {
-  arePaletteColorsAvailable,
-  compareColorsByLuminance,
-} from '@/lib/colors.ts';
+import { arePaletteColorsAvailable, compareColorsByLuminance } from '@/lib/colors.ts';
 import { Color, ColorPalette } from '@/models/color.ts';
 import React from 'react';
 
@@ -33,11 +25,7 @@ export default function ColorSelector({
   config: { palettes, colors },
   ...props
 }: ColorSelectorProps) {
-  const [value, setValue] = useControlledState<Color[]>(
-    valueProp,
-    onValueChange,
-    []
-  );
+  const [value, setValue] = useControlledState<Color[]>(valueProp, onValueChange, []);
 
   function addPaletteSelect(palette: ColorPalette) {
     // Add all colors from the palette that are not already in the value
@@ -50,8 +38,7 @@ export default function ColorSelector({
   function removePaletteSelect(palette: ColorPalette) {
     // Remove all colors from the palette from the value
     const newValue = value.filter(
-      (color) =>
-        !palette.colors.some((paletteColor) => paletteColor.id === color.id)
+      (color) => !palette.colors.some((paletteColor) => paletteColor.id === color.id)
     );
     setValue(newValue);
   }
@@ -79,35 +66,25 @@ export default function ColorSelector({
                 <div key={palette.id} className="flex flex-col">
                   <Label className="flex items-center hover:underline">
                     <div className="flex-1">
-                      <div className="text-base font-semibold">
-                        {palette.name}
-                      </div>
-                      <div className="text-muted-foreground text-sm">
-                        {palette.description}
-                      </div>
+                      <div className="text-base font-semibold">{palette.name}</div>
+                      <div className="text-muted-foreground text-sm">{palette.description}</div>
                     </div>
                     <Checkbox
                       className="h-5 w-5 [&_svg]:h-4 [&_svg]:w-4"
                       onCheckedChange={(checked) =>
-                        checked
-                          ? addPaletteSelect(palette)
-                          : removePaletteSelect(palette)
+                        checked ? addPaletteSelect(palette) : removePaletteSelect(palette)
                       }
                       checked={arePaletteColorsAvailable(palette, value)}
                     />
                   </Label>
 
                   <div className="mt-2 grid grid-cols-8 gap-2">
-                    {palette.colors
-                      .sort(compareColorsByLuminance)
-                      .map((color) => (
-                        <div key={color.id}>
-                          <ColorSwatch className="w-full" color={color} />
-                          <div className="mt-1 line-clamp-2 text-center text-xs">
-                            {color.name}
-                          </div>
-                        </div>
-                      ))}
+                    {palette.colors.sort(compareColorsByLuminance).map((color) => (
+                      <div key={color.id}>
+                        <ColorSwatch className="w-full" color={color} />
+                        <div className="mt-1 line-clamp-2 text-center text-xs">{color.name}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -128,9 +105,7 @@ export default function ColorSelector({
                     selected={value.some((c) => c.id === color.id)}
                     onClick={() => handleColorSelect(color)}
                   />
-                  <div className="mt-1 line-clamp-2 text-center text-xs">
-                    {color.name}
-                  </div>
+                  <div className="mt-1 line-clamp-2 text-center text-xs">{color.name}</div>
                 </div>
               ))}
             </div>

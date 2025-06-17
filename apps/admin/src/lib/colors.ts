@@ -61,14 +61,8 @@ export function isColorCloserToBlackOrWhite(color: string): 'black' | 'white' {
  * @param {ColorPalette[]} palettes - A list of ColorPalette objects containing colors.
  * @returns {Color[]} A deduplicated array of Color objects based on unique `id`.
  */
-export function mergeUniqueColors(
-  colors: Color[],
-  palettes: ColorPalette[]
-): Color[] {
-  const allColors = [
-    ...colors,
-    ...palettes.flatMap((palette) => palette.colors),
-  ];
+export function mergeUniqueColors(colors: Color[], palettes: ColorPalette[]): Color[] {
+  const allColors = [...colors, ...palettes.flatMap((palette) => palette.colors)];
 
   const uniqueMap = new Map<string, Color>();
   for (const color of allColors) {
@@ -117,8 +111,7 @@ export function brightenHexColor(hex: string, amount = 20): string {
   b = Math.min(255, b + amount);
 
   // Convert back to hex with leading zeros if needed
-  const brightened =
-    '#' + [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('');
+  const brightened = '#' + [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('');
 
   return brightened;
 }

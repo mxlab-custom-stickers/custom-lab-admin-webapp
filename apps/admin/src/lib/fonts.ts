@@ -22,15 +22,10 @@ export async function loadFont(font: Font) {
         await fontFace.load();
         document.fonts.add(fontFace);
         loadedFontKeys.add(key);
-        console.debug(
-          `Loaded font: ${font.name} (${style.weight} ${style.style})`
-        );
+        console.debug(`Loaded font: ${font.name} (${style.weight} ${style.style})`);
         return fontFace;
       } catch (error) {
-        console.error(
-          `Failed to load font ${font.name} (${style.weight} ${style.style})`,
-          error
-        );
+        console.error(`Failed to load font ${font.name} (${style.weight} ${style.style})`, error);
         return null;
       }
     })
@@ -38,7 +33,5 @@ export async function loadFont(font: Font) {
 }
 
 export function countAvailableFontStyles(font: Font): number {
-  return Object.values(font.styles).filter(
-    (style): style is FontStyle => style !== null
-  ).length;
+  return Object.values(font.styles).filter((style): style is FontStyle => style !== null).length;
 }

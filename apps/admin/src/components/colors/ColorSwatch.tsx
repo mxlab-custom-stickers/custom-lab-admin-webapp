@@ -43,13 +43,7 @@ export default function ColorSwatch({
 
 type Props = Omit<ColorChipProps, 'showTooltip'>;
 
-function ColorChip({
-  className,
-  color,
-  selected,
-  selectable,
-  ...props
-}: Props) {
+function ColorChip({ className, color, selected, selectable, ...props }: Props) {
   return (
     <div
       className={cn(
@@ -62,7 +56,7 @@ function ColorChip({
     >
       {selected ? (
         <Check
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{ color: isColorCloserToBlackOrWhite(color.value) }}
         />
       ) : null}

@@ -17,15 +17,12 @@ export default function DeleteCurrentLayerButton() {
       layers: template.layers.filter((layer) => layer.id !== currentLayer.id),
     };
     updateTemplate(updatedTemplate);
-    setCurrentLayerId(
-      template.layers.find((layer) => layer.order === currentLayer.order - 1)
-        ?.id
-    );
+    setCurrentLayerId(template.layers.find((layer) => layer.order === currentLayer.order - 1)?.id);
   }
 
   return currentLayer ? (
     <Button
-      className="absolute right-0 bottom-0 left-0"
+      className="absolute bottom-0 left-0 right-0"
       variant="destructive"
       onClick={deleteCurrentLayer}
     >

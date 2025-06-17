@@ -1,10 +1,4 @@
-import {
-  Blocks,
-  Images,
-  LayoutDashboard,
-  Palette,
-  TypeOutline,
-} from 'lucide-react';
+import { Blocks, Images, LayoutDashboard, Palette, TypeOutline } from 'lucide-react';
 import * as React from 'react';
 
 import { NavMain } from '@/components/nav-main';

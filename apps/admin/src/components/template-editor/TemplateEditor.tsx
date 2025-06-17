@@ -15,11 +15,7 @@ export default function TemplateEditor() {
   return (
     <TemplateEditorLayout>
       <Configurator template={template} currentLayerId={currentLayerId}>
-        <div
-          className={cn(
-            'grid h-full grid-cols-[min-content_auto] grid-rows-[1fr_min-content]'
-          )}
-        >
+        <div className={cn('grid h-full grid-cols-[min-content_auto] grid-rows-[1fr_min-content]')}>
           <ConfiguratorSidebar />
 
           <div className="relative">

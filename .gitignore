@@ -36,6 +36,10 @@ coverage/
 # Turbo
 turbo/node_modules/
 
+# Firebase
+.firebase/*.cache
+.firebase/firebase-debug.log
+
 # IDEs
 .idea/
 *.sw?

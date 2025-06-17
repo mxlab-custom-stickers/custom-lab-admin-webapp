@@ -1,12 +1,5 @@
 import { TemplateLayerType } from '@/models/template.ts';
-import {
-  Image,
-  LucideIcon,
-  LucideProps,
-  Palette,
-  Type,
-  Wallpaper,
-} from 'lucide-react';
+import { Image, LucideIcon, LucideProps, Palette, Type, Wallpaper } from 'lucide-react';
 
 const layerIcons: Record<TemplateLayerType, LucideIcon> = {
   color: Palette,

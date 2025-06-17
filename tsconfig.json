@@ -1,8 +1,4 @@
 {
   "files": [],
-  "references": [
-    { "path": "packages/ui" },
-    { "path": "packages/utils" },
-    { "path": "apps/admin" }
-  ]
+  "references": [{ "path": "apps/admin" }, { "path": "packages/ui" }, { "path": "packages/utils" }]
 }

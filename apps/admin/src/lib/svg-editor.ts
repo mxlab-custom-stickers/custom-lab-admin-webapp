@@ -15,8 +15,7 @@ export function getSvgLayers(element: Element): SvgLayer[] {
   return Array.from(element.children())
     .filter((child) => child.children().length > 0)
     .map((child) => {
-      const color =
-        child.first().type !== 'g' ? child.first().attr('fill') : undefined;
+      const color = child.first().type !== 'g' ? child.first().attr('fill') : undefined;
 
       return {
         id: child.id(),
@@ -60,10 +59,7 @@ export function resetOpacityRecursively(element: Element): void {
  * @param {string} svgId - ID of the SVG element in the DOM.
  * @param {string[]} selectedIds - Array of selected element IDs.
  */
-export function updateOpacityRecursively(
-  svgId: string,
-  selectedIds: string[]
-): void {
+export function updateOpacityRecursively(svgId: string, selectedIds: string[]): void {
   const svgRoot = SVG(`#${svgId}`);
 
   resetAllOpacity(svgId);
@@ -72,9 +68,7 @@ export function updateOpacityRecursively(
     return;
   }
 
-  svgRoot
-    .children()
-    .forEach((child) => internalUpdateOpacity(child, selectedIds));
+  svgRoot.children().forEach((child) => internalUpdateOpacity(child, selectedIds));
 }
 
 /**
@@ -84,10 +78,7 @@ export function updateOpacityRecursively(
  * @param {string[]} selectedIds - IDs of selected elements.
  * @returns {boolean} - Whether this element or a descendant is selected.
  */
-function internalUpdateOpacity(
-  element: Element,
-  selectedIds: string[]
-): boolean {
+function internalUpdateOpacity(element: Element, selectedIds: string[]): boolean {
   const id = element.id();
   const children = element.children();
 
@@ -112,10 +103,7 @@ function internalUpdateOpacity(
   return hasSelectedDescendant;
 }
 
-function flattenLayersWithParentId(
-  layers: SvgLayer[],
-  parentId: string | null = null
-): SvgLayer[] {
+function flattenLayersWithParentId(layers: SvgLayer[], parentId: string | null = null): SvgLayer[] {
   return layers.flatMap((layer) => {
     const withParent: SvgLayer = { ...layer, parentId: parentId || undefined };
 
@@ -127,27 +115,19 @@ function flattenLayersWithParentId(
   });
 }
 
-function getSiblingsExcludingSelf(
-  layer: SvgLayer,
-  layerMap: Map<string, SvgLayer>
-): string[] {
+function getSiblingsExcludingSelf(layer: SvgLayer, layerMap: Map<string, SvgLayer>): string[] {
   if (!layer.parentId) return []; // no parent, no siblings
 
   const parent = layerMap.get(layer.parentId);
   if (!parent || !parent.children) return [];
 
-  return parent.children
-    .filter((child) => child.id !== layer.id)
-    .map((child) => child.id);
+  return parent.children.filter((child) => child.id !== layer.id).map((child) => child.id);
 }
 
 function getDescendantIds(layer: SvgLayer): string[] {
   if (!layer.children) return [];
 
-  return layer.children.flatMap((child) => [
-    child.id,
-    ...getDescendantIds(child),
-  ]);
+  return layer.children.flatMap((child) => [child.id, ...getDescendantIds(child)]);
 }
 
 /**
@@ -224,9 +204,7 @@ export function hasSelectedParent(
   if (!layer.parentId) return false;
 
   const selectedIds = new Set(selectedLayers.map((l) => l.id));
-  const layerMap = new Map(
-    flattenLayersWithParentId(allLayers).map((l) => [l.id, l])
-  );
+  const layerMap = new Map(flattenLayersWithParentId(allLayers).map((l) => [l.id, l]));
 
   let parentId: string | undefined = layer.parentId;
 

@@ -28,9 +28,7 @@ export default function FontsOptionsCard() {
   const { fonts, search, setSearch } = useFonts();
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [selectedFonts, setSelectedFonts] = useState<Font[]>(() =>
-    initSelectedFonts()
-  );
+  const [selectedFonts, setSelectedFonts] = useState<Font[]>(() => initSelectedFonts());
 
   /**
    * Initializes the selected fonts based on the current layer's configuration.
@@ -63,9 +61,7 @@ export default function FontsOptionsCard() {
   return (
     <OptionsCard>
       <CardHeader>
-        <CardTitle>
-          Polices ({currentLayer.config.availableFonts.length})
-        </CardTitle>
+        <CardTitle>Polices ({currentLayer.config.availableFonts.length})</CardTitle>
       </CardHeader>
 
       <CardContent>

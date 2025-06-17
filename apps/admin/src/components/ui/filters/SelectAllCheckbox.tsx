@@ -17,8 +17,7 @@ export function SelectAllCheckbox<T>({
   selectedItems,
   onChange,
 }: SelectAllCheckboxProps<T>) {
-  const allSelected =
-    allItems.length > 0 && selectedItems.length === allItems.length;
+  const allSelected = allItems.length > 0 && selectedItems.length === allItems.length;
 
   const handleToggle = () => {
     if (allSelected) {
@@ -29,12 +28,8 @@ export function SelectAllCheckbox<T>({
   };
 
   return (
-    <label className="flex items-center gap-2 text-sm select-none">
-      <Checkbox
-        className={cn(className)}
-        checked={allSelected}
-        onCheckedChange={handleToggle}
-      />
+    <label className="flex select-none items-center gap-2 text-sm">
+      <Checkbox className={cn(className)} checked={allSelected} onCheckedChange={handleToggle} />
       {children || 'Tout sélectionner'}
     </label>
   );

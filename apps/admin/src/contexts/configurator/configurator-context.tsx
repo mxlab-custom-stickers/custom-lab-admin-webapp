@@ -13,13 +13,7 @@ import {
 import { ColorElement, Template, TemplateLayer } from '@/models/template.ts';
 import { Text } from '@/models/text';
 import { Canvas } from 'fabric';
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-} from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
 
 export const ConfiguratorContext = createContext<{
   state: ConfiguratorState;
@@ -72,11 +66,7 @@ export function Configurator({
   );
 
   const currentColorElement: CurrentColorElement = useMemo(() => {
-    if (
-      !currentLayer ||
-      currentLayer.type !== 'color' ||
-      !state.currentColorElementId
-    )
+    if (!currentLayer || currentLayer.type !== 'color' || !state.currentColorElementId)
       return undefined;
 
     if (state.currentColorElementId === 'color-palette') {
@@ -87,10 +77,7 @@ export function Configurator({
       };
     }
 
-    return findColorElementById(
-      currentLayer.colorElements,
-      state.currentColorElementId
-    );
+    return findColorElementById(currentLayer.colorElements, state.currentColorElementId);
   }, [currentLayer, state.currentColorElementId]);
 
   const currentText: Text | undefined = useMemo(() => {
@@ -126,9 +113,7 @@ export function Configurator({
   function updateLayer(layer: TemplateLayer) {
     const updatedTemplate = {
       ...state.template,
-      layers: state.template.layers.map((l) =>
-        l.id === layer.id ? { ...l, ...layer } : l
-      ),
+      layers: state.template.layers.map((l) => (l.id === layer.id ? { ...l, ...layer } : l)),
     };
 
     if (templateEditorContext) {
@@ -149,10 +134,7 @@ export function Configurator({
    * @returns A new Template with the updated ColorElement
    */
   function updateColorElement(updatedElement: ColorElement) {
-    const updatedTemplate = updateColorElementInTemplate(
-      state.template,
-      updatedElement
-    );
+    const updatedTemplate = updateColorElementInTemplate(state.template, updatedElement);
 
     if (templateEditorContext) {
       templateEditorContext.updateTemplate(updatedTemplate);
@@ -209,9 +191,7 @@ export function Configurator({
 export const useConfiguratorContext = () => {
   const context = useContext(ConfiguratorContext);
   if (!context) {
-    throw new Error(
-      'useConfiguratorContext must be used inside ConfiguratorProvider'
-    );
+    throw new Error('useConfiguratorContext must be used inside ConfiguratorProvider');
   }
   return context;
 };

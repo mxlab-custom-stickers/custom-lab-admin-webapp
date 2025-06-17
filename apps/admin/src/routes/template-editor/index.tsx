@@ -26,10 +26,7 @@ function RouteComponent() {
     const id = generateId();
 
     // Upload the SVG file to Firebase Storage
-    const svgUrl = await uploadFile(
-      files[0],
-      `${currentApp.id}/Template SVGs/${id}`
-    );
+    const svgUrl = await uploadFile(files[0], `${currentApp.id}/Template SVGs/${id}`);
 
     // Use the file name without the extension as the default template name
     const fileName = files[0].name;
@@ -55,13 +52,9 @@ function RouteComponent() {
 
   return (
     <div className="relative grid h-screen w-screen place-items-center bg-black/40">
-      <QuitButton className="absolute top-6 left-6" variant="secondary" />
+      <QuitButton className="absolute left-6 top-6" variant="secondary" />
 
-      <Dropzone
-        className="aspect-4/2 w-[600px]"
-        onDrop={handleDrop}
-        loading={loading}
-      >
+      <Dropzone className="aspect-4/2 w-[600px]" onDrop={handleDrop} loading={loading}>
         Importe ton fichier svg ici
       </Dropzone>
     </div>

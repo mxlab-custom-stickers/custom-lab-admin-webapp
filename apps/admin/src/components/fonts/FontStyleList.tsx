@@ -7,8 +7,7 @@ type FontStyleListProps = React.ComponentPropsWithoutRef<'div'> & {
   previewText?: string;
 };
 
-const DEFAULT_PREVIEW_TEXT =
-  'Custom Lab 2 by MXlab, the best configurator for your graphic kits.';
+const DEFAULT_PREVIEW_TEXT = 'Custom Lab 2 by MXlab, the best configurator for your graphic kits.';
 
 export default function FontStyleList({
   className,
@@ -21,16 +20,14 @@ export default function FontStyleList({
       {Object.entries(font.styles)
         .filter(([_, style]) => style !== null)
         .sort(([a], [b]) => {
-          return Number(fontWeights[a as FontStyleType]) <
-            Number(fontWeights[b as FontStyleType])
+          return Number(fontWeights[a as FontStyleType]) < Number(fontWeights[b as FontStyleType])
             ? -1
             : 1;
         })
         .map(([styleKey, style]) => (
           <div key={styleKey} className="border-b py-3 first:border-t">
             <div className="mb-2 text-sm">
-              {fontStyles[styleKey as FontStyleType]}{' '}
-              {fontWeights[styleKey as FontStyleType]}
+              {fontStyles[styleKey as FontStyleType]} {fontWeights[styleKey as FontStyleType]}
             </div>
             <div
               style={{

@@ -31,8 +31,7 @@ export default function ColorElementsOptionsCard({
     updateLayer,
   } = useTemplateEditorContext();
 
-  if (!currentTemplateLayer || currentTemplateLayer.type !== 'color')
-    return null;
+  if (!currentTemplateLayer || currentTemplateLayer.type !== 'color') return null;
 
   const initialSelectedLayerIds = useMemo(
     () => currentTemplateLayer?.colorElements.map((ce) => ce.id) || [],
@@ -42,12 +41,7 @@ export default function ColorElementsOptionsCard({
   const [selectedSvgLayers, setSelectedSvgLayers] = useState<SvgLayer[]>([]);
 
   function validate() {
-    if (
-      !currentTemplateLayer ||
-      currentTemplateLayer.type !== 'color' ||
-      !canvas
-    )
-      return;
+    if (!currentTemplateLayer || currentTemplateLayer.type !== 'color' || !canvas) return;
 
     let colorElements = selectedSvgLayers.map(svgLayerToColorElement);
     // If there is only one group, flatten it to its subColorElements
@@ -80,10 +74,7 @@ export default function ColorElementsOptionsCard({
             </Button>
           </DialogTrigger>
 
-          <DialogContent
-            className="!max-w-6xl gap-0 p-3"
-            withCloseButton={false}
-          >
+          <DialogContent className="!max-w-6xl gap-0 p-3" withCloseButton={false}>
             <DialogHeader>
               <DialogTitle className="sr-only">Svg Editor</DialogTitle>
               <DialogDescription className="sr-only">
@@ -104,10 +95,7 @@ export default function ColorElementsOptionsCard({
                   Annuler
                 </Button>
               </DialogClose>
-              <Button
-                onClick={validate}
-                disabled={selectedSvgLayers.length === 0}
-              >
+              <Button onClick={validate} disabled={selectedSvgLayers.length === 0}>
                 Sélectionner
               </Button>
             </DialogFooter>

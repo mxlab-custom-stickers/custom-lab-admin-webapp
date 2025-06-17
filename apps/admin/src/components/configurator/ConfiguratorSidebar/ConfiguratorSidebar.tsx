@@ -19,10 +19,7 @@ const currentLayerComponents: Record<TemplateLayerType, ReactNode> = {
   background: <div>Background Layer</div>,
 };
 
-export default function ConfiguratorSidebar({
-  className,
-  ...props
-}: ConfiguratorSidebarProps) {
+export default function ConfiguratorSidebar({ className, ...props }: ConfiguratorSidebarProps) {
   const { currentLayer } = useConfiguratorContext();
 
   const templateEditorContext = useOptionalTemplateEditorContext();
@@ -37,10 +34,7 @@ export default function ConfiguratorSidebar({
   }
 
   return (
-    <div
-      className={cn('row-span-2 w-64 border-r bg-white', className)}
-      {...props}
-    >
+    <div className={cn('row-span-2 w-64 border-r bg-white', className)} {...props}>
       <div className="flex h-full flex-col overflow-hidden">
         {/* Scrollable content */}
         <div className="flex-1 overflow-auto p-2">

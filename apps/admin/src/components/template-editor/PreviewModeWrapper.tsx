@@ -4,10 +4,7 @@ import React from 'react';
 
 type PreviewModeWrapperProps = React.ComponentPropsWithoutRef<'div'>;
 
-export default function PreviewModeWrapper({
-  className,
-  children,
-}: PreviewModeWrapperProps) {
+export default function PreviewModeWrapper({ className, children }: PreviewModeWrapperProps) {
   const {
     state: { previewMode },
   } = useTemplateEditorContext();
@@ -26,8 +23,7 @@ export default function PreviewModeWrapper({
           { 'max-w-full': previewMode === 'fullscreen' },
           { 'max-w-[calc(100svw-16rem-0.75rem)]': previewMode === 'desktop' },
           {
-            'max-h-[800px] max-w-sm translate-x-[calc(50svw-50%)]':
-              previewMode === 'mobile',
+            'max-h-[800px] max-w-sm translate-x-[calc(50svw-50%)]': previewMode === 'mobile',
           }
         )}
       >

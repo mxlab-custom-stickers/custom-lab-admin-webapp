@@ -28,9 +28,7 @@ export function filterMap<K, V>(
   map: Map<K, V>,
   predicate: (key: K, value: V) => boolean
 ): Map<K, V> {
-  return new Map(
-    Array.from(map.entries()).filter(([key, value]) => predicate(key, value))
-  );
+  return new Map(Array.from(map.entries()).filter(([key, value]) => predicate(key, value)));
 }
 
 /**

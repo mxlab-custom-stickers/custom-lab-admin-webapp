@@ -15,9 +15,7 @@ type ColorItemsAccordionProps = {
   colorItems: ColorItem[];
 };
 
-export default function ColorItemsAccordion({
-  colorItems,
-}: ColorItemsAccordionProps) {
+export default function ColorItemsAccordion({ colorItems }: ColorItemsAccordionProps) {
   const {
     state: { canvas },
     currentLayer,
@@ -45,10 +43,7 @@ export default function ColorItemsAccordion({
             <AccordionTrigger className="items-center px-1 py-0">
               <div className="flex items-center">
                 <ColorSwatch className="mr-2" color={colorItem.color} />
-                <div
-                  className="flex h-14 flex-1 items-center"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <div className="flex h-14 flex-1 items-center" onClick={(e) => e.stopPropagation()}>
                   <InvisibleInput
                     className="w-full"
                     value={colorItem.name}

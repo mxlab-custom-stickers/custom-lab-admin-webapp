@@ -9,11 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
-import {
-  TemplateLayer,
-  TemplateLayerType,
-  templateLayerTypeLabels,
-} from '@/models/template.ts';
+import { TemplateLayer, TemplateLayerType, templateLayerTypeLabels } from '@/models/template.ts';
 import { Plus } from 'lucide-react';
 
 export default function AddLayerDropdownMenu() {

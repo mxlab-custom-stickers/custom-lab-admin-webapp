@@ -24,15 +24,13 @@ export default function FontSelector({
   }
 
   return (
-    <ScrollArea
-      className={cn('flex flex-1 flex-col gap-1 overflow-auto', className)}
-    >
+    <ScrollArea className={cn('flex flex-1 flex-col gap-1 overflow-auto', className)}>
       <div className="flex flex-col gap-2 p-2 pr-3">
         {fonts.map((font) => (
           <div
             key={font.id}
             className={cn(
-              'group hover:bg-secondary relative cursor-pointer rounded-md p-3 pl-12 select-none',
+              'hover:bg-secondary group relative cursor-pointer select-none rounded-md p-3 pl-12',
               {
                 'bg-secondary': selectedFonts.some((f) => f.id === font.id),
               }
@@ -40,21 +38,17 @@ export default function FontSelector({
             onClick={() => handleFontSelect(font)}
           >
             <Checkbox
-              className="absolute top-1/2 left-4 -translate-y-1/2"
+              className="absolute left-4 top-1/2 -translate-y-1/2"
               checked={selectedFonts.some((f) => f.id === font.id)}
             />
 
             {/* Font name */}
-            <div className="mb-1 text-sm font-semibold whitespace-nowrap group-hover:underline">
+            <div className="mb-1 whitespace-nowrap text-sm font-semibold group-hover:underline">
               {font.name}
             </div>
             {/* Font preview */}
-            <div
-              className="line-clamp-1 px-1 text-3xl"
-              style={{ fontFamily: font.name }}
-            >
-              Custom Lab 2 by MXlab, the best configurator for your graphic
-              kits.
+            <div className="line-clamp-1 px-1 text-3xl" style={{ fontFamily: font.name }}>
+              Custom Lab 2 by MXlab, the best configurator for your graphic kits.
             </div>
           </div>
         ))}

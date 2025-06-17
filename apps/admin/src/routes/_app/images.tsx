@@ -61,7 +61,7 @@ function RouteComponent() {
 
           {state.folders.length ? (
             <div>
-              <h2 className="mb-2 font-medium select-none">Dossiers</h2>
+              <h2 className="mb-2 select-none font-medium">Dossiers</h2>
               <ul className="flex flex-wrap gap-4">
                 {state.folders.map((folder) => (
                   <li
@@ -70,7 +70,7 @@ function RouteComponent() {
                     onDoubleClick={() => fetchPath(folder.fullPath)}
                   >
                     <Folder className="mr-3" size={24} />
-                    <span className="line-clamp-1 flex-1 text-sm font-medium select-none">
+                    <span className="line-clamp-1 flex-1 select-none text-sm font-medium">
                       {folder.name}
                     </span>
                     <EllipsisVertical size={18} />
@@ -82,7 +82,7 @@ function RouteComponent() {
 
           {state.files.length ? (
             <div>
-              <h2 className="mb-2 font-medium select-none">Images</h2>
+              <h2 className="mb-2 select-none font-medium">Images</h2>
               <ul className="grid grid-cols-7 gap-4">
                 {state.files.map((file) => (
                   <li key={file.name} className="rounded-md bg-gray-200/50 p-2">

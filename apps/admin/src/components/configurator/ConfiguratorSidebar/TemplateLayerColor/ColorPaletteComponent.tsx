@@ -18,8 +18,7 @@ import { isTemplateLayerColor } from '@/models/template.ts';
 import { useMemo } from 'react';
 
 export default function ColorPaletteComponent() {
-  const { currentLayer, currentColorElement, updateLayer } =
-    useConfiguratorContext();
+  const { currentLayer, currentColorElement, updateLayer } = useConfiguratorContext();
 
   const { setColorItemsColor } = useConfiguratorCanvas();
 
@@ -40,10 +39,7 @@ export default function ColorPaletteComponent() {
     if (!currentLayer || !isTemplateLayerColor(currentLayer)) return;
 
     // Getting all color items that match the old color
-    const colorItemsToUpdate = getColorItemsByColor(
-      currentLayer,
-      oldColor.value
-    );
+    const colorItemsToUpdate = getColorItemsByColor(currentLayer, oldColor.value);
     // Updating their color to the new color
     const updatedColorItems = colorItemsToUpdate.map((item) => ({
       ...item,
@@ -52,10 +48,7 @@ export default function ColorPaletteComponent() {
     // Change their color in the canvas
     setColorItemsColor(updatedColorItems);
 
-    const updatedLayer = updateColorItemsInLayer(
-      currentLayer,
-      updatedColorItems
-    );
+    const updatedLayer = updateColorItemsInLayer(currentLayer, updatedColorItems);
     updateLayer(updatedLayer);
   }
 

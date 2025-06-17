@@ -67,9 +67,7 @@ export default function ColorsOptionsCard({
   return (
     <OptionsCard className={cn(className)} {...props}>
       <CardHeader>
-        <CardTitle>
-          Couleurs ({currentLayer?.config.availableColors.length})
-        </CardTitle>
+        <CardTitle>Couleurs ({currentLayer?.config.availableColors.length})</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -96,12 +94,9 @@ export default function ColorsOptionsCard({
 
           <DialogContent className="!max-w-4xl gap-0" withCloseButton={false}>
             <DialogHeader>
-              <DialogTitle className="sr-only">
-                Configurer les couleurs
-              </DialogTitle>
+              <DialogTitle className="sr-only">Configurer les couleurs</DialogTitle>
               <DialogDescription className="sr-only">
-                Choisissez les couleurs disponibles pour le calque ainsi que
-                leur affichage.
+                Choisissez les couleurs disponibles pour le calque ainsi que leur affichage.
               </DialogDescription>
             </DialogHeader>
 

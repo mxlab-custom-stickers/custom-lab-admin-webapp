@@ -11,11 +11,7 @@ type ColorGroupCardProps = React.ComponentPropsWithoutRef<'div'> & {
   colorGroup: ColorGroup;
 };
 
-export default function ColorGroupCard({
-  className,
-  colorGroup,
-  ...props
-}: ColorGroupCardProps) {
+export default function ColorGroupCard({ className, colorGroup, ...props }: ColorGroupCardProps) {
   const colors = useMemo(
     () => getAllColorGroupColors(colorGroup).sort(compareColorsByLuminance),
     [colorGroup]

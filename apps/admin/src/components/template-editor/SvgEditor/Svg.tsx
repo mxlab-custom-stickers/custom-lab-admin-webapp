@@ -1,10 +1,6 @@
 // Memoized the SVG so it doesn't re-render on every state change
 import { useSvgEditorContext } from '@/contexts/svg-editor-context.ts';
-import {
-  flattenSvgLayers,
-  getSvgLayers,
-  updateOpacityRecursively,
-} from '@/lib/svg-editor.ts';
+import { flattenSvgLayers, getSvgLayers, updateOpacityRecursively } from '@/lib/svg-editor.ts';
 import { cn } from '@/lib/utils.ts';
 import { SVG } from '@svgdotjs/svg.js';
 import React, { useMemo } from 'react';
@@ -18,12 +14,8 @@ type SvgProps = {
 };
 
 export default function Svg({ svgUrl, wrapperClassName }: SvgProps) {
-  const {
-    setIsInjecting,
-    initialSelectedLayerIds,
-    setSvgLayers,
-    setSelectedLayers,
-  } = useSvgEditorContext();
+  const { setIsInjecting, initialSelectedLayerIds, setSvgLayers, setSelectedLayers } =
+    useSvgEditorContext();
 
   const memoValue: Omit<ReactSVGProps, 'ref'> = useMemo(
     () => ({
@@ -45,9 +37,7 @@ export default function Svg({ svgUrl, wrapperClassName }: SvgProps) {
           // Initialize selected layers from the initialSelectedLayerIds prop
           if (initialSelectedLayerIds) {
             setSelectedLayers(
-              flatLayers.filter((layer) =>
-                initialSelectedLayerIds.includes(layer.id)
-              )
+              flatLayers.filter((layer) => initialSelectedLayerIds.includes(layer.id))
             );
             updateOpacityRecursively('svg-editor', initialSelectedLayerIds);
           }

@@ -73,9 +73,7 @@ export default function TemplateLayerImageComponent() {
           </DialogTrigger>
           <DialogContent className="!max-w-4xl gap-0">
             <DialogHeader>
-              <DialogTitle className="sr-only">
-                Bibliothèque d'images
-              </DialogTitle>
+              <DialogTitle className="sr-only">Bibliothèque d'images</DialogTitle>
               <DialogDescription className="sr-only">
                 Choisissez une image à ajouter à votre configuration.
               </DialogDescription>

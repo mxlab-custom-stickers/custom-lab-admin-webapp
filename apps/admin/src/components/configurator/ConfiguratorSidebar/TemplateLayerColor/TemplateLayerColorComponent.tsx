@@ -10,18 +10,14 @@ import { CurrentColorElementType } from '@/contexts/configurator/configurator-ty
 import { isTemplateLayerColor } from '@/models/template.ts';
 import { ReactNode } from 'react';
 
-const currentColorElementComponents: Record<
-  CurrentColorElementType,
-  ReactNode
-> = {
+const currentColorElementComponents: Record<CurrentColorElementType, ReactNode> = {
   group: <ColorGroupComponent />,
   item: <ColorItemComponent />,
   'color-palette': <ColorPaletteComponent />,
 };
 
 export default function TemplateLayerColorComponent() {
-  const { currentLayer, currentColorElement, setCurrentColorElementId } =
-    useConfiguratorContext();
+  const { currentLayer, currentColorElement, setCurrentColorElementId } = useConfiguratorContext();
 
   if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
 
@@ -40,9 +36,7 @@ export default function TemplateLayerColorComponent() {
       <ColorPaletteSection />
       <ColorElementList
         colorElements={currentLayer.colorElements}
-        onColorElementClick={(colorElement) =>
-          setCurrentColorElementId(colorElement.id)
-        }
+        onColorElementClick={(colorElement) => setCurrentColorElementId(colorElement.id)}
       />
     </div>
   ) : (

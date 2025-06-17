@@ -8,11 +8,7 @@ type ColorItemCardProps = React.ComponentPropsWithoutRef<'div'> & {
   colorItem: ColorItem;
 };
 
-export default function ColorItemCard({
-  className,
-  colorItem,
-  ...props
-}: ColorItemCardProps) {
+export default function ColorItemCard({ className, colorItem, ...props }: ColorItemCardProps) {
   return (
     <SidebarCard className={cn(className)} {...props}>
       <div className="flex items-center">

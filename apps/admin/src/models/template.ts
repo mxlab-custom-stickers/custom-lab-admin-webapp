@@ -30,10 +30,7 @@ export interface Template {
  * Template Layer
  */
 export type TemplateLayerType = 'color' | 'image' | 'text' | 'background';
-export type TemplateLayer =
-  | TemplateLayerColor
-  | TemplateLayerImage
-  | TemplateLayerText;
+export type TemplateLayer = TemplateLayerColor | TemplateLayerImage | TemplateLayerText;
 
 export const templateLayerTypeLabels: Record<TemplateLayerType, string> = {
   color: 'Couleur',
@@ -127,26 +124,20 @@ export interface TemplateLayerText extends TemplateLayerBase {
 /**
  * Type guard for TemplateLayerColor
  */
-export function isTemplateLayerColor(
-  layer: TemplateLayer
-): layer is TemplateLayerColor {
+export function isTemplateLayerColor(layer: TemplateLayer): layer is TemplateLayerColor {
   return layer.type === 'color';
 }
 
 /**
  * Type guard for TemplateLayerImage
  */
-export function isTemplateLayerImage(
-  layer: TemplateLayer
-): layer is TemplateLayerImage {
+export function isTemplateLayerImage(layer: TemplateLayer): layer is TemplateLayerImage {
   return layer.type === 'image';
 }
 
 /**
  * Type guard for TemplateLayerText
  */
-export function isTemplateLayerText(
-  layer: TemplateLayer
-): layer is TemplateLayerText {
+export function isTemplateLayerText(layer: TemplateLayer): layer is TemplateLayerText {
   return layer.type === 'text';
 }

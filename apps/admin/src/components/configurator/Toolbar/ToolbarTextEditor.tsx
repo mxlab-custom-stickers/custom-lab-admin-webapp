@@ -142,10 +142,7 @@ export default function ToolbarTextEditor() {
         }
       />
 
-      <Separator
-        orientation="vertical"
-        className="data-[orientation=vertical]:h-4"
-      />
+      <Separator orientation="vertical" className="data-[orientation=vertical]:h-4" />
 
       {/* Position */}
       <PositionPopover
@@ -157,13 +154,7 @@ export default function ToolbarTextEditor() {
           height: currentText.height,
         }}
         onValueChange={(changes) =>
-          handlePositionChange(
-            changes.x,
-            changes.y,
-            changes.angle,
-            changes.width,
-            changes.height
-          )
+          handlePositionChange(changes.x, changes.y, changes.angle, changes.width, changes.height)
         }
       />
     </div>

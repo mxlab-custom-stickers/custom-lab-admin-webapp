@@ -21,9 +21,7 @@ export async function getApps(): Promise<App[]> {
   })) as App[];
 }
 
-export async function getTemplateById(
-  id: string
-): Promise<Template | undefined> {
+export async function getTemplateById(id: string): Promise<Template | undefined> {
   const snapshot = await getDoc(doc(db, 'templates', id));
   return snapshot.exists() ? (snapshot.data() as Template) : undefined;
 }

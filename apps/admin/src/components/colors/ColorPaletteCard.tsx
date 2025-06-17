@@ -28,7 +28,7 @@ export default function ColorPaletteCard({
     <Card
       className={cn(
         '@container bg-gray-50/50 shadow-none',
-        { 'group hover:border-primary cursor-pointer': selectable },
+        { 'hover:border-primary group cursor-pointer': selectable },
         { 'bg-gray-100': selected },
         className
       )}
@@ -37,8 +37,7 @@ export default function ColorPaletteCard({
       <CardHeader>
         <CardTitle
           className={cn({
-            'flex items-start justify-between group-hover:underline':
-              selectable,
+            'flex items-start justify-between group-hover:underline': selectable,
           })}
         >
           <span>
@@ -53,7 +52,7 @@ export default function ColorPaletteCard({
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-5 gap-2 @sm:grid-cols-8">
+        <div className="@sm:grid-cols-8 grid grid-cols-5 gap-2">
           {colorPalette.colors.sort(compareColorsByLuminance).map((color) => (
             <div
               key={color.id}

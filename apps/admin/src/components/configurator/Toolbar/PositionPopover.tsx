@@ -1,10 +1,6 @@
 import { Button } from '@/components/ui/button.tsx';
 import { NumericInput } from '@/components/ui/NumericInput.tsx';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover.tsx';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { useControlledState } from '@/hooks/use-controlled-state.ts';
 
 type PositionState = {
@@ -20,10 +16,7 @@ type PositionPopoverProps = {
   onValueChange?: (value: PositionState) => void;
 };
 
-export default function PositionPopover({
-  value: valueProp,
-  onValueChange,
-}: PositionPopoverProps) {
+export default function PositionPopover({ value: valueProp, onValueChange }: PositionPopoverProps) {
   const [value, setValue] = useControlledState(valueProp, onValueChange, {
     x: 0,
     y: 0,
@@ -64,10 +57,7 @@ export default function PositionPopover({
             </div>
             {/* Angle */}
             <div className="space-y-2">
-              <label
-                htmlFor="angle-input"
-                className="block text-sm font-medium"
-              >
+              <label htmlFor="angle-input" className="block text-sm font-medium">
                 Angle
               </label>
               <NumericInput
@@ -80,10 +70,7 @@ export default function PositionPopover({
             </div>
             {/* Width */}
             <div className="space-y-2">
-              <label
-                htmlFor="width-input"
-                className="block text-sm font-medium"
-              >
+              <label htmlFor="width-input" className="block text-sm font-medium">
                 Largeur
               </label>
               <NumericInput
@@ -94,10 +81,7 @@ export default function PositionPopover({
             </div>
             {/* Height */}
             <div className="space-y-2">
-              <label
-                htmlFor="height-input"
-                className="block text-sm font-medium"
-              >
+              <label htmlFor="height-input" className="block text-sm font-medium">
                 Hauteur
               </label>
               <NumericInput

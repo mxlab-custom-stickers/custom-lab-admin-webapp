@@ -3,11 +3,7 @@ import { useTemplateEditorContext } from '@/contexts/template-editor/template-ed
 import { PreviewMode } from '@/contexts/template-editor/template-editor-types.ts';
 import { Fullscreen, Monitor, Smartphone } from 'lucide-react';
 
-export default function PreviewModeSwitcher({
-  className,
-}: {
-  className?: string;
-}) {
+export default function PreviewModeSwitcher({ className }: { className?: string }) {
   const {
     state: { previewMode },
     setPreviewMode,
@@ -34,10 +30,7 @@ export default function PreviewModeSwitcher({
       </ToggleGroupItem>
 
       {/* Fullscreen */}
-      <ToggleGroupItem
-        value="fullscreen"
-        aria-label="Toggle fullscreen preview mode"
-      >
+      <ToggleGroupItem value="fullscreen" aria-label="Toggle fullscreen preview mode">
         <Fullscreen className="h-4 w-4" />
       </ToggleGroupItem>
     </ToggleGroup>

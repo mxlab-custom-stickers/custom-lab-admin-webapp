@@ -7,11 +7,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command.tsx';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover.tsx';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
 import { cn } from '@/lib/utils.ts';
 import { Check, ChevronsUpDown } from 'lucide-react';
@@ -75,11 +71,7 @@ export default function TemplateLayerSelector({
               {layers
                 .filter((layer) => layer.id !== currentLayerId)
                 .map((layer) => (
-                  <CommandItem
-                    key={layer.id}
-                    value={layer.id}
-                    onSelect={handleLayerSelect}
-                  >
+                  <CommandItem key={layer.id} value={layer.id} onSelect={handleLayerSelect}>
                     <LayerIcon type={layer.type} />
                     <div className="line-clamp-1">{layer.name}</div>
                     <Check

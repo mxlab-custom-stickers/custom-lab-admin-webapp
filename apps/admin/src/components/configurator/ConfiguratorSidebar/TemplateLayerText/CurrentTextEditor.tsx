@@ -2,12 +2,7 @@ import ColorPicker from '@/components/configurator/ConfiguratorSidebar/TemplateL
 import FontPicker from '@/components/configurator/ConfiguratorSidebar/TemplateLayerText/FontPicker.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import NumberInput from '@/components/ui/NumberInput.tsx';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs.tsx';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
 import { useFonts } from '@/hooks/use-fonts.ts';
 import { Color } from '@/models/color.ts';

@@ -44,11 +44,7 @@ export default function ColorsOptionsCard(): JSX.Element | null {
     updateLayer,
   } = useTemplateEditorContext();
 
-  if (
-    !currentLayer ||
-    (currentLayer.type !== 'color' && currentLayer.type !== 'text')
-  )
-    return null;
+  if (!currentLayer || (currentLayer.type !== 'color' && currentLayer.type !== 'text')) return null;
 
   const { availableColors } = currentLayer.config;
   const [value, setValue] = useState<Color[]>(availableColors);
@@ -111,12 +107,9 @@ export default function ColorsOptionsCard(): JSX.Element | null {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader className="sr-only">
-              Configurer les couleurs
-            </DialogHeader>
+            <DialogHeader className="sr-only">Configurer les couleurs</DialogHeader>
             <DialogDescription className="sr-only">
-              Sélectionnez vos couleurs parmis les palettes ou la liste de
-              couleurs disponible.
+              Sélectionnez vos couleurs parmis les palettes ou la liste de couleurs disponible.
             </DialogDescription>
 
             <ColorSelector

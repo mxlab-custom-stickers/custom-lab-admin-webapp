@@ -13,16 +13,6 @@ export const statusColors: Record<Status, string> = {
   archived: 'bg-gray-400 text-white',
 };
 
-export default function StatusBadge({
-  className,
-  status,
-}: {
-  status: Status;
-  className?: string;
-}) {
-  return (
-    <Badge className={cn(statusColors[status], className)}>
-      {statusLabels[status]}
-    </Badge>
-  );
+export default function StatusBadge({ className, status }: { status: Status; className?: string }) {
+  return <Badge className={cn(statusColors[status], className)}>{statusLabels[status]}</Badge>;
 }

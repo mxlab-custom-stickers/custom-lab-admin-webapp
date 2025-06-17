@@ -25,9 +25,7 @@ function RouteComponent() {
   const { currentApp } = useAppContext();
 
   useEffect(() => {
-    getTemplatesByAppId(currentApp.id).then((templates) =>
-      setTemplates(templates)
-    );
+    getTemplatesByAppId(currentApp.id).then((templates) => setTemplates(templates));
   }, [currentApp]);
 
   return (
@@ -36,9 +34,7 @@ function RouteComponent() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbPage className="line-clamp-1">
-                Templates
-              </BreadcrumbPage>
+              <BreadcrumbPage className="line-clamp-1">Templates</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -57,9 +53,7 @@ function RouteComponent() {
             ))}
           </div>
         ) : (
-          <div className="text-muted-foreground text-sm">
-            Aucun template trouvé
-          </div>
+          <div className="text-muted-foreground text-sm">Aucun template trouvé</div>
         )}
       </MainContent>
     </div>
