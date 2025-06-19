@@ -13,6 +13,7 @@ import {
 
 import nelson from '@/assets/nelson.jpg';
 import { AppSwitcher } from '@/components/app-switcher.tsx';
+import { Banner } from '@clab/configurator';
 
 // This is sample data.
 const data = {
@@ -32,10 +33,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="border-sidebar-border h-16 border-b transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <AppSwitcher />
       </SidebarHeader>
-
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
+
+      <Banner />
 
       <SidebarFooter>
         <NavUser user={data.user} />

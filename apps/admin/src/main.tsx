@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 // Import the generated route tree
 import { Toaster } from '@/components/ui/sonner';
+import '@clab/configurator/assets/index.css';
 import './index.css';
 import { routeTree } from './routeTree.gen';
 
