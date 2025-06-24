@@ -1,3 +1,3 @@
 import './index.css';
 
-export { Banner } from './components/Banner';
+export * from './components/Sidebar';

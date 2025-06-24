@@ -7,7 +7,10 @@
     "packages/*"
   ],
   "scripts": {
-    "format": "prettier --write ."
+    "build:configurator": "yarn workspace @clab/configurator build",
+    "build:firebase": "yarn workspace @clab/firebase build",
+    "build:types": "yarn workspace @clab/types build",
+    "build:utils": "yarn workspace @clab/utils build"
   },
   "devDependencies": {
     "prettier": "^3.5.3",

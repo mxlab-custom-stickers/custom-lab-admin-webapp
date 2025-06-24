@@ -1,0 +1,13 @@
+{
+  "name": "@clab/firebase",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@clab/types": "workspace:*",
+    "firebase": "^11.9.1"
+  }
+}
