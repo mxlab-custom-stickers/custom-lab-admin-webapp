@@ -23,7 +23,10 @@ export default function Sidebar({ className, ...props }: SidebarProps) {
 
   return (
     <div
-      className={cn('flex flex-col justify-between rounded-xl text-white', className)}
+      className={cn(
+        'w-68 fixed bottom-4 left-4 top-4 z-30 flex flex-col justify-between rounded-xl bg-[#323232] text-white shadow-xl',
+        className
+      )}
       {...props}
     >
       <SidebarHeader className="border-b border-gray-600 p-3" />

@@ -12,7 +12,13 @@ export default function LayersMenu({ className, ...props }: LayersMenuProps) {
   } = useConfiguratorContext();
 
   return (
-    <div className={cn('flex items-center justify-center gap-5', className)} {...props}>
+    <div
+      className={cn(
+        'className="h-13 fixed bottom-7 left-72 right-0 z-20 flex items-center justify-center gap-5 bg-[#323232] p-2 text-white shadow-xl',
+        className
+      )}
+      {...props}
+    >
       {template.layers.map((layer) => (
         <LayersMenuItem
           key={layer.id}

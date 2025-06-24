@@ -1,7 +1,10 @@
-import Canvas from '@/components/Canvas';
-import LayersMenu from '@/components/LayersMenu';
-import Sidebar from '@/components/Sidebar';
-import { ConfiguratorProvider } from '@/contexts/configurator-contexts.tsx';
+import {
+  ConfiguratorCanvas,
+  ConfiguratorLayersMenu,
+  ConfiguratorProvider,
+  ConfiguratorSidebar,
+} from '@clab/configurator';
+
 import { getTemplateById } from '@clab/firebase';
 import type { Template } from '@clab/types';
 import { useEffect, useState } from 'react';
@@ -16,14 +19,14 @@ export default function App() {
   }, []);
 
   return (
-    <div className="dark bg-[url('assets/background.png')] bg-contain bg-[calc(50%+(272px/2)-(16px/2))_calc(50%-(64px/2))] bg-no-repeat">
+    <div>
       {template ? (
-        <ConfiguratorProvider className="grid h-screen w-screen" template={template}>
-          <Sidebar />
+        <ConfiguratorProvider className="relative grid h-screen w-screen" template={template}>
+          <ConfiguratorSidebar className="absolute" />
           <div className="relative">
-            <Canvas />
+            <ConfiguratorCanvas />
           </div>
-          <LayersMenu />
+          <ConfiguratorLayersMenu className="absolute" />
         </ConfiguratorProvider>
       ) : (
         <div>Chargement...</div>

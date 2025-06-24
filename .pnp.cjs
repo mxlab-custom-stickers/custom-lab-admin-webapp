@@ -27,6 +27,10 @@ const RAW_RUNTIME_STATE =
       "reference": "workspace:packages/firebase"\
     },\
     {\
+      "name": "template-editor",\
+      "reference": "workspace:packages/template-editor"\
+    },\
+    {\
       "name": "@clab/types",\
       "reference": "workspace:packages/types"\
     },\
@@ -43,7 +47,8 @@ const RAW_RUNTIME_STATE =
     ["@clab/types", ["workspace:packages/types"]],\
     ["@clab/utils", ["workspace:packages/utils"]],\
     ["admin", ["workspace:apps/admin"]],\
-    ["custom-lab", ["workspace:."]]\
+    ["custom-lab", ["workspace:."]],\
+    ["template-editor", ["workspace:packages/template-editor"]]\
   ],\
   "fallbackPool": [\
   ],\
@@ -5795,6 +5800,22 @@ const RAW_RUNTIME_STATE =
         ],\
         "linkType": "SOFT"\
       }],\
+      ["virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:4.1.10", {\
+        "packageLocation": "./.yarn/__virtual__/@tailwindcss-vite-virtual-f8a193f99c/4/.yarn/berry/cache/@tailwindcss-vite-npm-4.1.10-3feb20b961-10c0.zip/node_modules/@tailwindcss/vite/",\
+        "packageDependencies": [\
+          ["@tailwindcss/vite", "virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:4.1.10"],\
+          ["@tailwindcss/node", "npm:4.1.10"],\
+          ["@tailwindcss/oxide", "npm:4.1.10"],\
+          ["@types/vite", null],\
+          ["tailwindcss", "npm:4.1.10"],\
+          ["vite", "virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:6.3.5"]\
+        ],\
+        "packagePeers": [\
+          "@types/vite",\
+          "vite"\
+        ],\
+        "linkType": "HARD"\
+      }],\
       ["virtual:9845906954fdbefbb879db24fa8772d77a945dca59f459806df47a5b67245d4bc6502880b373cca7201062c81bea9f13f699f52de2004c037e79dbdbd5d97fb3#npm:4.0.17", {\
         "packageLocation": "./.yarn/__virtual__/@tailwindcss-vite-virtual-ac88653e0f/4/.yarn/berry/cache/@tailwindcss-vite-npm-4.0.17-074c9bb3f2-10c0.zip/node_modules/@tailwindcss/vite/",\
         "packageDependencies": [\
@@ -6618,6 +6639,21 @@ const RAW_RUNTIME_STATE =
           ["@vitejs/plugin-react-swc", "npm:3.10.2"]\
         ],\
         "linkType": "SOFT"\
+      }],\
+      ["virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:3.10.2", {\
+        "packageLocation": "./.yarn/__virtual__/@vitejs-plugin-react-swc-virtual-43e6549561/4/.yarn/berry/cache/@vitejs-plugin-react-swc-npm-3.10.2-442aa84200-10c0.zip/node_modules/@vitejs/plugin-react-swc/",\
+        "packageDependencies": [\
+          ["@vitejs/plugin-react-swc", "virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:3.10.2"],\
+          ["@rolldown/pluginutils", "npm:1.0.0-beta.11"],\
+          ["@swc/core", "virtual:b93b4bd1c47cb01448625d52bdc359292591797d63599305e4c9d7499e897ccb874438d760da0818a0f6549d77aec788166424607599340c6ebb607ffe302842#npm:1.12.1"],\
+          ["@types/vite", null],\
+          ["vite", "virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:6.3.5"]\
+        ],\
+        "packagePeers": [\
+          "@types/vite",\
+          "vite"\
+        ],\
+        "linkType": "HARD"\
       }],\
       ["virtual:9845906954fdbefbb879db24fa8772d77a945dca59f459806df47a5b67245d4bc6502880b373cca7201062c81bea9f13f699f52de2004c037e79dbdbd5d97fb3#npm:3.10.2", {\
         "packageLocation": "./.yarn/__virtual__/@vitejs-plugin-react-swc-virtual-7d61be6070/4/.yarn/berry/cache/@vitejs-plugin-react-swc-npm-3.10.2-442aa84200-10c0.zip/node_modules/@vitejs/plugin-react-swc/",\
@@ -12402,6 +12438,34 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["template-editor", [\
+      ["workspace:packages/template-editor", {\
+        "packageLocation": "./packages/template-editor/",\
+        "packageDependencies": [\
+          ["template-editor", "workspace:packages/template-editor"],\
+          ["@clab/configurator", "workspace:packages/configurator"],\
+          ["@clab/firebase", "workspace:packages/firebase"],\
+          ["@clab/types", "workspace:packages/types"],\
+          ["@clab/utils", "workspace:packages/utils"],\
+          ["@eslint/js", "npm:9.29.0"],\
+          ["@tailwindcss/vite", "virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:4.1.10"],\
+          ["@types/react", "npm:19.1.8"],\
+          ["@types/react-dom", "virtual:d00002f5286d232df417866d684f90fa0cd641adabcf3eecdcc49f5d5e39191f07e97dc55265eaf37d0849592aea23803d9e0dc30239c7faa072c9a597b5aec2#npm:19.1.6"],\
+          ["@vitejs/plugin-react-swc", "virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:3.10.2"],\
+          ["eslint", "virtual:d00002f5286d232df417866d684f90fa0cd641adabcf3eecdcc49f5d5e39191f07e97dc55265eaf37d0849592aea23803d9e0dc30239c7faa072c9a597b5aec2#npm:9.29.0"],\
+          ["eslint-plugin-react-hooks", "virtual:d00002f5286d232df417866d684f90fa0cd641adabcf3eecdcc49f5d5e39191f07e97dc55265eaf37d0849592aea23803d9e0dc30239c7faa072c9a597b5aec2#npm:5.2.0"],\
+          ["eslint-plugin-react-refresh", "virtual:d00002f5286d232df417866d684f90fa0cd641adabcf3eecdcc49f5d5e39191f07e97dc55265eaf37d0849592aea23803d9e0dc30239c7faa072c9a597b5aec2#npm:0.4.19"],\
+          ["globals", "npm:16.2.0"],\
+          ["react", "npm:19.1.0"],\
+          ["react-dom", "virtual:d00002f5286d232df417866d684f90fa0cd641adabcf3eecdcc49f5d5e39191f07e97dc55265eaf37d0849592aea23803d9e0dc30239c7faa072c9a597b5aec2#npm:19.1.0"],\
+          ["tailwindcss", "npm:4.1.10"],\
+          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
+          ["typescript-eslint", "virtual:d00002f5286d232df417866d684f90fa0cd641adabcf3eecdcc49f5d5e39191f07e97dc55265eaf37d0849592aea23803d9e0dc30239c7faa072c9a597b5aec2#npm:8.34.1"],\
+          ["vite", "virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:6.3.5"]\
+        ],\
+        "linkType": "SOFT"\
+      }]\
+    ]],\
     ["tiny-invariant", [\
       ["npm:1.3.3", {\
         "packageLocation": "../../../.yarn/berry/cache/tiny-invariant-npm-1.3.3-e622f1447c-10c0.zip/node_modules/tiny-invariant/",\
@@ -12883,6 +12947,64 @@ const RAW_RUNTIME_STATE =
           ["vite", "npm:6.3.5"]\
         ],\
         "linkType": "SOFT"\
+      }],\
+      ["virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:6.3.5", {\
+        "packageLocation": "./.yarn/__virtual__/vite-virtual-5de285f962/4/.yarn/berry/cache/vite-npm-6.3.5-244c1b4d55-10c0.zip/node_modules/vite/",\
+        "packageDependencies": [\
+          ["vite", "virtual:775de8ff7bdd41cc96d15d11bbf241f76fa4e0ca4231fe34fca457330a5b5048e2de954610875198784dcc316ced014544c3bdd7cc0bda5acd00986b858e876c#npm:6.3.5"],\
+          ["@types/jiti", null],\
+          ["@types/less", null],\
+          ["@types/lightningcss", null],\
+          ["@types/node", null],\
+          ["@types/sass", null],\
+          ["@types/sass-embedded", null],\
+          ["@types/stylus", null],\
+          ["@types/sugarss", null],\
+          ["@types/terser", null],\
+          ["@types/tsx", null],\
+          ["@types/yaml", null],\
+          ["esbuild", "npm:0.25.1"],\
+          ["fdir", "virtual:d4e4bcf80e67f9de0540c123c7c4882e34dce6a8ba807a0a834f267f9132ee6bd264e69a49c6203aa89877ed3a5a5d633bfa002384881be452cc3a2d2fbcce0b#npm:6.4.6"],\
+          ["fsevents", "patch:fsevents@npm%3A2.3.3#optional!builtin<compat/fsevents>::version=2.3.3&hash=df0bf1"],\
+          ["jiti", null],\
+          ["less", null],\
+          ["lightningcss", null],\
+          ["picomatch", "npm:4.0.2"],\
+          ["postcss", "npm:8.5.3"],\
+          ["rollup", "npm:4.43.0"],\
+          ["sass", null],\
+          ["sass-embedded", null],\
+          ["stylus", null],\
+          ["sugarss", null],\
+          ["terser", null],\
+          ["tinyglobby", "npm:0.2.14"],\
+          ["tsx", null],\
+          ["yaml", null]\
+        ],\
+        "packagePeers": [\
+          "@types/jiti",\
+          "@types/less",\
+          "@types/lightningcss",\
+          "@types/node",\
+          "@types/sass-embedded",\
+          "@types/sass",\
+          "@types/stylus",\
+          "@types/sugarss",\
+          "@types/terser",\
+          "@types/tsx",\
+          "@types/yaml",\
+          "jiti",\
+          "less",\
+          "lightningcss",\
+          "sass-embedded",\
+          "sass",\
+          "stylus",\
+          "sugarss",\
+          "terser",\
+          "tsx",\
+          "yaml"\
+        ],\
+        "linkType": "HARD"\
       }],\
       ["virtual:9845906954fdbefbb879db24fa8772d77a945dca59f459806df47a5b67245d4bc6502880b373cca7201062c81bea9f13f699f52de2004c037e79dbdbd5d97fb3#npm:6.3.5", {\
         "packageLocation": "./.yarn/__virtual__/vite-virtual-ca429dd70d/4/.yarn/berry/cache/vite-npm-6.3.5-244c1b4d55-10c0.zip/node_modules/vite/",\
