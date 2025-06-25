@@ -1,10 +1,5 @@
-import {
-  ConfiguratorCanvas,
-  ConfiguratorLayersMenu,
-  ConfiguratorProvider,
-  ConfiguratorSidebar,
-} from '@clab/configurator';
-
+import TemplateEditor from '@/components';
+import { TemplateEditorProvider } from '@/contexts/template-editor-context.tsx';
 import { getTemplateById } from '@clab/firebase';
 import type { Template } from '@clab/types';
 import { useEffect, useState } from 'react';
@@ -18,19 +13,11 @@ export default function App() {
     getTemplateById(TEMPLATE_ID).then(setTemplate);
   }, []);
 
-  return (
-    <div>
-      {template ? (
-        <ConfiguratorProvider className="relative grid h-screen w-screen" template={template}>
-          <ConfiguratorSidebar className="absolute" />
-          <div className="relative">
-            <ConfiguratorCanvas />
-          </div>
-          <ConfiguratorLayersMenu className="absolute" />
-        </ConfiguratorProvider>
-      ) : (
-        <div>Chargement...</div>
-      )}
-    </div>
+  return template ? (
+    <TemplateEditorProvider template={template}>
+      <TemplateEditor />
+    </TemplateEditorProvider>
+  ) : (
+    <div>Chargement...</div>
   );
 }

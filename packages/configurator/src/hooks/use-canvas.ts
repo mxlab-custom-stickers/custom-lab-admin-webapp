@@ -1,5 +1,5 @@
 import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
-import { hideOrShowObjectsById } from '@/utils/fabric.ts';
+import { hideOrShowObjectsById } from '@/lib/fabric.ts';
 import type { ColorItem, TemplateLayerColor } from '@clab/types';
 import { getAllFabricObjectsFromTemplate } from '@clab/utils';
 
@@ -10,6 +10,8 @@ export const useCanvas = () => {
 
   function setColorItemsColor(colorItems: ColorItem[]) {
     if (!canvas) return;
+
+    console.log(colorItems);
 
     colorItems.forEach((colorItem) => {
       colorItem.fabricObjects?.forEach((fabricObject) => {

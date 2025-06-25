@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
-import { drawTextOnCanvas } from '@/utils/fabric.ts';
+import { drawTextOnCanvas } from '@/lib/fabric.ts';
 import type { Text } from '@clab/types';
 import { generateId } from '@clab/utils';
 

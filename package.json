@@ -9,6 +9,7 @@
   "scripts": {
     "build:configurator": "yarn workspace @clab/configurator build",
     "build:firebase": "yarn workspace @clab/firebase build",
+    "build:template-editor": "yarn workspace @clab/template-editor build",
     "build:types": "yarn workspace @clab/types build",
     "build:utils": "yarn workspace @clab/utils build"
   },

@@ -1,6 +1,5 @@
 import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
 import {
-  assignFabricObjectsToColorItemsInLayer,
   clipImageLayerToColorLayer,
   drawImageOnCanvas,
   drawTextOnCanvas,
@@ -11,9 +10,10 @@ import {
   resetInteractivity,
   resizeCanvasToWrapper,
   setupZoomAndPan,
-} from '@/utils/fabric.ts';
+} from '@/lib/fabric.ts';
 import type { Template, TemplateLayerImage } from '@clab/types';
 import {
+  assignFabricObjectsToColorItemsInLayer,
   cn,
   collectColorItems,
   getAllColorItemsFromTemplate,

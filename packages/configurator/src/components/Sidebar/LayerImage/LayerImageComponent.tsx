@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { DialogTrigger } from '@/components/ui/dialog.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts';
-import { drawImageOnCanvas } from '@/utils/fabric.ts';
+import { drawImageOnCanvas } from '@/lib/fabric.ts';
 import { type FileNode, listFiles } from '@clab/firebase';
 import { type Image, isTemplateLayerImage } from '@clab/types';
 import { generateId } from '@clab/utils';

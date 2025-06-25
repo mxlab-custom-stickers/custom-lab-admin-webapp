@@ -9,8 +9,6 @@ import type { TemplateLayerType } from '@clab/types';
 import { cn } from '@clab/utils';
 import React, { type ReactNode } from 'react';
 
-type SidebarProps = React.ComponentPropsWithoutRef<'div'>;
-
 const currentLayerComponents: Record<TemplateLayerType, ReactNode> = {
   color: <LayerColorComponent />,
   image: <LayerImageComponent />,
@@ -18,7 +16,17 @@ const currentLayerComponents: Record<TemplateLayerType, ReactNode> = {
   background: <div>Background Layer</div>,
 };
 
-export default function Sidebar({ className, ...props }: SidebarProps) {
+type SidebarClassNames = {
+  header?: string;
+  content?: string;
+  footer?: string;
+};
+
+type SidebarProps = React.ComponentPropsWithoutRef<'div'> & {
+  classNames?: SidebarClassNames;
+};
+
+export default function Sidebar({ className, classNames, ...props }: SidebarProps) {
   const { currentLayer } = useConfiguratorContext();
 
   return (
@@ -29,8 +37,8 @@ export default function Sidebar({ className, ...props }: SidebarProps) {
       )}
       {...props}
     >
-      <SidebarHeader className="border-b border-gray-600 p-3" />
-      <ScrollArea className="flex-1 overflow-auto p-3">
+      <SidebarHeader className={cn('border-b border-gray-600 p-3', classNames?.header)} />
+      <ScrollArea className={cn('flex-1 overflow-auto p-3', classNames?.content)}>
         {currentLayer ? (
           <>
             <div className="mb-2 text-2xl font-semibold uppercase">{currentLayer.name}</div>
@@ -39,7 +47,7 @@ export default function Sidebar({ className, ...props }: SidebarProps) {
           </>
         ) : null}
       </ScrollArea>
-      <SidebarFooter className="border-t border-gray-600 p-2" />
+      <SidebarFooter className={cn('border-t border-gray-600 p-2', classNames?.footer)} />
     </div>
   );
 }

@@ -3,10 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-body {
-  font-family: 'Blender Pro', sans-serif;
-}
-
 /* Blender Pro */
 @font-face {
   font-family: 'Blender Pro';
@@ -185,5 +181,9 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .clab-configurator {
+    font-family: 'Blender Pro', sans-serif;
   }
 }
