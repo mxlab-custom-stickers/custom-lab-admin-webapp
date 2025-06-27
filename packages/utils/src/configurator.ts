@@ -325,7 +325,7 @@ export function getAllFabricObjectsFromTemplate(
 
     if (isTemplateLayerText(layer)) {
       for (const text of layer.texts) {
-        if (text.fabricText) result.push(text.fabricText);
+        if (text.fabricTextbox) result.push(text.fabricTextbox);
       }
     }
 

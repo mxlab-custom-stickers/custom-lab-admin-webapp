@@ -28,7 +28,7 @@ export interface Text {
   skewX: number;
   skewY: number;
 
-  fabricText?: Textbox;
+  fabricTextbox?: Textbox;
 }
 
 /**

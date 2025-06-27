@@ -1,6 +1,7 @@
-import Canvas from '@/components/Canvas';
+import Canvas from '@/components/Canvas/Canvas.tsx';
 import LayersMenu from '@/components/LayersMenu';
 import Sidebar from '@/components/Sidebar';
+import Toolbar from '@/components/Toolbar';
 import { ConfiguratorProvider } from '@/contexts/configurator-contexts.tsx';
 import { getTemplateById } from '@clab/firebase';
 import type { Template } from '@clab/types';
@@ -22,6 +23,7 @@ export default function App() {
           <Sidebar />
           <div className="relative">
             <Canvas />
+            <Toolbar />
           </div>
           <LayersMenu />
         </ConfiguratorProvider>

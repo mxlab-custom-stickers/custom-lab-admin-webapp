@@ -11,8 +11,8 @@ export function configuratorReducer(state: ConfiguratorState, action: Configurat
     case 'SET_CURRENT_COLOR_ELEMENT_ID': {
       return { ...state, currentColorElementId: action.payload };
     }
-    case 'SET_CURRENT_TEXT_ID': {
-      return { ...state, currentTextId: action.payload };
+    case 'SET_SELECTED_OBJECT_ID': {
+      return { ...state, selectedObjectId: action.payload };
     }
     case 'SET_CANVAS': {
       return { ...state, canvas: action.payload };

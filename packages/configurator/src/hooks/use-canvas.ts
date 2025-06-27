@@ -2,6 +2,7 @@ import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
 import { hideOrShowObjectsById } from '@/lib/fabric.ts';
 import type { ColorItem, TemplateLayerColor } from '@clab/types';
 import { getAllFabricObjectsFromTemplate } from '@clab/utils';
+import { type Textbox } from 'fabric';
 
 export const useCanvas = () => {
   const {
@@ -31,5 +32,11 @@ export const useCanvas = () => {
     hideOrShowObjectsById(canvas, ids, isFocusing);
   }
 
-  return { setColorItemsColor, focusColorLayer };
+  function updateFabricText(fabricText: Textbox, updates: Partial<Textbox>) {
+    if (!fabricText || !canvas) return;
+    fabricText.set(updates);
+    canvas.requestRenderAll();
+  }
+
+  return { setColorItemsColor, focusColorLayer, updateFabricText };
 };

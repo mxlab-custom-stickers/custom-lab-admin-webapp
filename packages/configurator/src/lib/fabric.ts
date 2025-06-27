@@ -250,13 +250,20 @@ export function makeImageNonInteractive(image: Image) {
   image.fabricImage.off();
 }
 
-export function makeImageInteractive(image: Image, onModified: (modifiedImage: Image) => void) {
+export function makeImageInteractive(
+  image: Image,
+  onSelected: (selected: boolean) => void,
+  onModified: (modifiedImage: Image) => void
+) {
   if (!image.fabricImage) return;
 
   image.fabricImage.set({
     selectable: true,
     evented: true,
   });
+
+  image.fabricImage.on('selected', () => onSelected(true));
+  image.fabricImage.on('deselected', () => onSelected(false));
 
   image.fabricImage.on('modified', function (e) {
     if (!e.transform) return;
@@ -278,16 +285,16 @@ export function makeImageInteractive(image: Image, onModified: (modifiedImage: I
 }
 
 export function makeTextNonInteractive(text: Text) {
-  const { fabricText } = text;
+  const { fabricTextbox } = text;
 
-  if (!fabricText) return;
+  if (!fabricTextbox) return;
 
-  fabricText.set({
+  fabricTextbox.set({
     selectable: false,
     evented: false,
   });
-  fabricText.off('modified');
-  fabricText.off('editing:exited');
+  fabricTextbox.off('modified');
+  fabricTextbox.off('editing:exited');
 }
 
 export function makeTextInteractive(
@@ -295,23 +302,23 @@ export function makeTextInteractive(
   onSelected: (selected: boolean) => void,
   onModified: (modifiedText: Text) => void
 ) {
-  const { fabricText } = text;
+  const { fabricTextbox } = text;
 
-  if (!fabricText) return;
+  if (!fabricTextbox) return;
 
-  fabricText.set({
+  fabricTextbox.set({
     selectable: true,
     evented: true,
   });
 
-  fabricText.on('selected', () => onSelected(true));
-  fabricText.on('deselected', () => onSelected(false));
+  fabricTextbox.on('selected', () => onSelected(true));
+  fabricTextbox.on('deselected', () => onSelected(false));
 
-  fabricText.on('editing:exited', function () {
-    onModified({ ...text, value: fabricText.text });
+  fabricTextbox.on('editing:exited', function () {
+    onModified({ ...text, value: fabricTextbox.text });
   });
 
-  fabricText.on('modified', function (e) {
+  fabricTextbox.on('modified', function (e) {
     if (!e.transform) return;
     const {
       transform: { target },
@@ -333,7 +340,7 @@ export function makeTextInteractive(
     onModified(updatedText);
   });
 
-  return fabricText;
+  return fabricTextbox;
 }
 
 export async function clipImageLayerToColorLayer(

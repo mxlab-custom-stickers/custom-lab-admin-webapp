@@ -1,4 +1,6 @@
+import { Button } from '@/components/ui/button.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useFloatingFabricControls } from '@/hooks/use-floating-fabric-controls.ts';
 import {
   clipImageLayerToColorLayer,
   drawImageOnCanvas,
@@ -11,7 +13,7 @@ import {
   resizeCanvasToWrapper,
   setupZoomAndPan,
 } from '@/lib/fabric.ts';
-import type { Template, TemplateLayerImage } from '@clab/types';
+import type { Template, TemplateLayerImage, Text } from '@clab/types';
 import {
   assignFabricObjectsToColorItemsInLayer,
   cn,
@@ -24,6 +26,7 @@ import {
 } from '@clab/utils';
 import * as fabric from 'fabric';
 import { Canvas } from 'fabric';
+import { CopyPlus, LockOpen, Trash } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 type ConfiguratorCanvasProps = {
@@ -37,8 +40,10 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
     setCanvas,
     currentLayer,
     setCurrentColorElementId,
-    setCurrentTextId,
+    setSelectedObjectId,
   } = useConfiguratorContext();
+
+  const { pos, visible } = useFloatingFabricControls(canvas || null);
 
   const templateRef = useRef<Template>(template);
 
@@ -65,10 +70,16 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
       } else if (currentLayer.type === 'image') {
         // Activate interactivity for images
         currentLayer.images.forEach((image) =>
-          makeImageInteractive(image, (modifiedImage) => {
-            const updatedTemplate = updateImagesInTemplate(templateRef.current, [modifiedImage]);
-            updateTemplate(updatedTemplate);
-          })
+          makeImageInteractive(
+            image,
+            (selected) => {
+              setSelectedObjectId(selected ? image.id : undefined);
+            },
+            (modifiedImage) => {
+              const updatedTemplate = updateImagesInTemplate(templateRef.current, [modifiedImage]);
+              updateTemplate(updatedTemplate);
+            }
+          )
         );
       } else if (currentLayer.type === 'text') {
         // Activate interactivity for text objects
@@ -76,7 +87,7 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
           makeTextInteractive(
             text,
             (selected) => {
-              setCurrentTextId(selected ? text.id : undefined);
+              setSelectedObjectId(selected ? text.id : undefined);
             },
             (modifiedText) => {
               const updatedTemplate = updateTextsInTemplate(templateRef.current, [modifiedText]);
@@ -104,7 +115,7 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
       cornerColor: controlsColor,
       borderColor: controlsColor,
       transparentCorners: false,
-      padding: 8,
+      padding: 0,
     };
 
     const resize = () => resizeCanvasToWrapper(initCanvas, wrapperEl);
@@ -142,9 +153,9 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
       updatedTemplate = updateImagesInTemplate(updatedTemplate, images);
 
       // Draw all the texts on the canvas and assign them to their respective fabric text objects
-      const texts = getAllTextsFromTemplate(updatedTemplate).map((text) => ({
+      const texts: Text[] = getAllTextsFromTemplate(updatedTemplate).map((text) => ({
         ...text,
-        fabricText: drawTextOnCanvas(initCanvas, text),
+        fabricTextbox: drawTextOnCanvas(initCanvas, text),
       }));
       updatedTemplate = updateTextsInTemplate(updatedTemplate, texts);
 
@@ -182,8 +193,38 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
   }, []);
 
   return (
-    <div ref={wrapperRef} className={cn('h-full w-full', wrapperClassName)}>
+    <div ref={wrapperRef} className={cn('relative h-full w-full', wrapperClassName)}>
       <canvas id="configurator-canvas" ref={canvasRef} className="h-full w-full" />
+      {visible && pos && (
+        <div
+          className="absolute flex gap-0 rounded-md bg-white/90 p-1 shadow-lg"
+          style={{
+            top: pos.y,
+            left: pos.x,
+            transform: 'translate(-50%, -100%)',
+            pointerEvents: 'auto',
+          }}
+        >
+          <Button
+            className="aspect-square !p-1 hover:!bg-gray-100 hover:!text-black"
+            variant="ghost"
+          >
+            <LockOpen className="!h-4.5 !w-4.5" />
+          </Button>
+          <Button
+            className="aspect-square !p-1 hover:!bg-gray-100 hover:!text-black"
+            variant="ghost"
+          >
+            <CopyPlus className="!h-4.5 !w-4.5" />
+          </Button>
+          <Button
+            className="aspect-square !p-1 hover:!bg-gray-100 hover:!text-black"
+            variant="ghost"
+          >
+            <Trash className="!h-4.5 !w-4.5" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

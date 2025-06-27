@@ -4,6 +4,7 @@ import type {
   ConfiguratorContextType,
   ConfiguratorState,
   CurrentColorElement,
+  SelectedObject,
 } from '@/contexts/configurator-types.ts';
 import type { ColorElement, Template, TemplateLayer, Text } from '@clab/types';
 import {
@@ -43,7 +44,7 @@ export function ConfiguratorProvider({
     template,
     currentLayerId: initialLayerId,
     currentColorElementId: undefined,
-    currentTextId: undefined,
+    selectedObjectId: undefined,
     canvas: undefined,
   } satisfies ConfiguratorState);
 
@@ -85,10 +86,19 @@ export function ConfiguratorProvider({
     return findColorElementById(currentLayer.colorElements, state.currentColorElementId);
   }, [currentLayer, state.currentColorElementId]);
 
-  const currentText: Text | undefined = useMemo(() => {
-    if (!currentLayer || currentLayer.type !== 'text') return undefined;
-    return currentLayer.texts.find((t) => t.id === state.currentTextId);
-  }, [currentLayer, state.currentTextId]);
+  const selectedObject: SelectedObject | undefined = useMemo(() => {
+    if (!state.selectedObjectId) return undefined;
+    if (!currentLayer) return undefined;
+
+    if (currentLayer.type === 'image') {
+      const image = currentLayer.images.find((img) => img.id === state.selectedObjectId);
+      return image ? { type: 'image', image } : undefined;
+    } else if (currentLayer.type === 'text') {
+      const text = currentLayer.texts.find((txt) => txt.id === state.selectedObjectId);
+      return text ? { type: 'text', text } : undefined;
+    }
+    return undefined;
+  }, [currentLayer, state.selectedObjectId]);
 
   // Helpers to update reducer and optionally call back to consumer
   function updateTemplate(updatedTemplate: Template) {
@@ -119,13 +129,13 @@ export function ConfiguratorProvider({
     updateTemplate(updatedTemplate);
   }
 
+  function setSelectedObjectId(id: string | undefined) {
+    dispatch({ type: 'SET_SELECTED_OBJECT_ID', payload: id });
+  }
+
   function updateText(updatedText: Text) {
     const updatedTemplate = updateTextsInTemplate(state.template, [updatedText]);
     updateTemplate(updatedTemplate);
-  }
-
-  function setCurrentTextId(textId: string | undefined) {
-    dispatch({ type: 'SET_CURRENT_TEXT_ID', payload: textId });
   }
 
   function setCanvas(canvas: Canvas) {
@@ -144,8 +154,8 @@ export function ConfiguratorProvider({
         currentColorElement,
         setCurrentColorElementId,
         updateColorElement,
-        currentText,
-        setCurrentTextId,
+        selectedObject,
+        setSelectedObjectId,
         updateText,
         setCanvas,
       }}

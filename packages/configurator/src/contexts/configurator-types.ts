@@ -1,4 +1,4 @@
-import type { ColorElement, Template, TemplateLayer, Text } from '@clab/types';
+import type { ColorElement, Image, Template, TemplateLayer, Text } from '@clab/types';
 import { Canvas } from 'fabric';
 import React from 'react';
 
@@ -7,7 +7,7 @@ export type ConfiguratorState = {
   currentLayerId: string | undefined;
 
   currentColorElementId: string | undefined;
-  currentTextId: string | undefined;
+  selectedObjectId: string | undefined;
 
   canvas?: Canvas;
 };
@@ -31,8 +31,9 @@ export type ConfiguratorContextType = {
   setCurrentColorElementId: (currentColorElementId: string | undefined) => void;
   updateColorElement: (updatedElement: ColorElement) => void;
 
-  currentText: Text | undefined;
-  setCurrentTextId: (textId: string | undefined) => void;
+  selectedObject: SelectedObject | undefined;
+  setSelectedObjectId: (id: string | undefined) => void;
+
   updateText: (updatedText: Text) => void;
 };
 
@@ -40,7 +41,7 @@ export type ConfiguratorAction =
   | { type: 'SET_TEMPLATE'; payload: Template }
   | { type: 'SET_CURRENT_LAYER_ID'; payload: string | undefined }
   | { type: 'SET_CURRENT_COLOR_ELEMENT_ID'; payload: string | undefined }
-  | { type: 'SET_CURRENT_TEXT_ID'; payload: string | undefined }
+  | { type: 'SET_SELECTED_OBJECT_ID'; payload: string | undefined }
   | { type: 'SET_CANVAS'; payload: Canvas };
 
 export type CurrentColorElement =
@@ -49,3 +50,5 @@ export type CurrentColorElement =
   | undefined;
 
 export type CurrentColorElementType = ColorElement['type'] | 'color-palette';
+
+export type SelectedObject = { type: 'image'; image: Image } | { type: 'text'; text: Text };
