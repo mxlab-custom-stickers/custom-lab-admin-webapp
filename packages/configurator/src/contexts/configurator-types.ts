@@ -33,8 +33,10 @@ export type ConfiguratorContextType = {
 
   selectedObject: SelectedObject | undefined;
   setSelectedObjectId: (id: string | undefined) => void;
+  deleteSelectedObject: () => void;
 
   updateText: (updatedText: Text) => void;
+  updateImage: (updatedImage: Image) => void;
 };
 
 export type ConfiguratorAction =

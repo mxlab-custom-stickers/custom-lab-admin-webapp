@@ -1,16 +1,18 @@
 import { configuratorReducer } from '@/contexts/configurator-reducer';
-
 import type {
   ConfiguratorContextType,
   ConfiguratorState,
   CurrentColorElement,
   SelectedObject,
 } from '@/contexts/configurator-types.ts';
-import type { ColorElement, Template, TemplateLayer, Text } from '@clab/types';
+import type { ColorElement, Image, Template, TemplateLayer, Text } from '@clab/types';
 import {
   cn,
+  deleteImageInTemplate,
+  deleteTextInTemplate,
   findColorElementById,
   updateColorElementInTemplate,
+  updateImagesInTemplate,
   updateTextsInTemplate,
 } from '@clab/utils';
 import type { Canvas } from 'fabric';
@@ -100,7 +102,6 @@ export function ConfiguratorProvider({
     return undefined;
   }, [currentLayer, state.selectedObjectId]);
 
-  // Helpers to update reducer and optionally call back to consumer
   function updateTemplate(updatedTemplate: Template) {
     dispatch({ type: 'SET_TEMPLATE', payload: updatedTemplate });
     if (isTemplateControlled) onTemplateChange?.(updatedTemplate);
@@ -138,6 +139,26 @@ export function ConfiguratorProvider({
     updateTemplate(updatedTemplate);
   }
 
+  function updateImage(updatedImage: Image) {
+    const updatedTemplate = updateImagesInTemplate(state.template, [updatedImage]);
+    updateTemplate(updatedTemplate);
+  }
+
+  function deleteSelectedObject() {
+    if (!selectedObject) return;
+
+    let updatedTemplate: Template | undefined = undefined;
+    if (selectedObject.type === 'image') {
+      updatedTemplate = deleteImageInTemplate(state.template, selectedObject.image.id);
+    } else if (selectedObject.type === 'text') {
+      updatedTemplate = deleteTextInTemplate(state.template, selectedObject.text.id);
+    }
+
+    if (updatedTemplate) {
+      updateTemplate(updatedTemplate);
+    }
+  }
+
   function setCanvas(canvas: Canvas) {
     dispatch({ type: 'SET_CANVAS', payload: canvas });
   }
@@ -156,7 +177,9 @@ export function ConfiguratorProvider({
         updateColorElement,
         selectedObject,
         setSelectedObjectId,
+        deleteSelectedObject,
         updateText,
+        updateImage,
         setCanvas,
       }}
     >

@@ -28,6 +28,7 @@ export interface Text {
   skewX: number;
   skewY: number;
 
+  locked: boolean; // Whether the text is locked (not editable)
   fabricTextbox?: Textbox;
 }
 

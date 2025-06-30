@@ -36,13 +36,14 @@ export default function LayerTextComponent() {
       scaleY: 1,
       skewX: 0,
       skewY: 0,
+      locked: false,
     };
 
-    const fabricText = drawTextOnCanvas(canvas, newText);
+    const fabricTextbox = drawTextOnCanvas(canvas, newText);
 
     updateLayer({
       ...currentLayer,
-      texts: [...(currentLayer.texts || []), { ...newText, fabricText }],
+      texts: [...(currentLayer.texts || []), { ...newText, fabricTextbox }],
     });
   }
 

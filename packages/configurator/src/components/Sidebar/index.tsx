@@ -37,16 +37,19 @@ export default function Sidebar({ className, classNames, ...props }: SidebarProp
       )}
       {...props}
     >
+      {/* Header */}
       <SidebarHeader className={cn('border-b border-gray-600 p-3', classNames?.header)} />
-      <ScrollArea className={cn('flex-1 overflow-auto p-3', classNames?.content)}>
+      {/* Content*/}
+      <ScrollArea className={cn('flex-1 overflow-auto px-3', classNames?.content)}>
         {currentLayer ? (
-          <>
+          <div className="py-2">
             <div className="mb-2 text-2xl font-semibold uppercase">{currentLayer.name}</div>
             <div>{currentLayer.message}</div>
             {currentLayerComponents[currentLayer.type]}
-          </>
+          </div>
         ) : null}
       </ScrollArea>
+      {/* Footer */}
       <SidebarFooter className={cn('border-t border-gray-600 p-2', classNames?.footer)} />
     </div>
   );

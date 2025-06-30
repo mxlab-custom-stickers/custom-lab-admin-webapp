@@ -2,7 +2,7 @@ import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
 import { hideOrShowObjectsById } from '@/lib/fabric.ts';
 import type { ColorItem, TemplateLayerColor } from '@clab/types';
 import { getAllFabricObjectsFromTemplate } from '@clab/utils';
-import { type Textbox } from 'fabric';
+import { type FabricImage, type FabricObject, type Textbox } from 'fabric';
 
 export const useCanvas = () => {
   const {
@@ -11,8 +11,6 @@ export const useCanvas = () => {
 
   function setColorItemsColor(colorItems: ColorItem[]) {
     if (!canvas) return;
-
-    console.log(colorItems);
 
     colorItems.forEach((colorItem) => {
       colorItem.fabricObjects?.forEach((fabricObject) => {
@@ -33,10 +31,42 @@ export const useCanvas = () => {
   }
 
   function updateFabricText(fabricText: Textbox, updates: Partial<Textbox>) {
-    if (!fabricText || !canvas) return;
+    if (!canvas) return;
     fabricText.set(updates);
     canvas.requestRenderAll();
   }
 
-  return { setColorItemsColor, focusColorLayer, updateFabricText };
+  function updateFabricImage(fabricImage: FabricImage, updates: Partial<FabricImage>) {
+    if (!canvas) return;
+    fabricImage.set(updates);
+    canvas.requestRenderAll();
+  }
+
+  function removeFabricObject(obj: FabricObject) {
+    if (!canvas) return;
+    canvas.remove(obj);
+    canvas.requestRenderAll();
+  }
+
+  function lockFabricObject(obj: FabricObject, locked: boolean) {
+    if (!canvas) return;
+    obj.set({
+      lockMovementX: locked,
+      lockMovementY: locked,
+      lockScalingX: locked,
+      lockScalingY: locked,
+      lockRotation: locked,
+      editable: !locked,
+    });
+    canvas.requestRenderAll();
+  }
+
+  return {
+    setColorItemsColor,
+    focusColorLayer,
+    updateFabricText,
+    updateFabricImage,
+    removeFabricObject,
+    lockFabricObject,
+  };
 };

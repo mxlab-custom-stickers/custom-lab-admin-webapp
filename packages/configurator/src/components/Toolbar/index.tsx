@@ -1,5 +1,6 @@
-import PositionPopover from '@/components/PositionPopover.tsx';
-import TextSpacingPopover from '@/components/TextSpacingPopover.tsx';
+import PositionPopover from '@/components/Toolbar/PositionPopover.tsx';
+import TextSpacingPopover from '@/components/Toolbar/TextSpacingPopover.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import NumberInput from '@/components/ui/NumberInput.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx';
@@ -8,15 +9,24 @@ import { useConfiguratorContext } from '@/contexts/configurator-contexts';
 import { useCanvas } from '@/hooks/use-canvas.ts';
 import type { Text } from '@clab/types';
 import { cn } from '@clab/utils';
-import { AlignCenter, AlignLeft, AlignRight, Bold, Italic } from 'lucide-react';
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Bold,
+  FlipHorizontal,
+  FlipVertical,
+  Italic,
+} from 'lucide-react';
+import React from 'react';
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 128;
 
 export default function Toolbar({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const { updateText, selectedObject } = useConfiguratorContext();
+  const { selectedObject, updateText, updateImage } = useConfiguratorContext();
 
-  const { updateFabricText } = useCanvas();
+  const { updateFabricText, updateFabricImage } = useCanvas();
 
   function updateTextProperty<K extends keyof Text>(key: K, value: Text[K]) {
     if (selectedObject?.type !== 'text') return;
@@ -29,11 +39,31 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
       updateFabricText(text.fabricTextbox, { [mappedKey]: value });
     }
 
-    // Update your own state representation
     updateText({ ...text, [key]: value });
   }
 
-  return selectedObject ? (
+  function updateImageProperty<K extends keyof Text>(key: K, value: Text[K]) {
+    if (selectedObject?.type !== 'image') return;
+
+    const { image } = selectedObject;
+
+    // Update Fabric.js image if it exists
+    const mappedKey = key === 'x' ? 'left' : key === 'y' ? 'top' : key;
+    if (image.fabricImage) {
+      updateFabricImage(image.fabricImage, { [mappedKey]: value });
+    }
+
+    updateImage({ ...image, [key]: value });
+  }
+
+  const isLocked =
+    selectedObject?.type === 'image'
+      ? selectedObject.image.locked
+      : selectedObject?.type === 'text'
+        ? selectedObject.text.locked
+        : false;
+
+  return selectedObject && !isLocked ? (
     <div
       className={cn(
         'absolute left-[calc(50%+(18rem/2))] top-4 z-50 flex h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-md bg-[#323232dd] p-1 text-white shadow-xl',
@@ -112,6 +142,18 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
         />
       ) : null}
 
+      {/* Image flip */}
+      {selectedObject.type === 'image' ? (
+        <div className="flex items-center gap-1">
+          <Button size="icon" variant="ghost">
+            <FlipHorizontal />
+          </Button>
+          <Button size="icon" variant="ghost">
+            <FlipVertical />
+          </Button>
+        </div>
+      ) : null}
+
       <Separator orientation="vertical" className="data-[orientation=vertical]:h-5" />
 
       {/* Position */}
@@ -140,6 +182,13 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
             width: selectedObject.image.width,
             height: selectedObject.image.height,
             angle: selectedObject.image.angle,
+          }}
+          onValueChange={(value) => {
+            updateImageProperty('x', value.x);
+            updateImageProperty('y', value.y);
+            updateImageProperty('width', value.width);
+            updateImageProperty('height', value.height);
+            updateImageProperty('angle', value.angle);
           }}
         />
       ) : null}

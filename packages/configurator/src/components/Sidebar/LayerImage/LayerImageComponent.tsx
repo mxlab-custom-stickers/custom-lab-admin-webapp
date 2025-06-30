@@ -49,6 +49,7 @@ export default function LayerImageComponent() {
       angle: 0,
       scaleX: 1,
       scaleY: 1,
+      locked: false,
     };
 
     const newImageWithFabricImage = await drawImageOnCanvas(canvas, newImage);

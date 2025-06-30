@@ -9,6 +9,7 @@ import {
   isTemplateLayerText,
   Template,
   TemplateLayerColor,
+  TemplateLayerImage,
   TemplateLayerText,
   Text,
 } from '@clab/types';
@@ -129,6 +130,22 @@ export function updateImagesInTemplate(template: Template, updates: Image[]): Te
   };
 }
 
+export function deleteImageInTemplate(template: Template, imageIdToDelete: string): Template {
+  const updatedLayers = template.layers.map((layer) => {
+    if (layer.type !== 'image') return layer;
+
+    return {
+      ...layer,
+      images: layer.images.filter((image) => image.id !== imageIdToDelete),
+    } satisfies TemplateLayerImage;
+  });
+
+  return {
+    ...template,
+    layers: updatedLayers,
+  };
+}
+
 /**
  * Updates multiple texts within the text layers of a template.
  *
@@ -149,6 +166,22 @@ export function updateTextsInTemplate(template: Template, updates: Text[]): Temp
         const updated = updates.find((u) => u.id === text.id);
         return updated ?? text;
       }),
+    } satisfies TemplateLayerText;
+  });
+
+  return {
+    ...template,
+    layers: updatedLayers,
+  };
+}
+
+export function deleteTextInTemplate(template: Template, textIdToDelete: string): Template {
+  const updatedLayers = template.layers.map((layer) => {
+    if (layer.type !== 'text') return layer;
+
+    return {
+      ...layer,
+      texts: layer.texts.filter((text) => text.id !== textIdToDelete),
     } satisfies TemplateLayerText;
   });
 

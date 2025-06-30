@@ -12,5 +12,6 @@ export interface Image {
   scaleX: number; // Scale factor in the X direction
   scaleY: number; // Scale factor in the Y direction
 
+  locked: boolean; // Whether the image is locked (not editable)
   fabricImage?: FabricImage;
 }

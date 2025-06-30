@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button.tsx';
+import { TopControlsBox } from '@/components/Canvas/TopControlsBox.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
 import { useFloatingFabricControls } from '@/hooks/use-floating-fabric-controls.ts';
 import {
@@ -26,7 +26,6 @@ import {
 } from '@clab/utils';
 import * as fabric from 'fabric';
 import { Canvas } from 'fabric';
-import { CopyPlus, LockOpen, Trash } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
 type ConfiguratorCanvasProps = {
@@ -195,36 +194,7 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
   return (
     <div ref={wrapperRef} className={cn('relative h-full w-full', wrapperClassName)}>
       <canvas id="configurator-canvas" ref={canvasRef} className="h-full w-full" />
-      {visible && pos && (
-        <div
-          className="absolute flex gap-0 rounded-md bg-white/90 p-1 shadow-lg"
-          style={{
-            top: pos.y,
-            left: pos.x,
-            transform: 'translate(-50%, -100%)',
-            pointerEvents: 'auto',
-          }}
-        >
-          <Button
-            className="aspect-square !p-1 hover:!bg-gray-100 hover:!text-black"
-            variant="ghost"
-          >
-            <LockOpen className="!h-4.5 !w-4.5" />
-          </Button>
-          <Button
-            className="aspect-square !p-1 hover:!bg-gray-100 hover:!text-black"
-            variant="ghost"
-          >
-            <CopyPlus className="!h-4.5 !w-4.5" />
-          </Button>
-          <Button
-            className="aspect-square !p-1 hover:!bg-gray-100 hover:!text-black"
-            variant="ghost"
-          >
-            <Trash className="!h-4.5 !w-4.5" />
-          </Button>
-        </div>
-      )}
+      {visible && pos && <TopControlsBox x={pos.x} y={pos.y} />}
     </div>
   );
 }
