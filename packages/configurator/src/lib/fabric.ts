@@ -185,7 +185,7 @@ export async function drawImageOnCanvas(canvas: Canvas, image: Image): Promise<I
   canvas.bringObjectToFront(fabricImage);
   canvas.requestRenderAll();
 
-  return { ...image, fabricImage };
+  return { ...image, fabricObject: fabricImage };
 }
 
 export function makeColorItemNonInteractive(colorItem: ColorItem) {
@@ -241,13 +241,13 @@ export function makeColorItemInteractive(
 }
 
 export function makeImageNonInteractive(image: Image) {
-  if (!image.fabricImage) return;
+  if (!image.fabricObject) return;
 
-  image.fabricImage.set({
+  image.fabricObject.set({
     selectable: false,
     evented: false,
   });
-  image.fabricImage.off();
+  image.fabricObject.off();
 }
 
 export function makeImageInteractive(
@@ -255,17 +255,17 @@ export function makeImageInteractive(
   onSelected: (selected: boolean) => void,
   onModified: (modifiedImage: Image) => void
 ) {
-  if (!image.fabricImage) return;
+  if (!image.fabricObject) return;
 
-  image.fabricImage.set({
+  image.fabricObject.set({
     selectable: true,
     evented: true,
   });
 
-  image.fabricImage.on('selected', () => onSelected(true));
-  image.fabricImage.on('deselected', () => onSelected(false));
+  image.fabricObject.on('selected', () => onSelected(true));
+  image.fabricObject.on('deselected', () => onSelected(false));
 
-  image.fabricImage.on('modified', function (e) {
+  image.fabricObject.on('modified', function (e) {
     if (!e.transform) return;
     const {
       transform: { target },
@@ -285,16 +285,15 @@ export function makeImageInteractive(
 }
 
 export function makeTextNonInteractive(text: Text) {
-  const { fabricTextbox } = text;
+  const { fabricObject } = text;
+  if (!fabricObject) return;
 
-  if (!fabricTextbox) return;
-
-  fabricTextbox.set({
+  fabricObject.set({
     selectable: false,
     evented: false,
   });
-  fabricTextbox.off('modified');
-  fabricTextbox.off('editing:exited');
+  fabricObject.off('modified');
+  fabricObject.off('editing:exited');
 }
 
 export function makeTextInteractive(
@@ -302,23 +301,22 @@ export function makeTextInteractive(
   onSelected: (selected: boolean) => void,
   onModified: (modifiedText: Text) => void
 ) {
-  const { fabricTextbox } = text;
+  const { fabricObject } = text;
+  if (!fabricObject) return;
 
-  if (!fabricTextbox) return;
-
-  fabricTextbox.set({
+  fabricObject.set({
     selectable: true,
     evented: true,
   });
 
-  fabricTextbox.on('selected', () => onSelected(true));
-  fabricTextbox.on('deselected', () => onSelected(false));
+  fabricObject.on('selected', () => onSelected(true));
+  fabricObject.on('deselected', () => onSelected(false));
 
-  fabricTextbox.on('editing:exited', function () {
-    onModified({ ...text, value: fabricTextbox.text });
+  fabricObject.on('editing:exited', function () {
+    onModified({ ...text, value: fabricObject.text });
   });
 
-  fabricTextbox.on('modified', function (e) {
+  fabricObject.on('modified', function (e) {
     if (!e.transform) return;
     const {
       transform: { target },
@@ -340,7 +338,7 @@ export function makeTextInteractive(
     onModified(updatedText);
   });
 
-  return fabricTextbox;
+  return fabricObject;
 }
 
 export async function clipImageLayerToColorLayer(
@@ -373,9 +371,9 @@ export async function clipImageLayerToColorLayer(
   canvas.sendObjectToBack(clipGroup);
 
   imageLayer.images.forEach((image) => {
-    if (!image.fabricImage) return;
+    if (!image.fabricObject) return;
 
-    image.fabricImage.set({
+    image.fabricObject.set({
       clipPath: clipGroup,
     });
   });
@@ -383,9 +381,9 @@ export async function clipImageLayerToColorLayer(
 
 export async function unclipImageLayer(canvas: Canvas, imageLayer: TemplateLayerImage) {
   imageLayer.images.forEach((image) => {
-    if (!image.fabricImage) return;
+    if (!image.fabricObject) return;
 
-    image.fabricImage.set({
+    image.fabricObject.set({
       clipPath: null,
     });
   });

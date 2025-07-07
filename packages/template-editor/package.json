@@ -11,7 +11,7 @@
       "import": "./dist/main.js",
       "types": "./dist/main.d.ts"
     },
-    "./assets/index.css": "./dist/assets/configurator.css"
+    "./assets/index.css": "./dist/assets/template-editor.css"
   },
   "module": "./dist/main.js",
   "scripts": {

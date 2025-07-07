@@ -1,13 +1,15 @@
 import { Button } from '@/components/ui/button.tsx';
-import { useTemplateEditorContext } from '@/contexts/template-editor/template-editor-context.tsx';
+import { useTemplateEditorContext } from '@/contexts/template-editor-context.tsx';
 
-export default function DeleteCurrentLayerButton() {
+export default function DeleteLayerButton() {
   const {
     state: { template },
     updateTemplate,
     currentLayer,
     setCurrentLayerId,
   } = useTemplateEditorContext();
+
+  if (!currentLayer) return null;
 
   function deleteCurrentLayer() {
     if (!currentLayer) return;
@@ -20,7 +22,7 @@ export default function DeleteCurrentLayerButton() {
     setCurrentLayerId(template.layers.find((layer) => layer.order === currentLayer.order - 1)?.id);
   }
 
-  return currentLayer ? (
+  return (
     <Button
       className="absolute bottom-0 left-0 right-0"
       variant="destructive"
@@ -28,5 +30,5 @@ export default function DeleteCurrentLayerButton() {
     >
       Supprimer le calque
     </Button>
-  ) : null;
+  );
 }

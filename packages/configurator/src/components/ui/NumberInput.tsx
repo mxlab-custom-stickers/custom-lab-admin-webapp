@@ -5,6 +5,7 @@ import { cn } from '@clab/utils';
 import React, { useEffect, useState } from 'react';
 
 type NumberInputProps = Omit<React.ComponentPropsWithoutRef<'input'>, 'onChange' | 'value'> & {
+  wrapperClassName?: string;
   value?: number;
   onValueChange?: (value: number) => void;
   step?: number;
@@ -13,6 +14,7 @@ type NumberInputProps = Omit<React.ComponentPropsWithoutRef<'input'>, 'onChange'
 };
 
 export default function NumberInput({
+  wrapperClassName,
   className,
   value: valueProp,
   onValueChange,
@@ -46,7 +48,7 @@ export default function NumberInput({
   };
 
   return (
-    <div className="flex items-center justify-center rounded-md border">
+    <div className={cn('flex items-center justify-center rounded-md border', wrapperClassName)}>
       <Button
         className="rounded-l-md rounded-r-none"
         variant="ghost"

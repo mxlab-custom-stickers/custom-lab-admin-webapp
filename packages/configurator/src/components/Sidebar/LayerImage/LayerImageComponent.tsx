@@ -36,20 +36,24 @@ export default function LayerImageComponent() {
   }, [currentLayer.id]);
 
   async function handleImagePick(image: FileNode) {
-    if (currentLayer?.type !== 'image' || !canvas) return;
+    if (!canvas || !currentLayer || !isTemplateLayerImage(currentLayer)) return;
 
     const newImage: Image = {
       id: generateId(),
+      type: 'image',
       url: image.url,
       name: image.name,
-      width: 200,
-      height: 200,
       x: 0,
       y: 0,
+      width: 200,
+      height: 200,
       angle: 0,
       scaleX: 1,
       scaleY: 1,
+      skewX: 1,
+      skewY: 1,
       locked: false,
+      fabricObject: null,
     };
 
     const newImageWithFabricImage = await drawImageOnCanvas(canvas, newImage);
@@ -72,6 +76,7 @@ export default function LayerImageComponent() {
               Bibliothèque d'images
             </Button>
           </DialogTrigger>
+
           <DialogContent className="!max-w-4xl gap-0">
             <DialogHeader>
               <DialogTitle className="sr-only">Bibliothèque d'images</DialogTitle>

@@ -10,6 +10,7 @@ import {
 export default function TemplateEditor() {
   const {
     state: { template, currentLayerId },
+    setCanvas,
     updateTemplate,
     setCurrentLayerId,
   } = useTemplateEditorContext();
@@ -18,6 +19,7 @@ export default function TemplateEditor() {
     <Layout>
       <ConfiguratorProvider
         className="h-full w-full"
+        onCanvasInitialized={setCanvas}
         template={template}
         onTemplateChange={updateTemplate}
         currentLayerId={currentLayerId}

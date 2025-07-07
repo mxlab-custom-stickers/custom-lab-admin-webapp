@@ -39,14 +39,14 @@ export function stripFabricObjectsFromTemplate(template: Template): Template {
     if (layer.type === 'image') {
       return {
         ...layer,
-        images: layer.images.map(({ fabricImage, ...img }) => img),
+        images: layer.images.map(({ fabricObject, ...img }) => img),
       };
     }
 
     if (layer.type === 'text') {
       return {
         ...layer,
-        texts: layer.texts.map(({ fabricTextbox, ...text }) => text),
+        texts: layer.texts.map(({ fabricObject, ...text }) => text),
       };
     }
 

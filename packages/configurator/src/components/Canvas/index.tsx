@@ -1,15 +1,7 @@
-import { useConfiguratorContext } from '@/contexts/configurator/configurator-context.tsx';
+import { TopControlsBox } from '@/components/Canvas/TopControlsBox.tsx';
+import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useFloatingFabricControls } from '@/hooks/use-floating-fabric-controls.ts';
 import {
-  collectColorItems,
-  getAllColorItemsFromTemplate,
-  getAllImagesFromTemplate,
-  getAllTextsFromTemplate,
-  resetInteractivity,
-  updateImagesInTemplate,
-  updateTextsInTemplate,
-} from '@/lib/configurator.ts';
-import {
-  assignFabricObjectsToColorItemsInLayer,
   clipImageLayerToColorLayer,
   drawImageOnCanvas,
   drawTextOnCanvas,
@@ -17,11 +9,21 @@ import {
   makeImageInteractive,
   makeTextInteractive,
   renderSVGToCanvas,
+  resetInteractivity,
   resizeCanvasToWrapper,
   setupZoomAndPan,
 } from '@/lib/fabric.ts';
-import { cn } from '@/lib/utils.ts';
-import { Template, TemplateLayerImage } from '@/models/template.ts';
+import type { Template, TemplateLayerImage, Text } from '@clab/types';
+import {
+  assignFabricObjectsToColorItemsInLayer,
+  cn,
+  collectColorItems,
+  getAllColorItemsFromTemplate,
+  getAllImagesFromTemplate,
+  getAllTextsFromTemplate,
+  updateImagesInTemplate,
+  updateTextsInTemplate,
+} from '@clab/utils';
 import * as fabric from 'fabric';
 import { Canvas } from 'fabric';
 import { useEffect, useRef } from 'react';
@@ -37,8 +39,10 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
     setCanvas,
     currentLayer,
     setCurrentColorElementId,
-    setCurrentTextId,
+    setSelectedObjectId,
   } = useConfiguratorContext();
+
+  const { pos, visible } = useFloatingFabricControls(canvas || null);
 
   const templateRef = useRef<Template>(template);
 
@@ -65,10 +69,16 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
       } else if (currentLayer.type === 'image') {
         // Activate interactivity for images
         currentLayer.images.forEach((image) =>
-          makeImageInteractive(image, (modifiedImage) => {
-            const updatedTemplate = updateImagesInTemplate(templateRef.current, [modifiedImage]);
-            updateTemplate(updatedTemplate);
-          })
+          makeImageInteractive(
+            image,
+            (selected) => {
+              setSelectedObjectId(selected ? image.id : undefined);
+            },
+            (modifiedImage) => {
+              const updatedTemplate = updateImagesInTemplate(templateRef.current, [modifiedImage]);
+              updateTemplate(updatedTemplate);
+            }
+          )
         );
       } else if (currentLayer.type === 'text') {
         // Activate interactivity for text objects
@@ -76,7 +86,7 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
           makeTextInteractive(
             text,
             (selected) => {
-              setCurrentTextId(selected ? text.id : undefined);
+              setSelectedObjectId(selected ? text.id : undefined);
             },
             (modifiedText) => {
               const updatedTemplate = updateTextsInTemplate(templateRef.current, [modifiedText]);
@@ -104,7 +114,7 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
       cornerColor: controlsColor,
       borderColor: controlsColor,
       transparentCorners: false,
-      padding: 8,
+      padding: 0,
     };
 
     const resize = () => resizeCanvasToWrapper(initCanvas, wrapperEl);
@@ -142,9 +152,9 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
       updatedTemplate = updateImagesInTemplate(updatedTemplate, images);
 
       // Draw all the texts on the canvas and assign them to their respective fabric text objects
-      const texts = getAllTextsFromTemplate(updatedTemplate).map((text) => ({
+      const texts: Text[] = getAllTextsFromTemplate(updatedTemplate).map((text) => ({
         ...text,
-        fabricText: drawTextOnCanvas(initCanvas, text),
+        fabricObject: drawTextOnCanvas(initCanvas, text),
       }));
       updatedTemplate = updateTextsInTemplate(updatedTemplate, texts);
 
@@ -182,8 +192,9 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
   }, []);
 
   return (
-    <div ref={wrapperRef} className={cn('h-full w-full', wrapperClassName)}>
+    <div ref={wrapperRef} className={cn('relative h-full w-full', wrapperClassName)}>
       <canvas id="configurator-canvas" ref={canvasRef} className="h-full w-full" />
+      {visible && pos && <TopControlsBox x={pos.x} y={pos.y} />}
     </div>
   );
 }

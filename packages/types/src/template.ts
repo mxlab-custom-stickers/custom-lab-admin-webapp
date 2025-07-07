@@ -1,7 +1,7 @@
 import type { FabricObject } from 'fabric';
 import { Color } from './color';
 import { Image } from './image';
-import { Text } from './text';
+import { Font, Text } from './text';
 
 export interface Template {
   appId: string;
@@ -116,7 +116,7 @@ export interface TemplateLayerText extends TemplateLayerBase {
   texts: Text[];
 
   config: {
-    availableFonts: string[];
+    availableFonts: Font[];
     availableColors: Color[];
   };
 }

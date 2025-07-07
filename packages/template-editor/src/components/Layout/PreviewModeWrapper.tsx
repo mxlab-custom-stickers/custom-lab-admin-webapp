@@ -22,9 +22,7 @@ export default function PreviewModeWrapper({ className, children }: PreviewModeW
           'h-full overflow-hidden rounded-lg bg-white transition-[max-width] duration-200',
           { 'max-w-full': previewMode === 'fullscreen' },
           { 'max-w-[calc(100svw-16rem-0.75rem)]': previewMode === 'desktop' },
-          {
-            'max-h-[800px] max-w-sm translate-x-[calc(50svw-50%)]': previewMode === 'mobile',
-          }
+          { 'max-h-[800px] max-w-sm translate-x-[calc(50svw-50%)]': previewMode === 'mobile' }
         )}
       >
         {children}

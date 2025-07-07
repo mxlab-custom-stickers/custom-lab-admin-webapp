@@ -7,16 +7,23 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx';
 import { Toggle } from '@/components/ui/toggle.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts';
 import { useCanvas } from '@/hooks/use-canvas.ts';
-import type { Text } from '@clab/types';
+import {
+  isImage,
+  isText,
+  type UpdatableCanvasObjectProps,
+  type UpdatableTextProps,
+} from '@clab/types';
 import { cn } from '@clab/utils';
 import {
   AlignCenter,
   AlignLeft,
   AlignRight,
+  Baseline,
   Bold,
   FlipHorizontal,
   FlipVertical,
   Italic,
+  Type,
 } from 'lucide-react';
 import React from 'react';
 
@@ -24,46 +31,60 @@ const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 128;
 
 export default function Toolbar({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const { selectedObject, updateText, updateImage } = useConfiguratorContext();
+  const {
+    state: { sidebarView },
+    selectedObject,
+    setSidebarView,
+    updateText,
+    updateImage,
+  } = useConfiguratorContext();
+  if (!selectedObject) return null;
 
-  const { updateFabricText, updateFabricImage } = useCanvas();
+  const { updateFabricText, updateFabricObject } = useCanvas();
 
-  function updateTextProperty<K extends keyof Text>(key: K, value: Text[K]) {
-    if (selectedObject?.type !== 'text') return;
+  function updateTextProperty<K extends keyof UpdatableTextProps>(
+    key: K,
+    value: UpdatableTextProps[K]
+  ) {
+    if (!selectedObject || !isText(selectedObject)) return;
 
-    const { text } = selectedObject;
-
-    // Update Fabric.js textbox if it exists
-    const mappedKey = key === 'x' ? 'left' : key === 'y' ? 'top' : key;
-    if (text.fabricTextbox) {
-      updateFabricText(text.fabricTextbox, { [mappedKey]: value });
+    if (selectedObject.fabricObject) {
+      updateFabricText(selectedObject.fabricObject, { [key]: value });
     }
-
-    updateText({ ...text, [key]: value });
+    updateText({ ...selectedObject, [key]: value });
   }
 
-  function updateImageProperty<K extends keyof Text>(key: K, value: Text[K]) {
-    if (selectedObject?.type !== 'image') return;
+  // function updateImageProperty<K extends keyof UpdatableImageProps>(
+  //   key: K,
+  //   value: UpdatableImageProps[K]
+  // ) {
+  //   if (!selectedObject || !isImage(selectedObject)) return;
+  //
+  //   if (selectedObject.fabricObject) {
+  //     updateFabricImage(selectedObject.fabricObject, { [mappedKey]: value });
+  //   }
+  //   updateImage({ ...selectedObject, [key]: value });
+  // }
 
-    const { image } = selectedObject;
+  function updateSharedProperty<K extends keyof UpdatableCanvasObjectProps>(
+    key: K,
+    value: UpdatableCanvasObjectProps[K]
+  ) {
+    if (!selectedObject) return;
 
-    // Update Fabric.js image if it exists
     const mappedKey = key === 'x' ? 'left' : key === 'y' ? 'top' : key;
-    if (image.fabricImage) {
-      updateFabricImage(image.fabricImage, { [mappedKey]: value });
+    if (selectedObject.fabricObject) {
+      updateFabricObject(selectedObject.fabricObject, { [mappedKey]: value });
     }
 
-    updateImage({ ...image, [key]: value });
+    if (isImage(selectedObject)) {
+      updateImage({ ...selectedObject, [key]: value });
+    } else if (isText(selectedObject)) {
+      updateText({ ...selectedObject, [key]: value });
+    }
   }
 
-  const isLocked =
-    selectedObject?.type === 'image'
-      ? selectedObject.image.locked
-      : selectedObject?.type === 'text'
-        ? selectedObject.text.locked
-        : false;
-
-  return selectedObject && !isLocked ? (
+  return !selectedObject.locked ? (
     <div
       className={cn(
         'absolute left-[calc(50%+(18rem/2))] top-4 z-50 flex h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-md bg-[#323232dd] p-1 text-white shadow-xl',
@@ -71,127 +92,131 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
       )}
       {...props}
     >
-      {/* Font size */}
-      {selectedObject.type === 'text' ? (
-        <NumberInput
-          min={MIN_FONT_SIZE}
-          max={MAX_FONT_SIZE}
-          step={2}
-          value={selectedObject.text.fontSize}
-          onValueChange={(value) => updateTextProperty('fontSize', value)}
-        />
-      ) : null}
-
-      {/* Font weight */}
-      {selectedObject.type === 'text' ? (
-        <div className="flex items-center gap-1">
+      {/* Selected Object is Text */}
+      {isText(selectedObject) ? (
+        <>
+          {/* Font */}
           <Toggle
-            aria-label="Toggle bold"
-            defaultPressed={selectedObject.text.fontWeight === 'bold'}
+            className="flex w-40 items-center justify-start text-base"
+            pressed={sidebarView?.type === 'font-picker'}
             onPressedChange={(pressed) =>
-              updateTextProperty('fontWeight', pressed ? 'bold' : 'normal')
+              setSidebarView(pressed ? { type: 'font-picker' } : undefined)
             }
           >
-            <Bold className="h-5 w-5" />
+            <Type />
+            <div className="truncate">{selectedObject.font?.name || 'Police'}</div>
           </Toggle>
+
+          {/* Font size */}
+          <NumberInput
+            min={MIN_FONT_SIZE}
+            max={MAX_FONT_SIZE}
+            step={2}
+            value={selectedObject.fontSize}
+            onValueChange={(value) => updateTextProperty('fontSize', value)}
+          />
+
+          {/* Text and Stroke colors */}
           <Toggle
-            aria-label="Toggle italic"
-            defaultPressed={selectedObject.text.fontStyle === 'italic'}
+            pressed={sidebarView?.type === 'text-color-picker'}
             onPressedChange={(pressed) =>
-              updateTextProperty('fontStyle', pressed ? 'italic' : 'normal')
+              setSidebarView(pressed ? { type: 'text-color-picker' } : undefined)
             }
           >
-            <Italic className="h-5 w-5" />
+            <Baseline className="!h-5 !w-5" />
           </Toggle>
-        </div>
+
+          {/* Font weight and style */}
+          <div className="flex items-center gap-1">
+            <Toggle
+              aria-label="Toggle bold"
+              defaultPressed={selectedObject.fontWeight === 'bold'}
+              onPressedChange={(pressed) =>
+                updateTextProperty('fontWeight', pressed ? 'bold' : 'normal')
+              }
+            >
+              <Bold className="h-5 w-5" />
+            </Toggle>
+            <Toggle
+              aria-label="Toggle italic"
+              defaultPressed={selectedObject.fontStyle === 'italic'}
+              onPressedChange={(pressed) =>
+                updateTextProperty('fontStyle', pressed ? 'italic' : 'normal')
+              }
+            >
+              <Italic className="h-5 w-5" />
+            </Toggle>
+          </div>
+
+          {/* Text align*/}
+          <ToggleGroup
+            className="gap-1 [&>button[data-slot=toggle-group-item]]:rounded-md"
+            type="single"
+            defaultValue={selectedObject.textAlign}
+            onValueChange={(value) =>
+              updateTextProperty('textAlign', value as 'left' | 'center' | 'right')
+            }
+          >
+            <ToggleGroupItem value="left" aria-label="Align left">
+              <AlignLeft className="h-5 w-5" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="center" aria-label="Align center">
+              <AlignCenter className="h-5 w-5" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="right" aria-label="Align right">
+              <AlignRight className="h-5 w-5" />
+            </ToggleGroupItem>
+          </ToggleGroup>
+
+          {/* Text spacing */}
+          <TextSpacingPopover
+            value={{
+              charSpacing: selectedObject.charSpacing,
+              lineHeight: selectedObject.lineHeight,
+            }}
+            onValueChange={(value) => {
+              updateTextProperty('charSpacing', value.charSpacing);
+              updateTextProperty('lineHeight', value.lineHeight);
+            }}
+          />
+        </>
       ) : null}
 
-      {/* Text align */}
-      {selectedObject.type === 'text' ? (
-        <ToggleGroup
-          className="gap-1 [&>button[data-slot=toggle-group-item]]:rounded-md"
-          type="single"
-          defaultValue={selectedObject.text.textAlign}
-          onValueChange={(value) =>
-            updateTextProperty('textAlign', value as 'left' | 'center' | 'right')
-          }
-        >
-          <ToggleGroupItem value="left" aria-label="Align left">
-            <AlignLeft className="h-5 w-5" />
-          </ToggleGroupItem>
-          <ToggleGroupItem value="center" aria-label="Align center">
-            <AlignCenter className="h-5 w-5" />
-          </ToggleGroupItem>
-          <ToggleGroupItem value="right" aria-label="Align right">
-            <AlignRight className="h-5 w-5" />
-          </ToggleGroupItem>
-        </ToggleGroup>
-      ) : null}
-
-      {/* Text spacing */}
-      {selectedObject.type === 'text' ? (
-        <TextSpacingPopover
-          value={{
-            charSpacing: selectedObject.text.charSpacing,
-            lineHeight: selectedObject.text.lineHeight,
-          }}
-          onValueChange={(value) => {
-            updateTextProperty('charSpacing', value.charSpacing);
-            updateTextProperty('lineHeight', value.lineHeight);
-          }}
-        />
-      ) : null}
-
-      {/* Image flip */}
-      {selectedObject.type === 'image' ? (
-        <div className="flex items-center gap-1">
-          <Button size="icon" variant="ghost">
-            <FlipHorizontal />
-          </Button>
-          <Button size="icon" variant="ghost">
-            <FlipVertical />
-          </Button>
-        </div>
+      {/* Selected Object is Image */}
+      {isImage(selectedObject) ? (
+        <>
+          {/* Image flip */}
+          <div className="flex items-center gap-1">
+            <Button size="icon" variant="ghost">
+              <FlipHorizontal />
+            </Button>
+            <Button size="icon" variant="ghost">
+              <FlipVertical />
+            </Button>
+          </div>
+        </>
       ) : null}
 
       <Separator orientation="vertical" className="data-[orientation=vertical]:h-5" />
 
+      {/* Shared properties */}
       {/* Position */}
-      {selectedObject.type === 'text' ? (
-        <PositionPopover
-          value={{
-            x: selectedObject.text.x,
-            y: selectedObject.text.y,
-            width: selectedObject.text.width,
-            height: selectedObject.text.height,
-            angle: selectedObject.text.angle,
-          }}
-          onValueChange={(value) => {
-            updateTextProperty('x', value.x);
-            updateTextProperty('y', value.y);
-            updateTextProperty('width', value.width);
-            updateTextProperty('height', value.height);
-            updateTextProperty('angle', value.angle);
-          }}
-        />
-      ) : selectedObject.type === 'image' ? (
-        <PositionPopover
-          value={{
-            x: selectedObject.image.x,
-            y: selectedObject.image.y,
-            width: selectedObject.image.width,
-            height: selectedObject.image.height,
-            angle: selectedObject.image.angle,
-          }}
-          onValueChange={(value) => {
-            updateImageProperty('x', value.x);
-            updateImageProperty('y', value.y);
-            updateImageProperty('width', value.width);
-            updateImageProperty('height', value.height);
-            updateImageProperty('angle', value.angle);
-          }}
-        />
-      ) : null}
+      <PositionPopover
+        value={{
+          x: selectedObject.x,
+          y: selectedObject.y,
+          width: selectedObject.width,
+          height: selectedObject.height,
+          angle: selectedObject.angle,
+        }}
+        onValueChange={(value) => {
+          updateSharedProperty('x', value.x);
+          updateSharedProperty('y', value.y);
+          updateSharedProperty('width', value.width);
+          updateSharedProperty('height', value.height);
+          updateSharedProperty('angle', value.angle);
+        }}
+      />
     </div>
   ) : null;
 }

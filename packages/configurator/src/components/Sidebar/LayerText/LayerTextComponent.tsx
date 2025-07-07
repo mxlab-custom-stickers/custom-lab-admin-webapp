@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
 import { drawTextOnCanvas } from '@/lib/fabric.ts';
-import type { Text } from '@clab/types';
+import { isTemplateLayerText, type Text } from '@clab/types';
 import { generateId } from '@clab/utils';
 
 export default function LayerTextComponent() {
@@ -12,10 +12,11 @@ export default function LayerTextComponent() {
   } = useConfiguratorContext();
 
   function addNewText() {
-    if (!canvas || currentLayer?.type !== 'text') return;
+    if (!canvas || !currentLayer || !isTemplateLayerText(currentLayer)) return;
 
     const newText: Text = {
       id: generateId(),
+      type: 'text',
       value: 'Mon Texte',
       fontSize: 64,
       font: null,
@@ -37,13 +38,14 @@ export default function LayerTextComponent() {
       skewX: 0,
       skewY: 0,
       locked: false,
+      fabricObject: null,
     };
 
     const fabricTextbox = drawTextOnCanvas(canvas, newText);
 
     updateLayer({
       ...currentLayer,
-      texts: [...(currentLayer.texts || []), { ...newText, fabricTextbox }],
+      texts: [...(currentLayer.texts || []), { ...newText, fabricObject: fabricTextbox }],
     });
   }
 

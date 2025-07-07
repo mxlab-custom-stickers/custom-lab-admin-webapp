@@ -1,17 +1,12 @@
-import type { FabricImage } from 'fabric';
+import { FabricImage } from 'fabric';
+import { CanvasObject } from './canvas';
 
-export interface Image {
+export interface Image extends CanvasObject<FabricImage> {
   id: string;
+  type: 'image';
+
   name: string;
   url: string; // URL of the image
-  width: number; // Width of the image in pixels
-  height: number; // Height of the image in pixels
-  x: number; // X position of the image on the canvas
-  y: number; // Y position of the image on the canvas
-  angle: number; // Rotation angle of the image in degrees
-  scaleX: number; // Scale factor in the X direction
-  scaleY: number; // Scale factor in the Y direction
-
-  locked: boolean; // Whether the image is locked (not editable)
-  fabricImage?: FabricImage;
 }
+
+export type UpdatableImageProps = {};

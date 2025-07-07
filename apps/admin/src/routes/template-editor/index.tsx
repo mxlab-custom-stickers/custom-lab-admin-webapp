@@ -1,10 +1,10 @@
 import Dropzone from '@/components/ui/Dropzone.tsx';
 import QuitButton from '@/components/ui/QuitButton.tsx';
 import { useAppContext } from '@/contexts/app-context.ts';
-import { addTemplate } from '@/lib/firebase/firestore.ts';
-import { uploadFile } from '@/lib/firebase/storage.ts';
-import { generateId } from '@/lib/nanoid.ts';
-import { Template } from '@/models/template.ts';
+
+import { addTemplate, uploadFile } from '@clab/firebase';
+import type { Template } from '@clab/types';
+import { generateId } from '@clab/utils';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 

@@ -2,6 +2,7 @@ import InvisibleInput from '@/components/forms/InvisibleInput.tsx';
 import AddLayerDropdown from '@/components/Sidebar/AddLayerDropdown.tsx';
 import LayerColorComponent from '@/components/Sidebar/LayerColor/LayerColorComponent.tsx';
 import LayerTextComponent from '@/components/Sidebar/LayerText/LayerTextComponent.tsx';
+import DeleteLayerButton from '@/components/Sidebar/shared/DeleteLayerButton.tsx';
 import {
   SidebarContent,
   SidebarGroup,
@@ -29,10 +30,10 @@ export default function Sidebar() {
 
   return (
     <SidebarUI side="right" className="top-14 !h-[calc(100svh-3.5rem)]">
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent className="relative">
-            <div className="flex flex-col gap-3">
+      <SidebarContent className="h-full">
+        <SidebarGroup className="h-full">
+          <SidebarGroupContent className="relative h-full">
+            <div className="flex h-full flex-col gap-3">
               <AddLayerDropdown />
               {currentLayer ? (
                 <>
@@ -44,6 +45,7 @@ export default function Sidebar() {
                   {currentLayerComponents[currentLayer.type]}
                 </>
               ) : null}
+              <DeleteLayerButton />
             </div>
           </SidebarGroupContent>
         </SidebarGroup>

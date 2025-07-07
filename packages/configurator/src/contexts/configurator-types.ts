@@ -1,10 +1,13 @@
 import type { ColorElement, Image, Template, TemplateLayer, Text } from '@clab/types';
+import type { CanvasObject } from '@clab/types/dist/canvas.ts';
 import { Canvas } from 'fabric';
 import React from 'react';
 
 export type ConfiguratorState = {
   template: Template;
   currentLayerId: string | undefined;
+
+  sidebarView: SidebarView | undefined;
 
   currentColorElementId: string | undefined;
   selectedObjectId: string | undefined;
@@ -26,12 +29,16 @@ export type ConfiguratorContextType = {
   setCurrentLayerId: (layerId: string | undefined) => void;
   updateLayer: (layer: TemplateLayer) => void;
 
+  // UI
+  setSidebarView: (view: SidebarView | undefined) => void;
+
   // Current color element
   currentColorElement: CurrentColorElement | undefined;
   setCurrentColorElementId: (currentColorElementId: string | undefined) => void;
   updateColorElement: (updatedElement: ColorElement) => void;
 
-  selectedObject: SelectedObject | undefined;
+  // Selected object
+  selectedObject: CanvasObject | undefined;
   setSelectedObjectId: (id: string | undefined) => void;
   deleteSelectedObject: () => void;
 
@@ -42,6 +49,7 @@ export type ConfiguratorContextType = {
 export type ConfiguratorAction =
   | { type: 'SET_TEMPLATE'; payload: Template }
   | { type: 'SET_CURRENT_LAYER_ID'; payload: string | undefined }
+  | { type: 'SET_SIDEBAR_VIEW'; payload: SidebarView | undefined }
   | { type: 'SET_CURRENT_COLOR_ELEMENT_ID'; payload: string | undefined }
   | { type: 'SET_SELECTED_OBJECT_ID'; payload: string | undefined }
   | { type: 'SET_CANVAS'; payload: Canvas };
@@ -53,4 +61,8 @@ export type CurrentColorElement =
 
 export type CurrentColorElementType = ColorElement['type'] | 'color-palette';
 
-export type SelectedObject = { type: 'image'; image: Image } | { type: 'text'; text: Text };
+export type SidebarView =
+  | { type: 'color-element'; colorElement: ColorElement }
+  | { type: 'color-palette' }
+  | { type: 'font-picker' }
+  | { type: 'text-color-picker' };

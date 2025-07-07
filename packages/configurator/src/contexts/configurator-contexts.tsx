@@ -3,9 +3,18 @@ import type {
   ConfiguratorContextType,
   ConfiguratorState,
   CurrentColorElement,
-  SelectedObject,
+  SidebarView,
 } from '@/contexts/configurator-types.ts';
-import type { ColorElement, Image, Template, TemplateLayer, Text } from '@clab/types';
+import {
+  type ColorElement,
+  type Image,
+  isImage,
+  isText,
+  type Template,
+  type TemplateLayer,
+  type Text,
+} from '@clab/types';
+import type { CanvasObject } from '@clab/types/dist/canvas.ts';
 import {
   cn,
   deleteImageInTemplate,
@@ -24,6 +33,7 @@ type ConfiguratorProviderProps = {
   className?: string;
   template: Template;
   currentLayerId?: string;
+  onCanvasInitialized?: (canvas: Canvas) => void;
   onTemplateChange?: (template: Template) => void;
   onCurrentLayerIdChange?: (layerId: string | undefined) => void;
   children: React.ReactNode;
@@ -33,6 +43,7 @@ export function ConfiguratorProvider({
   className,
   template,
   currentLayerId: currentLayerIdProp,
+  onCanvasInitialized,
   onTemplateChange,
   onCurrentLayerIdChange,
   children,
@@ -48,6 +59,7 @@ export function ConfiguratorProvider({
     currentColorElementId: undefined,
     selectedObjectId: undefined,
     canvas: undefined,
+    sidebarView: undefined,
   } satisfies ConfiguratorState);
 
   const previousTemplateRef = useRef<Template | null>(null);
@@ -88,18 +100,19 @@ export function ConfiguratorProvider({
     return findColorElementById(currentLayer.colorElements, state.currentColorElementId);
   }, [currentLayer, state.currentColorElementId]);
 
-  const selectedObject: SelectedObject | undefined = useMemo(() => {
-    if (!state.selectedObjectId) return undefined;
-    if (!currentLayer) return undefined;
+  const selectedObject: CanvasObject | undefined = useMemo(() => {
+    if (!state.selectedObjectId || !currentLayer) return undefined;
 
-    if (currentLayer.type === 'image') {
-      const image = currentLayer.images.find((img) => img.id === state.selectedObjectId);
-      return image ? { type: 'image', image } : undefined;
-    } else if (currentLayer.type === 'text') {
-      const text = currentLayer.texts.find((txt) => txt.id === state.selectedObjectId);
-      return text ? { type: 'text', text } : undefined;
+    switch (currentLayer.type) {
+      case 'image':
+        return currentLayer.images.find((img) => img.id === state.selectedObjectId);
+      case 'text':
+        return currentLayer.texts.find((text) => text.id === state.selectedObjectId);
+      case 'color':
+        return undefined;
+      default:
+        return undefined;
     }
-    return undefined;
   }, [currentLayer, state.selectedObjectId]);
 
   function updateTemplate(updatedTemplate: Template) {
@@ -107,9 +120,16 @@ export function ConfiguratorProvider({
     if (isTemplateControlled) onTemplateChange?.(updatedTemplate);
   }
 
+  function setCanvas(canvas: Canvas) {
+    dispatch({ type: 'SET_CANVAS', payload: canvas });
+    onCanvasInitialized?.(canvas);
+  }
+
   function setCurrentLayerId(layerId: string | undefined) {
     dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: layerId });
+    dispatch({ type: 'SET_SIDEBAR_VIEW', payload: undefined });
     dispatch({ type: 'SET_CURRENT_COLOR_ELEMENT_ID', payload: undefined });
+    dispatch({ type: 'SET_SELECTED_OBJECT_ID', payload: undefined });
     if (isLayerControlled) onCurrentLayerIdChange?.(layerId);
   }
 
@@ -119,6 +139,10 @@ export function ConfiguratorProvider({
       layers: state.template.layers.map((l) => (l.id === layer.id ? { ...l, ...layer } : l)),
     };
     updateTemplate(updatedTemplate);
+  }
+
+  function setSidebarView(view: SidebarView | undefined) {
+    dispatch({ type: 'SET_SIDEBAR_VIEW', payload: view });
   }
 
   function setCurrentColorElementId(colorElementId: string | undefined) {
@@ -132,6 +156,7 @@ export function ConfiguratorProvider({
 
   function setSelectedObjectId(id: string | undefined) {
     dispatch({ type: 'SET_SELECTED_OBJECT_ID', payload: id });
+    dispatch({ type: 'SET_SIDEBAR_VIEW', payload: undefined });
   }
 
   function updateText(updatedText: Text) {
@@ -145,22 +170,18 @@ export function ConfiguratorProvider({
   }
 
   function deleteSelectedObject() {
-    if (!selectedObject) return;
+    if (!state.selectedObjectId || !selectedObject) return;
 
     let updatedTemplate: Template | undefined = undefined;
-    if (selectedObject.type === 'image') {
-      updatedTemplate = deleteImageInTemplate(state.template, selectedObject.image.id);
-    } else if (selectedObject.type === 'text') {
-      updatedTemplate = deleteTextInTemplate(state.template, selectedObject.text.id);
+    if (isImage(selectedObject)) {
+      updatedTemplate = deleteImageInTemplate(state.template, state.selectedObjectId);
+    } else if (isText(selectedObject)) {
+      updatedTemplate = deleteTextInTemplate(state.template, state.selectedObjectId);
     }
 
     if (updatedTemplate) {
       updateTemplate(updatedTemplate);
     }
-  }
-
-  function setCanvas(canvas: Canvas) {
-    dispatch({ type: 'SET_CANVAS', payload: canvas });
   }
 
   return (
@@ -172,6 +193,7 @@ export function ConfiguratorProvider({
         currentLayer,
         updateLayer,
         setCurrentLayerId,
+        setSidebarView,
         currentColorElement,
         setCurrentColorElementId,
         updateColorElement,

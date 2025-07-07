@@ -358,13 +358,13 @@ export function getAllFabricObjectsFromTemplate(
 
     if (isTemplateLayerText(layer)) {
       for (const text of layer.texts) {
-        if (text.fabricTextbox) result.push(text.fabricTextbox);
+        if (text.fabricObject) result.push(text.fabricObject);
       }
     }
 
     if (isTemplateLayerImage(layer)) {
       for (const image of layer.images) {
-        if (image.fabricImage) result.push(image.fabricImage);
+        if (image.fabricObject) result.push(image.fabricObject);
       }
     }
   }

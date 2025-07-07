@@ -7,16 +7,18 @@ import { CopyPlus, LockOpen, Trash } from 'lucide-react';
 export function TopControlsBox({ x, y }: { x: number; y: number }) {
   const { selectedObject, deleteSelectedObject, updateImage, updateText } =
     useConfiguratorContext();
+  if (!selectedObject) return null;
+
   const { lockFabricObject, removeFabricObject } = useCanvas();
 
   function handleLockToggle(toggle: boolean) {
     if (!selectedObject) return;
 
-    if (selectedObject.type === 'image' && selectedObject.image.fabricImage) {
-      lockFabricObject(selectedObject.image.fabricImage, toggle);
+    if (selectedObject.type === 'image' && selectedObject.image.fabricObject) {
+      lockFabricObject(selectedObject.image.fabricObject, toggle);
       updateImage({ ...selectedObject.image, locked: toggle });
-    } else if (selectedObject.type === 'text' && selectedObject.text.fabricTextbox) {
-      lockFabricObject(selectedObject.text.fabricTextbox, toggle);
+    } else if (selectedObject.type === 'text' && selectedObject.text.fabricObject) {
+      lockFabricObject(selectedObject.text.fabricObject, toggle);
       updateText({ ...selectedObject.text, locked: toggle });
     }
   }
@@ -24,21 +26,14 @@ export function TopControlsBox({ x, y }: { x: number; y: number }) {
   function handleDelete() {
     if (!selectedObject) return;
 
-    if (selectedObject.type === 'image' && selectedObject.image.fabricImage) {
-      removeFabricObject(selectedObject.image.fabricImage);
-    } else if (selectedObject.type === 'text' && selectedObject.text.fabricTextbox) {
-      removeFabricObject(selectedObject.text.fabricTextbox);
+    if (selectedObject.type === 'image' && selectedObject.image.fabricObject) {
+      removeFabricObject(selectedObject.image.fabricObject);
+    } else if (selectedObject.type === 'text' && selectedObject.text.fabricObject) {
+      removeFabricObject(selectedObject.text.fabricObject);
     }
 
     deleteSelectedObject();
   }
-
-  const isLocked =
-    selectedObject?.type === 'image'
-      ? selectedObject.image.locked
-      : selectedObject?.type === 'text'
-        ? selectedObject.text.locked
-        : false;
 
   return (
     <div
@@ -54,12 +49,12 @@ export function TopControlsBox({ x, y }: { x: number; y: number }) {
         {/* Lock toggle */}
         <Toggle
           className="data-[state=on]:bg-primary data-[state=on]:hover:bg-primary/75 aspect-square p-1 hover:bg-gray-100 hover:text-black"
-          pressed={isLocked ?? false}
+          pressed={selectedObject.locked ?? false}
           onPressedChange={(pressed) => handleLockToggle(pressed)}
         >
           <LockOpen className="!h-4.5 !w-4.5" />
         </Toggle>
-        {!isLocked ? (
+        {!selectedObject.locked ? (
           <>
             {/* Duplicate */}
             <Button

@@ -1,9 +1,12 @@
-import type { Textbox } from 'fabric';
+import { Textbox } from 'fabric';
+import { CanvasObject } from './canvas';
 import { Color } from './color';
 import { Status } from './common';
 
-export interface Text {
+export interface Text extends CanvasObject<Textbox> {
   id: string;
+  type: 'text';
+
   value: string; // The text content
 
   font: Font | null; // If no custom font is provided, the default browser font will be used
@@ -17,20 +20,24 @@ export interface Text {
   color: Color;
   strokeColor: Color | null;
   strokeWidth: number;
-
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-  angle: number;
-  scaleX: number;
-  scaleY: number;
-  skewX: number;
-  skewY: number;
-
-  locked: boolean; // Whether the text is locked (not editable)
-  fabricTextbox?: Textbox;
 }
+
+export type UpdatableTextProps = Partial<
+  Pick<
+    Text,
+    | 'value'
+    | 'font'
+    | 'fontSize'
+    | 'textAlign'
+    | 'fontWeight'
+    | 'fontStyle'
+    | 'lineHeight'
+    | 'charSpacing'
+    | 'color'
+    | 'strokeColor'
+    | 'strokeWidth'
+  >
+>;
 
 /**
  * Fonts

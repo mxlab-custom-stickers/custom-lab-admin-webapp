@@ -26,21 +26,12 @@ export default function FontsOptionsCard() {
   const { fonts, search, setSearch } = useFonts();
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [selectedFonts, setSelectedFonts] = useState<Font[]>(() => initSelectedFonts());
-
-  /**
-   * Initializes the selected fonts based on the current layer's configuration.
-   */
-  function initSelectedFonts(): Font[] {
-    return currentLayer?.type === 'text'
-      ? currentLayer.config.availableFonts
-          .map((fontName) => fonts.find((f) => f.name === fontName))
-          .filter((font) => font !== undefined) || []
-      : [];
-  }
+  const [selectedFonts, setSelectedFonts] = useState<Font[]>(
+    currentLayer.config.availableFonts || []
+  );
 
   useEffect(() => {
-    setSelectedFonts(initSelectedFonts());
+    setSelectedFonts(currentLayer.config.availableFonts || []);
   }, [fonts]);
 
   function validate() {
@@ -50,7 +41,7 @@ export default function FontsOptionsCard() {
       ...currentLayer,
       config: {
         ...currentLayer.config,
-        availableFonts: selectedFonts.map((f) => f.name),
+        availableFonts: selectedFonts,
       },
     });
     setShowDialog(false);
@@ -65,7 +56,7 @@ export default function FontsOptionsCard() {
       <CardContent>
         {currentLayer.config.availableFonts.length > 0 ? (
           <div className="text-muted-foreground line-clamp-3">
-            {currentLayer.config.availableFonts.join(', ')}
+            {currentLayer.config.availableFonts.map((font) => font.name).join(', ')}
           </div>
         ) : (
           <div className="text-muted-foreground">Aucune police ajoutée</div>

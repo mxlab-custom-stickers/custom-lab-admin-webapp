@@ -1,9 +1,10 @@
-import TemplateEditor from '@/components/template-editor/TemplateEditor.tsx';
-import { TemplateEditorProvider } from '@/contexts/template-editor/template-editor-context.tsx';
-import { getTemplateById } from '@/lib/firebase/firestore.ts';
-import { Template } from '@/models/template.ts';
+import { getTemplateById } from '@/lib/firebase/firestore';
+import { TemplateEditor, TemplateEditorProvider } from '@clab/template-editor';
+import type { Template } from '@clab/types';
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
+
+import '@clab/template-editor/assets/index.css'; // Import the CSS for the template editor
 
 export const Route = createFileRoute('/template-editor/$id')({
   component: RouteComponent,

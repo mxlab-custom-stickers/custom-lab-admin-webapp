@@ -42,6 +42,12 @@ export const useCanvas = () => {
     canvas.requestRenderAll();
   }
 
+  function updateFabricObject(obj: FabricObject, updates: Partial<FabricObject>) {
+    if (!canvas) return;
+    obj.set(updates);
+    canvas.requestRenderAll();
+  }
+
   function removeFabricObject(obj: FabricObject) {
     if (!canvas) return;
     canvas.remove(obj);
@@ -66,6 +72,7 @@ export const useCanvas = () => {
     focusColorLayer,
     updateFabricText,
     updateFabricImage,
+    updateFabricObject,
     removeFabricObject,
     lockFabricObject,
   };

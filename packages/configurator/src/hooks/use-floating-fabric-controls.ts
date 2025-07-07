@@ -6,7 +6,7 @@ interface FloatingPos {
   y: number;
 }
 
-export function useFloatingFabricControls(canvas: Canvas | null, offset = 75) {
+export function useFloatingFabricControls(canvas: Canvas | null, offset = 60) {
   const [pos, setPos] = useState<FloatingPos | null>(null);
   const [visible, setVisible] = useState(false);
 
