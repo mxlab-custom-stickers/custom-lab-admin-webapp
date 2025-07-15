@@ -1,41 +1,43 @@
 import ColorElementList from '@/components/Sidebar/LayerColor/color-elements/ColorElementList.tsx';
 import ColorGroupComponent from '@/components/Sidebar/LayerColor/ColorGroupComponent.tsx';
 import ColorItemComponent from '@/components/Sidebar/LayerColor/ColorItemComponent.tsx';
-import ColorPaletteComponent from '@/components/Sidebar/LayerColor/ColorPaletteComponent.tsx';
 import LayerColorFocusControls from '@/components/Sidebar/LayerColor/LayerColorFocusControls';
 import { LayerColorPaletteSection } from '@/components/Sidebar/LayerColor/LayerColorPaletteSection.tsx';
 import { Button } from '@/components/ui/button';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
-import type { CurrentColorElementType } from '@/contexts/configurator-types';
-import { isTemplateLayerColor } from '@clab/types';
+import { type ColorElement, isTemplateLayerColor } from '@clab/types';
 import { ChevronLeft } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-const currentColorElementComponents: Record<CurrentColorElementType, ReactNode> = {
+const currentColorElementComponents: Record<ColorElement['type'], ReactNode> = {
   group: <ColorGroupComponent />,
   item: <ColorItemComponent />,
-  'color-palette': <ColorPaletteComponent />,
 };
 
-export default function LayerColorComponent() {
-  const { currentLayer, currentColorElement, setCurrentColorElementId } = useConfiguratorContext();
+export default function Index() {
+  const { currentLayer, selectedColorElement, setSelectedColorElementId } =
+    useConfiguratorContext();
   if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
 
   /**
    * Navigate back to the parent color element.
    */
   function goBack() {
-    if (!currentColorElement) return;
-    const { parentId } = currentColorElement;
-    setCurrentColorElementId(parentId);
+    if (!selectedColorElement) return;
+    const { parentId } = selectedColorElement;
+    setSelectedColorElementId(parentId);
   }
 
-  return currentColorElement ? (
+  return selectedColorElement ? (
     <div>
-      <Button className="mb-2" onClick={goBack}>
-        <ChevronLeft />
-      </Button>
-      {currentColorElementComponents[currentColorElement.type]}
+      <div className="flex items-center p-3">
+        <Button variant="outline" size="icon" className="mr-3" onClick={goBack}>
+          <ChevronLeft />
+        </Button>
+        <div className="text-lg">{selectedColorElement.name}</div>
+      </div>
+
+      {currentColorElementComponents[selectedColorElement.type]}
     </div>
   ) : (
     <div>
@@ -43,7 +45,7 @@ export default function LayerColorComponent() {
       <LayerColorPaletteSection />
       <ColorElementList
         colorElements={currentLayer.colorElements}
-        onColorElementClick={(colorElement) => setCurrentColorElementId(colorElement.id)}
+        onColorElementClick={(colorElement) => setSelectedColorElementId(colorElement.id)}
       />
     </div>
   );

@@ -1,5 +1,4 @@
-import type { ColorElement, Image, Template, TemplateLayer, Text } from '@clab/types';
-import type { CanvasObject } from '@clab/types/dist/canvas.ts';
+import type { CanvasObject, ColorElement, Image, Template, TemplateLayer, Text } from '@clab/types';
 import { Canvas } from 'fabric';
 import React from 'react';
 
@@ -7,9 +6,12 @@ export type ConfiguratorState = {
   template: Template;
   currentLayerId: string | undefined;
 
+  // Overrides the sidebar view with a specific view like the font picker for a text, or the color palette for a color layer
   sidebarView: SidebarView | undefined;
 
-  currentColorElementId: string | undefined;
+  // The selected color element to show in the sidebar
+  selectedColorElementId: string | undefined;
+  // The selected text, image... object in the canvas (object that can be selected, moved, resized, etc.)
   selectedObjectId: string | undefined;
 
   canvas?: Canvas;
@@ -32,9 +34,9 @@ export type ConfiguratorContextType = {
   // UI
   setSidebarView: (view: SidebarView | undefined) => void;
 
-  // Current color element
-  currentColorElement: CurrentColorElement | undefined;
-  setCurrentColorElementId: (currentColorElementId: string | undefined) => void;
+  // Selected color element
+  selectedColorElement: ColorElement | undefined;
+  setSelectedColorElementId: (selectedColorElementId: string | undefined) => void;
   updateColorElement: (updatedElement: ColorElement) => void;
 
   // Selected object
@@ -50,19 +52,11 @@ export type ConfiguratorAction =
   | { type: 'SET_TEMPLATE'; payload: Template }
   | { type: 'SET_CURRENT_LAYER_ID'; payload: string | undefined }
   | { type: 'SET_SIDEBAR_VIEW'; payload: SidebarView | undefined }
-  | { type: 'SET_CURRENT_COLOR_ELEMENT_ID'; payload: string | undefined }
+  | { type: 'SET_SELECTED_COLOR_ELEMENT_ID'; payload: string | undefined }
   | { type: 'SET_SELECTED_OBJECT_ID'; payload: string | undefined }
   | { type: 'SET_CANVAS'; payload: Canvas };
 
-export type CurrentColorElement =
-  | ColorElement
-  | { id: 'color-palette'; type: 'color-palette'; parentId: undefined }
-  | undefined;
-
-export type CurrentColorElementType = ColorElement['type'] | 'color-palette';
-
 export type SidebarView =
-  | { type: 'color-element'; colorElement: ColorElement }
-  | { type: 'color-palette' }
-  | { type: 'font-picker' }
-  | { type: 'text-color-picker' };
+  | { type: 'color-palette' } // Show the color palette for a color layer
+  | { type: 'font-picker' } // Show the font picker for the selected text object
+  | { type: 'text-color-picker' }; // Show the text color picker for the selected text object

@@ -8,18 +8,16 @@ import React from 'react';
 type ColorItemComponentProps = React.ComponentPropsWithoutRef<'div'>;
 
 export default function ColorItemComponent({ className, ...props }: ColorItemComponentProps) {
-  const { currentColorElement, currentLayer, updateColorElement } = useConfiguratorContext();
-
+  const { selectedColorElement, currentLayer, updateColorElement } = useConfiguratorContext();
   const { setColorItemsColor } = useCanvas();
 
-  const colorItem = currentColorElement?.type === 'item' ? currentColorElement : null;
-
+  const colorItem = selectedColorElement?.type === 'item' ? selectedColorElement : null;
   if (!colorItem || !currentLayer || !isTemplateLayerColor(currentLayer)) return null;
 
   function handleColorSelect(color: Color) {
-    if (!currentColorElement || currentColorElement.type !== 'item') return;
+    if (!selectedColorElement || selectedColorElement.type !== 'item') return;
 
-    const updatedColorItem = { ...currentColorElement, color };
+    const updatedColorItem = { ...selectedColorElement, color };
     setColorItemsColor([updatedColorItem]);
     updateColorElement(updatedColorItem);
   }

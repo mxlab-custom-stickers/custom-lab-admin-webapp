@@ -1,5 +1,5 @@
 import FontPicker from '@/components/Sidebar/FontPicker.tsx';
-import LayerColorComponent from '@/components/Sidebar/LayerColor/LayerColorComponent.tsx';
+import LayerColorComponent from '@/components/Sidebar/LayerColor';
 import LayerImageComponent from '@/components/Sidebar/LayerImage/LayerImageComponent.tsx';
 import LayerTextComponent from '@/components/Sidebar/LayerText/LayerTextComponent.tsx';
 import SidebarFooter from '@/components/Sidebar/SidebarFooter.tsx';
@@ -21,7 +21,6 @@ const currentLayerComponents: Record<TemplateLayerType, ReactNode> = {
 
 const sidebarViewComponents: Record<SidebarView['type'], ReactNode> = {
   'color-palette': <div />,
-  'color-element': <div />,
   'font-picker': <FontPicker />,
   'text-color-picker': <TextColorPicker />,
 };
@@ -40,6 +39,7 @@ export default function Sidebar({ className, classNames, ...props }: SidebarProp
   const {
     state: { sidebarView },
     currentLayer,
+    selectedColorElement,
   } = useConfiguratorContext();
 
   return (
@@ -52,20 +52,29 @@ export default function Sidebar({ className, classNames, ...props }: SidebarProp
     >
       {/* Header */}
       <SidebarHeader className={cn('border-b border-gray-600 p-3', classNames?.header)} />
+
       {/* Content*/}
       <ScrollArea className={cn('flex-1 overflow-auto', classNames?.content)}>
         {sidebarView ? (
           <div>{sidebarViewComponents[sidebarView.type]}</div>
         ) : currentLayer ? (
           <div>
-            <div className="p-2">
-              <div className="text-2xl font-semibold uppercase">{currentLayer.name}</div>
-              <div>{currentLayer.message}</div>
-            </div>
+            {/* Show the layer header only if no color element is selected (color layer only) */}
+            {!selectedColorElement ? (
+              <div className="px-3 py-2">
+                <div className="text-2xl font-semibold uppercase">{currentLayer.name}</div>
+                <div>
+                  {currentLayer.message ||
+                    'Un message porub  hyfg ezuygf ezuyfguyezf uyieuyfgzeyu fuyz'}
+                </div>
+              </div>
+            ) : null}
+            {/* Show the component corresponding to the current layer type */}
             {currentLayerComponents[currentLayer.type]}
           </div>
         ) : null}
       </ScrollArea>
+
       {/* Footer */}
       <SidebarFooter className={cn('border-t border-gray-600 p-2', classNames?.footer)} />
     </div>

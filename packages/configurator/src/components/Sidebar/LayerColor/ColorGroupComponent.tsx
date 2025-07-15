@@ -6,17 +6,15 @@ import React from 'react';
 type ColorGroupComponentProps = React.ComponentPropsWithoutRef<'div'>;
 
 export default function ColorGroupComponent({ className, ...props }: ColorGroupComponentProps) {
-  const { currentColorElement, setCurrentColorElementId } = useConfiguratorContext();
+  const { selectedColorElement, setSelectedColorElementId } = useConfiguratorContext();
 
-  const colorGroup = currentColorElement?.type === 'group' ? currentColorElement : null;
+  const colorGroup = selectedColorElement?.type === 'group' ? selectedColorElement : null;
 
   return colorGroup ? (
     <div className={cn(className)} {...props}>
-      <div className="px-1 text-lg">{colorGroup.name}</div>
-
       <ColorElementList
         colorElements={colorGroup.subColorElements}
-        onColorElementClick={(colorElement) => setCurrentColorElementId(colorElement.id)}
+        onColorElementClick={(colorElement) => setSelectedColorElementId(colorElement.id)}
       />
     </div>
   ) : null;

@@ -2,13 +2,13 @@ import { configuratorReducer } from '@/contexts/configurator-reducer';
 import type {
   ConfiguratorContextType,
   ConfiguratorState,
-  CurrentColorElement,
   SidebarView,
 } from '@/contexts/configurator-types.ts';
 import {
   type ColorElement,
   type Image,
   isImage,
+  isTemplateLayerColor,
   isText,
   type Template,
   type TemplateLayer,
@@ -56,7 +56,7 @@ export function ConfiguratorProvider({
   const [state, dispatch] = useReducer(configuratorReducer, {
     template,
     currentLayerId: initialLayerId,
-    currentColorElementId: undefined,
+    selectedColorElementId: undefined,
     selectedObjectId: undefined,
     canvas: undefined,
     sidebarView: undefined,
@@ -85,20 +85,13 @@ export function ConfiguratorProvider({
     [state.template, state.currentLayerId]
   );
 
-  const currentColorElement: CurrentColorElement = useMemo(() => {
-    if (!currentLayer || currentLayer.type !== 'color' || !state.currentColorElementId)
+  const selectedColorElement: ColorElement | undefined = useMemo(() => {
+    if (!currentLayer || !isTemplateLayerColor(currentLayer) || !state.selectedColorElementId)
       return undefined;
 
-    if (state.currentColorElementId === 'color-palette') {
-      return {
-        id: 'color-palette',
-        type: 'color-palette',
-        parentId: undefined,
-      };
-    }
-
-    return findColorElementById(currentLayer.colorElements, state.currentColorElementId);
-  }, [currentLayer, state.currentColorElementId]);
+    console.log('Finding color element by ID:', state.selectedColorElementId);
+    return findColorElementById(currentLayer.colorElements, state.selectedColorElementId);
+  }, [currentLayer, state.selectedColorElementId]);
 
   const selectedObject: CanvasObject | undefined = useMemo(() => {
     if (!state.selectedObjectId || !currentLayer) return undefined;
@@ -128,15 +121,17 @@ export function ConfiguratorProvider({
   function setCurrentLayerId(layerId: string | undefined) {
     dispatch({ type: 'SET_CURRENT_LAYER_ID', payload: layerId });
     dispatch({ type: 'SET_SIDEBAR_VIEW', payload: undefined });
-    dispatch({ type: 'SET_CURRENT_COLOR_ELEMENT_ID', payload: undefined });
+    dispatch({ type: 'SET_SELECTED_COLOR_ELEMENT_ID', payload: undefined });
     dispatch({ type: 'SET_SELECTED_OBJECT_ID', payload: undefined });
     if (isLayerControlled) onCurrentLayerIdChange?.(layerId);
   }
 
-  function updateLayer(layer: TemplateLayer) {
+  function updateLayer(updatedLayer: TemplateLayer) {
     const updatedTemplate = {
       ...state.template,
-      layers: state.template.layers.map((l) => (l.id === layer.id ? { ...l, ...layer } : l)),
+      layers: state.template.layers.map((l) =>
+        l.id === updatedLayer.id ? { ...l, ...updatedLayer } : l
+      ),
     };
     updateTemplate(updatedTemplate);
   }
@@ -145,8 +140,8 @@ export function ConfiguratorProvider({
     dispatch({ type: 'SET_SIDEBAR_VIEW', payload: view });
   }
 
-  function setCurrentColorElementId(colorElementId: string | undefined) {
-    dispatch({ type: 'SET_CURRENT_COLOR_ELEMENT_ID', payload: colorElementId });
+  function setSelectedColorElementId(colorElementId: string | undefined) {
+    dispatch({ type: 'SET_SELECTED_COLOR_ELEMENT_ID', payload: colorElementId });
   }
 
   function updateColorElement(updatedElement: ColorElement) {
@@ -194,8 +189,8 @@ export function ConfiguratorProvider({
         updateLayer,
         setCurrentLayerId,
         setSidebarView,
-        currentColorElement,
-        setCurrentColorElementId,
+        selectedColorElement,
+        setSelectedColorElementId,
         updateColorElement,
         selectedObject,
         setSelectedObjectId,

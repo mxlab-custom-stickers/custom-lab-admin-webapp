@@ -33,7 +33,7 @@ export default function ColorItemsAccordion({ colorItems }: ColorItemsAccordionP
   }
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion className="pl-2 pr-3" type="single" collapsible>
       {colorItems
         .sort((a, b) => (a.name < b.name ? -1 : 1))
         .map((colorItem) => (

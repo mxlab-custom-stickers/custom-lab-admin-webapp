@@ -9,8 +9,8 @@ export default function SidebarCard({
   return (
     <div
       className={cn(
-        'rounded p-2',
-        { 'cursor-pointer hover:bg-gray-600': !!props.onClick },
+        'p-3',
+        { 'cursor-pointer underline-offset-2 hover:bg-[#454545] hover:underline': !!props.onClick },
         className
       )}
       {...props}

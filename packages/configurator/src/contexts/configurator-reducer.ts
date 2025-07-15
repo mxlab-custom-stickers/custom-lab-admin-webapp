@@ -11,8 +11,8 @@ export function configuratorReducer(state: ConfiguratorState, action: Configurat
     case 'SET_SIDEBAR_VIEW': {
       return { ...state, sidebarView: action.payload };
     }
-    case 'SET_CURRENT_COLOR_ELEMENT_ID': {
-      return { ...state, currentColorElementId: action.payload };
+    case 'SET_SELECTED_COLOR_ELEMENT_ID': {
+      return { ...state, selectedColorElementId: action.payload };
     }
     case 'SET_SELECTED_OBJECT_ID': {
       return { ...state, selectedObjectId: action.payload };
