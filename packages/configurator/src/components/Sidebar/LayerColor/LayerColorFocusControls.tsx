@@ -22,11 +22,9 @@ export default function ColorLayerFocusControls() {
     state: { currentLayerId },
     currentLayer,
   } = useConfiguratorContext();
+  const { focusColorLayer } = useCanvas();
 
   if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
-  if (!currentLayer.config.focus.enable) return null;
-
-  const { focusColorLayer } = useCanvas();
 
   /**
    * Cleanup: disables focus mode and resets UI state when current layer changes
@@ -40,10 +38,12 @@ export default function ColorLayerFocusControls() {
 
   function handleFocusChange(isFocusing: boolean) {
     setIsFocusing(isFocusing);
-
-    if (!currentLayer || !isTemplateLayerColor(currentLayer)) return;
-    focusColorLayer(currentLayer, isFocusing);
+    if (currentLayer && isTemplateLayerColor(currentLayer)) {
+      focusColorLayer(currentLayer, isFocusing);
+    }
   }
+
+  if (!currentLayer.config.focus.enable) return null;
 
   return (
     <div className="flex items-center gap-3 p-2">
