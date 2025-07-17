@@ -38,7 +38,7 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
     updateTemplate,
     setCanvas,
     currentLayer,
-    setCurrentColorElementId,
+    setSelectedColorElementId,
     setSelectedObjectId,
   } = useConfiguratorContext();
 
@@ -64,7 +64,7 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
       if (currentLayer.type === 'color') {
         // Activate interactivity for color items
         collectColorItems(currentLayer.colorElements).forEach((colorItem) => {
-          makeColorItemInteractive(colorItem, canvas, setCurrentColorElementId);
+          makeColorItemInteractive(colorItem, canvas, setSelectedColorElementId);
         });
       } else if (currentLayer.type === 'image') {
         // Activate interactivity for images

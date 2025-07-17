@@ -88,8 +88,6 @@ export function ConfiguratorProvider({
   const selectedColorElement: ColorElement | undefined = useMemo(() => {
     if (!currentLayer || !isTemplateLayerColor(currentLayer) || !state.selectedColorElementId)
       return undefined;
-
-    console.log('Finding color element by ID:', state.selectedColorElementId);
     return findColorElementById(currentLayer.colorElements, state.selectedColorElementId);
   }, [currentLayer, state.selectedColorElementId]);
 

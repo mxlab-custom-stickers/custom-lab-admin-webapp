@@ -8,33 +8,20 @@ import { useEffect, useState } from 'react';
 /**
  * ColorLayerFocusControls component
  *
- * Displays controls for enabling/disabling the "focus mode" of a color layer
- * in the configurator. Focus mode dims other layers based on configuration.
- *
- * - A switch toggles focus mode (handled by `focusColorLayer`)
- * - A text input allows editing the focus message (via `InvisibleInput`)
- * - On unmount or layer change, focus mode is automatically disabled
+ * Displays controls for enabling/disabling the "focus mode" of a color layer in the configurator.
+ * Focus mode dims other layers based on configuration.
  */
 export default function ColorLayerFocusControls() {
   const [isFocusing, setIsFocusing] = useState<boolean>(false);
 
-  const {
-    state: { currentLayerId },
-    currentLayer,
-  } = useConfiguratorContext();
+  const { currentLayer } = useConfiguratorContext();
   const { focusColorLayer } = useCanvas();
 
-  if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
-
-  /**
-   * Cleanup: disables focus mode and resets UI state when current layer changes
-   */
   useEffect(() => {
     return () => {
-      focusColorLayer(currentLayer, false);
       setIsFocusing(false);
     };
-  }, [currentLayerId]);
+  }, [currentLayer]);
 
   function handleFocusChange(isFocusing: boolean) {
     setIsFocusing(isFocusing);
@@ -43,6 +30,7 @@ export default function ColorLayerFocusControls() {
     }
   }
 
+  if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
   if (!currentLayer.config.focus.enable) return null;
 
   return (

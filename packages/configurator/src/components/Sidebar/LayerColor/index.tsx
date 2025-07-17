@@ -5,19 +5,31 @@ import LayerColorFocusControls from '@/components/Sidebar/LayerColor/LayerColorF
 import { LayerColorPaletteSection } from '@/components/Sidebar/LayerColor/LayerColorPaletteSection.tsx';
 import { Button } from '@/components/ui/button';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useCanvas } from '@/hooks/use-canvas.ts';
 import { type ColorElement, isTemplateLayerColor } from '@clab/types';
 import { ChevronLeft } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect } from 'react';
 
 const currentColorElementComponents: Record<ColorElement['type'], ReactNode> = {
   group: <ColorGroupComponent />,
   item: <ColorItemComponent />,
 };
 
-export default function Index() {
+export default function LayerColorComponent() {
   const { currentLayer, selectedColorElement, setSelectedColorElementId } =
     useConfiguratorContext();
-  if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
+  const { focusColorLayer } = useCanvas();
+
+  useEffect(() => {
+    if (!currentLayer || !isTemplateLayerColor(currentLayer)) return;
+
+    // Reset focus mode when leaving the color layer
+    return () => {
+      if (currentLayer.config.focus.enable) {
+        focusColorLayer(currentLayer, false);
+      }
+    };
+  }, [currentLayer]);
 
   /**
    * Navigate back to the parent color element.
@@ -27,6 +39,8 @@ export default function Index() {
     const { parentId } = selectedColorElement;
     setSelectedColorElementId(parentId);
   }
+
+  if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
 
   return selectedColorElement ? (
     <div>
