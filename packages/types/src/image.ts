@@ -1,7 +1,7 @@
 import { FabricImage } from 'fabric';
-import { CanvasObject } from './canvas';
+import { CanvasElement } from './canvas';
 
-export interface Image extends CanvasObject<FabricImage> {
+export interface Image extends CanvasElement<FabricImage> {
   id: string;
   type: 'image';
 

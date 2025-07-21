@@ -8,9 +8,9 @@ import { Toggle } from '@/components/ui/toggle.tsx';
 import { useConfiguratorContext } from '@/contexts/configurator-contexts';
 import { useCanvas } from '@/hooks/use-canvas.ts';
 import {
-  isImage,
-  isText,
-  type UpdatableCanvasObjectProps,
+  isImageElement,
+  isTextElement,
+  type UpdatableCanvasElementProps,
   type UpdatableTextProps,
 } from '@clab/types';
 import { cn } from '@clab/utils';
@@ -46,7 +46,7 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
     key: K,
     value: UpdatableTextProps[K]
   ) {
-    if (!selectedObject || !isText(selectedObject)) return;
+    if (!selectedObject || !isTextElement(selectedObject)) return;
 
     if (selectedObject.fabricObject) {
       updateFabricText(selectedObject.fabricObject, { [key]: value });
@@ -66,9 +66,9 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
   //   updateImage({ ...selectedObject, [key]: value });
   // }
 
-  function updateSharedProperty<K extends keyof UpdatableCanvasObjectProps>(
+  function updateSharedProperty<K extends keyof UpdatableCanvasElementProps>(
     key: K,
-    value: UpdatableCanvasObjectProps[K]
+    value: UpdatableCanvasElementProps[K]
   ) {
     if (!selectedObject) return;
 
@@ -77,9 +77,9 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
       updateFabricObject(selectedObject.fabricObject, { [mappedKey]: value });
     }
 
-    if (isImage(selectedObject)) {
+    if (isImageElement(selectedObject)) {
       updateImage({ ...selectedObject, [key]: value });
-    } else if (isText(selectedObject)) {
+    } else if (isTextElement(selectedObject)) {
       updateText({ ...selectedObject, [key]: value });
     }
   }
@@ -93,7 +93,7 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
       {...props}
     >
       {/* Selected Object is Text */}
-      {isText(selectedObject) ? (
+      {isTextElement(selectedObject) ? (
         <>
           {/* Font */}
           <Toggle
@@ -183,7 +183,7 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
       ) : null}
 
       {/* Selected Object is Image */}
-      {isImage(selectedObject) ? (
+      {isImageElement(selectedObject) ? (
         <>
           {/* Image flip */}
           <div className="flex items-center gap-1">

@@ -1,8 +1,8 @@
 import Canvas from '@/components/Canvas';
-import LayersMenu from '@/components/LayersMenu';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from '@/components/sidebar';
 import Toolbar from '@/components/Toolbar';
 import { ConfiguratorProvider } from '@/contexts/configurator-contexts.tsx';
+import LayersMenu from '@/views/layers-menu';
 import { getTemplateById } from '@clab/firebase';
 import type { Configuration, Template } from '@clab/types';
 import { useEffect, useState } from 'react';

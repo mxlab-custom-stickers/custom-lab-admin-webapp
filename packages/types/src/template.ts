@@ -52,26 +52,6 @@ export interface TemplateLayerBase {
 /**
  * TemplateLayerColor
  */
-export interface ColorElementBase {
-  type: 'group' | 'item';
-  id: string;
-  name: string;
-  parentId?: string;
-}
-
-export interface ColorGroup extends ColorElementBase {
-  type: 'group';
-  subColorElements: ColorElement[];
-}
-
-export interface ColorItem extends ColorElementBase {
-  type: 'item';
-  color: Color;
-
-  fabricObjects?: FabricObject[];
-}
-
-export type ColorElement = ColorGroup | ColorItem;
 
 export interface TemplateLayerColor extends TemplateLayerBase {
   type: 'color';
@@ -90,6 +70,24 @@ export interface TemplateLayerColor extends TemplateLayerBase {
     };
   };
 }
+
+export interface ColorElementBase {
+  type: 'group' | 'item';
+  id: string;
+  name: string;
+  parentId?: string;
+}
+export interface ColorGroup extends ColorElementBase {
+  type: 'group';
+  subColorElements: ColorElement[];
+}
+export interface ColorItem extends ColorElementBase {
+  type: 'item';
+  color: Color;
+
+  fabricObjects?: FabricObject[];
+}
+export type ColorElement = ColorGroup | ColorItem;
 
 /**
  * TemplateLayerImage
@@ -122,22 +120,35 @@ export interface TemplateLayerText extends TemplateLayerBase {
 }
 
 /**
+ * Type guard for ColorElement
+ */
+export function isColorElement(element: any): element is ColorElement {
+  return (
+    typeof element === 'object' &&
+    element !== null &&
+    (element.type === 'group' || element.type === 'item') &&
+    typeof element.id === 'string' &&
+    typeof element.name === 'string'
+  );
+}
+
+/**
  * Type guard for TemplateLayerColor
  */
-export function isTemplateLayerColor(layer: TemplateLayer): layer is TemplateLayerColor {
-  return layer.type === 'color';
+export function isLayerColor(layer: TemplateLayer | undefined): layer is TemplateLayerColor {
+  return !!layer && layer.type === 'color';
 }
 
 /**
  * Type guard for TemplateLayerImage
  */
-export function isTemplateLayerImage(layer: TemplateLayer): layer is TemplateLayerImage {
-  return layer.type === 'image';
+export function isLayerImage(layer: TemplateLayer | undefined): layer is TemplateLayerImage {
+  return !!layer && layer.type === 'image';
 }
 
 /**
  * Type guard for TemplateLayerText
  */
-export function isTemplateLayerText(layer: TemplateLayer): layer is TemplateLayerText {
-  return layer.type === 'text';
+export function isLayerText(layer: TemplateLayer | undefined): layer is TemplateLayerText {
+  return !!layer && layer.type === 'text';
 }

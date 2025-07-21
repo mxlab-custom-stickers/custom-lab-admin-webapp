@@ -4,7 +4,7 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor-context.tsx';
-import { isTemplateLayerColor } from '@clab/types';
+import { isLayerColor } from '@clab/types';
 import React from 'react';
 
 export default function LayerColorOtherOptionsCard({
@@ -12,12 +12,12 @@ export default function LayerColorOtherOptionsCard({
   ...props
 }: React.ComponentPropsWithoutRef<'div'>) {
   const { currentLayer, updateLayer } = useTemplateEditorContext();
-  if (!currentLayer || !isTemplateLayerColor(currentLayer)) return null;
+  if (!currentLayer || !isLayerColor(currentLayer)) return null;
 
   const { config } = currentLayer;
 
   function handleEnableColorPaletteChange(checked: boolean) {
-    if (!currentLayer || !isTemplateLayerColor(currentLayer)) return;
+    if (!currentLayer || !isLayerColor(currentLayer)) return;
 
     updateLayer({
       ...currentLayer,
@@ -26,7 +26,7 @@ export default function LayerColorOtherOptionsCard({
   }
 
   function handleEnableFocusChange(checked: boolean) {
-    if (!currentLayer || !isTemplateLayerColor(currentLayer)) return;
+    if (!currentLayer || !isLayerColor(currentLayer)) return;
 
     updateLayer({
       ...currentLayer,
@@ -35,7 +35,7 @@ export default function LayerColorOtherOptionsCard({
   }
 
   function handleLayerIdsToHideChange(layerIds: string[]) {
-    if (!currentLayer || !isTemplateLayerColor(currentLayer)) return;
+    if (!currentLayer || !isLayerColor(currentLayer)) return;
 
     updateLayer({
       ...currentLayer,

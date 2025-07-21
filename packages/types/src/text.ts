@@ -1,9 +1,9 @@
 import { Textbox } from 'fabric';
-import { CanvasObject } from './canvas';
+import { CanvasElement } from './canvas';
 import { Color } from './color';
 import { Status } from './common';
 
-export interface Text extends CanvasObject<Textbox> {
+export interface Text extends CanvasElement<Textbox> {
   id: string;
   type: 'text';
 

@@ -1,4 +1,11 @@
-import type { CanvasObject, ColorElement, Image, Template, TemplateLayer, Text } from '@clab/types';
+import type {
+  CanvasElement,
+  ColorElement,
+  Image,
+  Template,
+  TemplateLayer,
+  Text,
+} from '@clab/types';
 import { Canvas } from 'fabric';
 import React from 'react';
 
@@ -6,13 +13,8 @@ export type ConfiguratorState = {
   template: Template;
   currentLayerId: string | undefined;
 
-  // Overrides the sidebar view with a specific view like the font picker for a text, or the color palette for a color layer
-  sidebarView: SidebarView | undefined;
-
-  // The selected color element to show in the sidebar
-  selectedColorElementId: string | undefined;
-  // The selected text, image... object in the canvas (object that can be selected, moved, resized, etc.)
-  selectedObjectId: string | undefined;
+  sidebarView: SidebarViewType | undefined;
+  selectedElementId: ColorElement | CanvasElement | undefined;
 
   canvas?: Canvas;
 };
@@ -32,7 +34,7 @@ export type ConfiguratorContextType = {
   updateLayer: (layer: TemplateLayer) => void;
 
   // UI
-  setSidebarView: (view: SidebarView | undefined) => void;
+  setSidebarView: (view: SidebarViewType | undefined) => void;
 
   // Selected color element
   selectedColorElement: ColorElement | undefined;
@@ -40,7 +42,7 @@ export type ConfiguratorContextType = {
   updateColorElement: (updatedElement: ColorElement) => void;
 
   // Selected object
-  selectedObject: CanvasObject | undefined;
+  selectedObject: CanvasElement | undefined;
   setSelectedObjectId: (id: string | undefined) => void;
   deleteSelectedObject: () => void;
 
@@ -51,12 +53,16 @@ export type ConfiguratorContextType = {
 export type ConfiguratorAction =
   | { type: 'SET_TEMPLATE'; payload: Template }
   | { type: 'SET_CURRENT_LAYER_ID'; payload: string | undefined }
-  | { type: 'SET_SIDEBAR_VIEW'; payload: SidebarView | undefined }
+  | { type: 'SET_SIDEBAR_VIEW'; payload: SidebarViewType | undefined }
   | { type: 'SET_SELECTED_COLOR_ELEMENT_ID'; payload: string | undefined }
   | { type: 'SET_SELECTED_OBJECT_ID'; payload: string | undefined }
   | { type: 'SET_CANVAS'; payload: Canvas };
 
-export type SidebarView =
-  | { type: 'color-palette' } // Show the color palette for a color layer
-  | { type: 'font-picker' } // Show the font picker for the selected text object
-  | { type: 'text-color-picker' }; // Show the text color picker for the selected text object
+export type SidebarViewType =
+  | 'layer-color'
+  | 'layer-image'
+  | 'layer-text'
+  | 'color-element'
+  | 'color-palette'
+  | 'font-picker'
+  | 'text-colors';

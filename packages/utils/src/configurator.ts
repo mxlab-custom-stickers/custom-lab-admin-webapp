@@ -4,9 +4,9 @@ import {
   ColorGroup,
   ColorItem,
   Image,
-  isTemplateLayerColor,
-  isTemplateLayerImage,
-  isTemplateLayerText,
+  isLayerColor,
+  isLayerImage,
+  isLayerText,
   Template,
   TemplateLayerColor,
   TemplateLayerImage,
@@ -349,20 +349,20 @@ export function getAllFabricObjectsFromTemplate(
   for (const layer of template.layers) {
     if (!layerIds.includes(layer.id)) continue;
 
-    if (isTemplateLayerColor(layer)) {
+    if (isLayerColor(layer)) {
       const colorItems = collectColorItems(layer.colorElements);
       for (const colorItem of colorItems) {
         if (colorItem.fabricObjects) result.push(...colorItem.fabricObjects);
       }
     }
 
-    if (isTemplateLayerText(layer)) {
+    if (isLayerText(layer)) {
       for (const text of layer.texts) {
         if (text.fabricObject) result.push(text.fabricObject);
       }
     }
 
-    if (isTemplateLayerImage(layer)) {
+    if (isLayerImage(layer)) {
       for (const image of layer.images) {
         if (image.fabricObject) result.push(image.fabricObject);
       }

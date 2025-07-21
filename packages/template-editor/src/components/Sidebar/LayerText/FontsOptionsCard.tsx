@@ -16,12 +16,12 @@ import { SearchInput } from '@/components/ui/SearchInput';
 import { SelectAllCheckbox } from '@/components/ui/SelectAllCheckbox.tsx';
 import { useTemplateEditorContext } from '@/contexts/template-editor-context.tsx';
 import { useFonts } from '@/hooks/use-fonts.ts';
-import { type Font, isTemplateLayerText } from '@clab/types';
+import { type Font, isLayerText } from '@clab/types';
 import { useEffect, useState } from 'react';
 
 export default function FontsOptionsCard() {
   const { currentLayer, updateLayer } = useTemplateEditorContext();
-  if (!currentLayer || !isTemplateLayerText(currentLayer)) return null;
+  if (!currentLayer || !isLayerText(currentLayer)) return null;
 
   const { fonts, search, setSearch } = useFonts();
 

@@ -15,7 +15,7 @@ import {
 import { useTemplateEditorContext } from '@/contexts/template-editor-context';
 import { svgLayerToColorElement } from '@/lib/svg-editor';
 import type { SvgLayer } from '@/types/svg-editor';
-import { isTemplateLayerColor } from '@clab/types';
+import { isLayerColor } from '@clab/types';
 import { assignFabricObjectsToColorItemsInLayer, cn } from '@clab/utils';
 import React, { useMemo, useState } from 'react';
 
@@ -30,7 +30,7 @@ export default function ColorElementsOptionsCard({
     currentLayer: currentTemplateLayer,
     updateLayer,
   } = useTemplateEditorContext();
-  if (!currentTemplateLayer || !isTemplateLayerColor(currentTemplateLayer)) return null;
+  if (!currentTemplateLayer || !isLayerColor(currentTemplateLayer)) return null;
 
   const initialSelectedLayerIds = useMemo(
     () => currentTemplateLayer?.colorElements.map((ce) => ce.id) || [],
@@ -40,7 +40,7 @@ export default function ColorElementsOptionsCard({
   const [selectedSvgLayers, setSelectedSvgLayers] = useState<SvgLayer[]>([]);
 
   function validate() {
-    if (!currentTemplateLayer || !isTemplateLayerColor(currentTemplateLayer) || !canvas) return;
+    if (!currentTemplateLayer || !isLayerColor(currentTemplateLayer) || !canvas) return;
 
     let colorElements = selectedSvgLayers.map(svgLayerToColorElement);
     // If there is only one group, flatten it to its subColorElements
