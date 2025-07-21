@@ -1,7 +1,7 @@
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { ScrollArea } from '@/components/ui/scroll-area.tsx';
 import { cn } from '@/lib/utils.ts';
-import { Font } from '@/models/text.ts';
+import type { Font } from '@clab/types';
 
 type FontSelectorProps = {
   className?: string;

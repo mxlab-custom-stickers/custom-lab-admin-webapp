@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 // Import the generated route tree
 import { Toaster } from '@/components/ui/sonner';
+import { StrictMode } from 'react';
 import './index.css';
 import { routeTree } from './routeTree.gen';
 
@@ -21,11 +22,9 @@ const rootElement = document.getElementById('root')!;
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    // <StrictMode>
-    <>
+    <StrictMode>
       <RouterProvider router={router} />
       <Toaster duration={5000} />
-    </>
-    // </StrictMode>
+    </StrictMode>
   );
 }

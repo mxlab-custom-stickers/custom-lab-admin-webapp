@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils.ts';
-import { Font, fontStyles, FontStyleType, fontWeights } from '@/models/text.ts';
+import { type Font, fontStyles, type FontStyleType, fontWeights } from '@clab/types';
 import React from 'react';
 
 type FontStyleListProps = React.ComponentPropsWithoutRef<'div'> & {

@@ -1,4 +1,4 @@
-import { App } from '@/models/settings.ts';
+import type { App } from '@clab/types';
 import { createContext, useContext } from 'react';
 
 type AppContextType = {

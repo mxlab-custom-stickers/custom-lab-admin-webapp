@@ -9,8 +9,8 @@ import {
 } from '@/components/ui/breadcrumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { useAppContext } from '@/contexts/app-context.ts';
-import { getTemplatesByAppId } from '@/lib/firebase/firestore.ts';
-import { Template } from '@/models/template.ts';
+import { getTemplatesByAppId } from '@clab/firebase';
+import type { Template } from '@clab/types';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';

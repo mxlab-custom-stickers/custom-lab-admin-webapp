@@ -6,9 +6,9 @@ import {
   CardTitle,
 } from '@/components/ui/card.tsx';
 import { Checkbox } from '@/components/ui/checkbox';
-import { compareColorsByLuminance } from '@/lib/colors.ts';
 import { cn } from '@/lib/utils.ts';
-import { ColorPalette } from '@/models/color.ts';
+import type { ColorPalette } from '@clab/types';
+import { compareColorsByLuminance } from '@clab/utils';
 import React from 'react';
 
 type ColorPaletteCardProps = React.ComponentPropsWithoutRef<'div'> & {

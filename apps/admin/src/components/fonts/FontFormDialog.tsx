@@ -15,7 +15,7 @@ import { Separator } from '@/components/ui/separator.tsx';
 import Submit from '@/components/ui/Submit.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
 import { useFontForm } from '@/hooks/forms/use-font-form.ts';
-import { fontStyles, FontStyleType } from '@/models/text.ts';
+import { fontStyles, type FontStyleType } from '@clab/types';
 import { Plus } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';

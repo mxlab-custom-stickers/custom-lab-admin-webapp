@@ -13,9 +13,9 @@ import { Input } from '@/components/ui/input.tsx';
 import StatusBadge from '@/components/ui/StatusBadge.tsx';
 import TypographyH1 from '@/components/ui/typography/TypographyH1.tsx';
 import TypographyH2 from '@/components/ui/typography/TypographyH2.tsx';
-import { getFontById } from '@/lib/firebase/firestore.ts';
 import { loadFont } from '@/lib/fonts.ts';
-import { Font } from '@/models/text.ts';
+import { getFontById } from '@clab/firebase';
+import type { Font } from '@clab/types';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 

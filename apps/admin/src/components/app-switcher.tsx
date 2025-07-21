@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useAppContext } from '@/contexts/app-context.ts';
 import { getInitials } from '@/lib/utils.ts';
-import { App } from '@/models/settings.ts';
+import type { App } from '@clab/types';
 
 export function AppSwitcher() {
   const { currentApp, setCurrentApp, apps } = useAppContext();

@@ -1,6 +1,6 @@
 import { AppContext } from '@/contexts/app-context';
-import { getApps } from '@/lib/firebase/firestore.ts';
-import { App } from '@/models/settings.ts';
+import { getApps } from '@clab/firebase';
+import type { App } from '@clab/types';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 

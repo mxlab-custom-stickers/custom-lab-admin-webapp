@@ -1,4 +1,4 @@
-import { Font, FontStyle } from '@/models/text.ts';
+import type { Font, FontStyle } from '@clab/types';
 
 const loadedFontKeys = new Set<string>();
 

@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table.tsx';
-import { Color } from '@/models/color.ts';
+import type { Color } from '@clab/types';
 
 export default function ColorTable({ colors }: { colors: Color[] }) {
   return (

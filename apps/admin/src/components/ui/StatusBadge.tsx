@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge.tsx';
 import { cn } from '@/lib/utils.ts';
-import { Status } from '@/models/common.ts';
+import type { Status } from '@clab/types';
 
 export const statusLabels: Record<Status, string> = {
   active: 'Actif',

@@ -1,7 +1,7 @@
 import StatusBadge from '@/components/ui/StatusBadge.tsx';
 import { countAvailableFontStyles } from '@/lib/fonts.ts';
 import { cn } from '@/lib/utils.ts';
-import { Font } from '@/models/text.ts';
+import type { Font } from '@clab/types';
 import { Link } from '@tanstack/react-router';
 import React from 'react';
 

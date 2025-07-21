@@ -1,5 +1,5 @@
 import LoadingSpinner from '@/components/ui/LoadingSpinner.tsx';
-import { Properties } from 'csstype';
+import type { Properties } from 'csstype';
 import { Upload } from 'lucide-react';
 import React, { useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';

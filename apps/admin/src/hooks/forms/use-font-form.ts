@@ -1,15 +1,14 @@
 import { useAppContext } from '@/contexts/app-context.ts';
-import { addFont } from '@/lib/firebase/firestore.ts';
-import { uploadFile } from '@/lib/firebase/storage.ts';
 import { generateId } from '@/lib/nanoid.ts';
+import { addFont, uploadFile } from '@clab/firebase';
 import {
-  Font,
-  FontStyle,
-  FontStyleType,
+  type Font,
+  type FontStyle,
+  type FontStyleType,
   fontStyleStyles,
   fontStyles,
   fontWeights,
-} from '@/models/text.ts';
+} from '@clab/types';
 import { useState } from 'react';
 
 export type FontFormType = {

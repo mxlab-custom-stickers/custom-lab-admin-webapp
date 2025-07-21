@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge.tsx';
-import { Template } from '@/models/template.ts';
+import type { Template } from '@clab/types';
 
 type TemplateStatusBadgeProps = {
   status: Template['status'];

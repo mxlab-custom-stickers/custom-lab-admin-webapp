@@ -1,7 +1,7 @@
 import { useAppContext } from '@/contexts/app-context.ts';
-import { getFontsByAppId } from '@/lib/firebase/firestore.ts';
 import { loadFont } from '@/lib/fonts.ts';
-import { Font } from '@/models/text.ts';
+import { getFontsByAppId } from '@clab/firebase';
+import type { Font } from '@clab/types';
 import { useEffect, useMemo, useState } from 'react';
 
 // module-level cache (only lasts while app is in memory)

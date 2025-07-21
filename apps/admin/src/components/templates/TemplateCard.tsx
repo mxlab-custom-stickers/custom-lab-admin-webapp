@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils.ts';
-import { Template } from '@/models/template.ts';
+import type { Template } from '@clab/types';
 import { Link } from '@tanstack/react-router';
 import React from 'react';
 import TemplateStatusBadge from './TemplateStatusBadge';

@@ -1,4 +1,4 @@
-import { Color } from '@/models/color';
+import type { Color } from '@clab/types';
 
 export const COLORS_FIXTURE: Color[] = [
   {

@@ -1,5 +1,5 @@
 import { COLORS_FIXTURE } from '@/fixtures/colors.fixture.ts';
-import { ColorPalette } from '@/models/color.ts';
+import type { ColorPalette } from '@clab/types';
 
 export const COLOR_PALETTES_FIXTURE: ColorPalette[] = [
   {
