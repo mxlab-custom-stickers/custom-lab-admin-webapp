@@ -1,12 +1,6 @@
 import { getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
 import { storage } from './config';
 
-export async function uploadFile(file: File, path: string): Promise<string> {
-  const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file);
-  return getDownloadURL(storageRef);
-}
-
 export interface FileNode {
   name: string;
   url: string;
@@ -15,6 +9,12 @@ export interface FileNode {
 export interface FolderNode {
   name: string;
   fullPath: string;
+}
+
+export async function uploadFile(file: File, path: string): Promise<string> {
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, file);
+  return getDownloadURL(storageRef);
 }
 
 export async function listFiles(

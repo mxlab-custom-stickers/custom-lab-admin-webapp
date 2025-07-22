@@ -16,7 +16,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { useAppContext } from '@/contexts/app-context.ts';
+import { useAppContext } from '@/contexts/app-context.tsx';
 import { getInitials } from '@/lib/utils.ts';
 import type { App } from '@clab/types';
 

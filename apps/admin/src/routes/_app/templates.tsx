@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { useAppContext } from '@/contexts/app-context.ts';
+import { useAppContext } from '@/contexts/app-context.tsx';
 import { getTemplatesByAppId } from '@clab/firebase';
 import type { Template } from '@clab/types';
 import { createFileRoute, Link } from '@tanstack/react-router';

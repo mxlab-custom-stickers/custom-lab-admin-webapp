@@ -8,7 +8,12 @@ type SubmitProps = Omit<React.ComponentPropsWithoutRef<'button'>, 'type'> & {
 
 export default function Submit({ className, children, loading, ...props }: SubmitProps) {
   return (
-    <Button {...props} type="submit" disabled={loading || props.disabled}>
+    <Button
+      {...props}
+      type="submit"
+      className="transition-none"
+      disabled={loading || props.disabled}
+    >
       {loading ? <Loader2 className="animate-spin" /> : null}
       {children}
     </Button>

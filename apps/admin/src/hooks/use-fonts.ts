@@ -1,4 +1,4 @@
-import { useAppContext } from '@/contexts/app-context.ts';
+import { useAppContext } from '@/contexts/app-context.tsx';
 import { loadFont } from '@/lib/fonts.ts';
 import { getFontsByAppId } from '@clab/firebase';
 import type { Font } from '@clab/types';

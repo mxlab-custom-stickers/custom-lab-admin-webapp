@@ -6,7 +6,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb.tsx';
-import { useAppContext } from '@/contexts/app-context.ts';
+import { useAppContext } from '@/contexts/app-context.tsx';
 import { type FileNode, type FolderNode, listFiles } from '@clab/firebase';
 import { createFileRoute } from '@tanstack/react-router';
 import { EllipsisVertical, Folder } from 'lucide-react';

@@ -8,187 +8,278 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as TemplateEditorIndexRouteImport } from './routes/template-editor/index'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as TemplateEditorIdRouteImport } from './routes/template-editor/$id'
+import { Route as AppTemplatesRouteImport } from './routes/_app/templates'
+import { Route as AppImagesRouteImport } from './routes/_app/images'
+import { Route as AppColorsRouteImport } from './routes/_app/colors'
+import { Route as AppFontsIndexRouteImport } from './routes/_app/fonts/index'
+import { Route as AppSettingsThemeRouteImport } from './routes/_app/settings/theme'
+import { Route as AppSettingsGeneralRouteImport } from './routes/_app/settings/general'
+import { Route as AppSettingsCustomLabRouteImport } from './routes/_app/settings/custom-lab'
+import { Route as AppFontsIdRouteImport } from './routes/_app/fonts/$id'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as AppRouteImport } from './routes/_app/route'
-import { Route as TemplateEditorIndexImport } from './routes/template-editor/index'
-import { Route as AppIndexImport } from './routes/_app/index'
-import { Route as TemplateEditorIdImport } from './routes/template-editor/$id'
-import { Route as AppTemplatesImport } from './routes/_app/templates'
-import { Route as AppImagesImport } from './routes/_app/images'
-import { Route as AppColorsImport } from './routes/_app/colors'
-import { Route as AppFontsIndexImport } from './routes/_app/fonts/index'
-import { Route as AppSettingsThemeImport } from './routes/_app/settings/theme'
-import { Route as AppSettingsGeneralImport } from './routes/_app/settings/general'
-import { Route as AppSettingsCustomLabImport } from './routes/_app/settings/custom-lab'
-import { Route as AppFontsIdImport } from './routes/_app/fonts/$id'
-
-// Create/Update Routes
-
-const AppRouteRoute = AppRouteImport.update({
-  id: '/_app',
-  getParentRoute: () => rootRoute,
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TemplateEditorIndexRoute = TemplateEditorIndexImport.update({
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplateEditorIndexRoute = TemplateEditorIndexRouteImport.update({
   id: '/template-editor/',
   path: '/template-editor/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AppIndexRoute = AppIndexImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRouteRoute,
 } as any)
-
-const TemplateEditorIdRoute = TemplateEditorIdImport.update({
+const TemplateEditorIdRoute = TemplateEditorIdRouteImport.update({
   id: '/template-editor/$id',
   path: '/template-editor/$id',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AppTemplatesRoute = AppTemplatesImport.update({
+const AppTemplatesRoute = AppTemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
   getParentRoute: () => AppRouteRoute,
 } as any)
-
-const AppImagesRoute = AppImagesImport.update({
+const AppImagesRoute = AppImagesRouteImport.update({
   id: '/images',
   path: '/images',
   getParentRoute: () => AppRouteRoute,
 } as any)
-
-const AppColorsRoute = AppColorsImport.update({
+const AppColorsRoute = AppColorsRouteImport.update({
   id: '/colors',
   path: '/colors',
   getParentRoute: () => AppRouteRoute,
 } as any)
-
-const AppFontsIndexRoute = AppFontsIndexImport.update({
+const AppFontsIndexRoute = AppFontsIndexRouteImport.update({
   id: '/fonts/',
   path: '/fonts/',
   getParentRoute: () => AppRouteRoute,
 } as any)
-
-const AppSettingsThemeRoute = AppSettingsThemeImport.update({
+const AppSettingsThemeRoute = AppSettingsThemeRouteImport.update({
   id: '/settings/theme',
   path: '/settings/theme',
   getParentRoute: () => AppRouteRoute,
 } as any)
-
-const AppSettingsGeneralRoute = AppSettingsGeneralImport.update({
+const AppSettingsGeneralRoute = AppSettingsGeneralRouteImport.update({
   id: '/settings/general',
   path: '/settings/general',
   getParentRoute: () => AppRouteRoute,
 } as any)
-
-const AppSettingsCustomLabRoute = AppSettingsCustomLabImport.update({
+const AppSettingsCustomLabRoute = AppSettingsCustomLabRouteImport.update({
   id: '/settings/custom-lab',
   path: '/settings/custom-lab',
   getParentRoute: () => AppRouteRoute,
 } as any)
-
-const AppFontsIdRoute = AppFontsIdImport.update({
+const AppFontsIdRoute = AppFontsIdRouteImport.update({
   id: '/fonts/$id',
   path: '/fonts/$id',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/signin': typeof SigninRoute
+  '/colors': typeof AppColorsRoute
+  '/images': typeof AppImagesRoute
+  '/templates': typeof AppTemplatesRoute
+  '/template-editor/$id': typeof TemplateEditorIdRoute
+  '/': typeof AppIndexRoute
+  '/template-editor': typeof TemplateEditorIndexRoute
+  '/fonts/$id': typeof AppFontsIdRoute
+  '/settings/custom-lab': typeof AppSettingsCustomLabRoute
+  '/settings/general': typeof AppSettingsGeneralRoute
+  '/settings/theme': typeof AppSettingsThemeRoute
+  '/fonts': typeof AppFontsIndexRoute
+}
+export interface FileRoutesByTo {
+  '/signin': typeof SigninRoute
+  '/colors': typeof AppColorsRoute
+  '/images': typeof AppImagesRoute
+  '/templates': typeof AppTemplatesRoute
+  '/template-editor/$id': typeof TemplateEditorIdRoute
+  '/': typeof AppIndexRoute
+  '/template-editor': typeof TemplateEditorIndexRoute
+  '/fonts/$id': typeof AppFontsIdRoute
+  '/settings/custom-lab': typeof AppSettingsCustomLabRoute
+  '/settings/general': typeof AppSettingsGeneralRoute
+  '/settings/theme': typeof AppSettingsThemeRoute
+  '/fonts': typeof AppFontsIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/_app': typeof AppRouteRouteWithChildren
+  '/signin': typeof SigninRoute
+  '/_app/colors': typeof AppColorsRoute
+  '/_app/images': typeof AppImagesRoute
+  '/_app/templates': typeof AppTemplatesRoute
+  '/template-editor/$id': typeof TemplateEditorIdRoute
+  '/_app/': typeof AppIndexRoute
+  '/template-editor/': typeof TemplateEditorIndexRoute
+  '/_app/fonts/$id': typeof AppFontsIdRoute
+  '/_app/settings/custom-lab': typeof AppSettingsCustomLabRoute
+  '/_app/settings/general': typeof AppSettingsGeneralRoute
+  '/_app/settings/theme': typeof AppSettingsThemeRoute
+  '/_app/fonts/': typeof AppFontsIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/signin'
+    | '/colors'
+    | '/images'
+    | '/templates'
+    | '/template-editor/$id'
+    | '/'
+    | '/template-editor'
+    | '/fonts/$id'
+    | '/settings/custom-lab'
+    | '/settings/general'
+    | '/settings/theme'
+    | '/fonts'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/signin'
+    | '/colors'
+    | '/images'
+    | '/templates'
+    | '/template-editor/$id'
+    | '/'
+    | '/template-editor'
+    | '/fonts/$id'
+    | '/settings/custom-lab'
+    | '/settings/general'
+    | '/settings/theme'
+    | '/fonts'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/signin'
+    | '/_app/colors'
+    | '/_app/images'
+    | '/_app/templates'
+    | '/template-editor/$id'
+    | '/_app/'
+    | '/template-editor/'
+    | '/_app/fonts/$id'
+    | '/_app/settings/custom-lab'
+    | '/_app/settings/general'
+    | '/_app/settings/theme'
+    | '/_app/fonts/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  SigninRoute: typeof SigninRoute
+  TemplateEditorIdRoute: typeof TemplateEditorIdRoute
+  TemplateEditorIndexRoute: typeof TemplateEditorIndexRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/_app/colors': {
-      id: '/_app/colors'
-      path: '/colors'
-      fullPath: '/colors'
-      preLoaderRoute: typeof AppColorsImport
-      parentRoute: typeof AppRouteImport
-    }
-    '/_app/images': {
-      id: '/_app/images'
-      path: '/images'
-      fullPath: '/images'
-      preLoaderRoute: typeof AppImagesImport
-      parentRoute: typeof AppRouteImport
-    }
-    '/_app/templates': {
-      id: '/_app/templates'
-      path: '/templates'
-      fullPath: '/templates'
-      preLoaderRoute: typeof AppTemplatesImport
-      parentRoute: typeof AppRouteImport
-    }
-    '/template-editor/$id': {
-      id: '/template-editor/$id'
-      path: '/template-editor/$id'
-      fullPath: '/template-editor/$id'
-      preLoaderRoute: typeof TemplateEditorIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/_app/': {
-      id: '/_app/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AppIndexImport
-      parentRoute: typeof AppRouteImport
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/template-editor/': {
       id: '/template-editor/'
       path: '/template-editor'
       fullPath: '/template-editor'
-      preLoaderRoute: typeof TemplateEditorIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof TemplateEditorIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_app/fonts/$id': {
-      id: '/_app/fonts/$id'
-      path: '/fonts/$id'
-      fullPath: '/fonts/$id'
-      preLoaderRoute: typeof AppFontsIdImport
-      parentRoute: typeof AppRouteImport
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRouteRoute
     }
-    '/_app/settings/custom-lab': {
-      id: '/_app/settings/custom-lab'
-      path: '/settings/custom-lab'
-      fullPath: '/settings/custom-lab'
-      preLoaderRoute: typeof AppSettingsCustomLabImport
-      parentRoute: typeof AppRouteImport
+    '/template-editor/$id': {
+      id: '/template-editor/$id'
+      path: '/template-editor/$id'
+      fullPath: '/template-editor/$id'
+      preLoaderRoute: typeof TemplateEditorIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_app/settings/general': {
-      id: '/_app/settings/general'
-      path: '/settings/general'
-      fullPath: '/settings/general'
-      preLoaderRoute: typeof AppSettingsGeneralImport
-      parentRoute: typeof AppRouteImport
+    '/_app/templates': {
+      id: '/_app/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof AppTemplatesRouteImport
+      parentRoute: typeof AppRouteRoute
     }
-    '/_app/settings/theme': {
-      id: '/_app/settings/theme'
-      path: '/settings/theme'
-      fullPath: '/settings/theme'
-      preLoaderRoute: typeof AppSettingsThemeImport
-      parentRoute: typeof AppRouteImport
+    '/_app/images': {
+      id: '/_app/images'
+      path: '/images'
+      fullPath: '/images'
+      preLoaderRoute: typeof AppImagesRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/colors': {
+      id: '/_app/colors'
+      path: '/colors'
+      fullPath: '/colors'
+      preLoaderRoute: typeof AppColorsRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/_app/fonts/': {
       id: '/_app/fonts/'
       path: '/fonts'
       fullPath: '/fonts'
-      preLoaderRoute: typeof AppFontsIndexImport
-      parentRoute: typeof AppRouteImport
+      preLoaderRoute: typeof AppFontsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/settings/theme': {
+      id: '/_app/settings/theme'
+      path: '/settings/theme'
+      fullPath: '/settings/theme'
+      preLoaderRoute: typeof AppSettingsThemeRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/settings/general': {
+      id: '/_app/settings/general'
+      path: '/settings/general'
+      fullPath: '/settings/general'
+      preLoaderRoute: typeof AppSettingsGeneralRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/settings/custom-lab': {
+      id: '/_app/settings/custom-lab'
+      path: '/settings/custom-lab'
+      fullPath: '/settings/custom-lab'
+      preLoaderRoute: typeof AppSettingsCustomLabRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/fonts/$id': {
+      id: '/_app/fonts/$id'
+      path: '/fonts/$id'
+      fullPath: '/fonts/$id'
+      preLoaderRoute: typeof AppFontsIdRouteImport
+      parentRoute: typeof AppRouteRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface AppRouteRouteChildren {
   AppColorsRoute: typeof AppColorsRoute
@@ -218,179 +309,12 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
   AppRouteRouteChildren,
 )
 
-export interface FileRoutesByFullPath {
-  '': typeof AppRouteRouteWithChildren
-  '/colors': typeof AppColorsRoute
-  '/images': typeof AppImagesRoute
-  '/templates': typeof AppTemplatesRoute
-  '/template-editor/$id': typeof TemplateEditorIdRoute
-  '/': typeof AppIndexRoute
-  '/template-editor': typeof TemplateEditorIndexRoute
-  '/fonts/$id': typeof AppFontsIdRoute
-  '/settings/custom-lab': typeof AppSettingsCustomLabRoute
-  '/settings/general': typeof AppSettingsGeneralRoute
-  '/settings/theme': typeof AppSettingsThemeRoute
-  '/fonts': typeof AppFontsIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/colors': typeof AppColorsRoute
-  '/images': typeof AppImagesRoute
-  '/templates': typeof AppTemplatesRoute
-  '/template-editor/$id': typeof TemplateEditorIdRoute
-  '/': typeof AppIndexRoute
-  '/template-editor': typeof TemplateEditorIndexRoute
-  '/fonts/$id': typeof AppFontsIdRoute
-  '/settings/custom-lab': typeof AppSettingsCustomLabRoute
-  '/settings/general': typeof AppSettingsGeneralRoute
-  '/settings/theme': typeof AppSettingsThemeRoute
-  '/fonts': typeof AppFontsIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/_app': typeof AppRouteRouteWithChildren
-  '/_app/colors': typeof AppColorsRoute
-  '/_app/images': typeof AppImagesRoute
-  '/_app/templates': typeof AppTemplatesRoute
-  '/template-editor/$id': typeof TemplateEditorIdRoute
-  '/_app/': typeof AppIndexRoute
-  '/template-editor/': typeof TemplateEditorIndexRoute
-  '/_app/fonts/$id': typeof AppFontsIdRoute
-  '/_app/settings/custom-lab': typeof AppSettingsCustomLabRoute
-  '/_app/settings/general': typeof AppSettingsGeneralRoute
-  '/_app/settings/theme': typeof AppSettingsThemeRoute
-  '/_app/fonts/': typeof AppFontsIndexRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | ''
-    | '/colors'
-    | '/images'
-    | '/templates'
-    | '/template-editor/$id'
-    | '/'
-    | '/template-editor'
-    | '/fonts/$id'
-    | '/settings/custom-lab'
-    | '/settings/general'
-    | '/settings/theme'
-    | '/fonts'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/colors'
-    | '/images'
-    | '/templates'
-    | '/template-editor/$id'
-    | '/'
-    | '/template-editor'
-    | '/fonts/$id'
-    | '/settings/custom-lab'
-    | '/settings/general'
-    | '/settings/theme'
-    | '/fonts'
-  id:
-    | '__root__'
-    | '/_app'
-    | '/_app/colors'
-    | '/_app/images'
-    | '/_app/templates'
-    | '/template-editor/$id'
-    | '/_app/'
-    | '/template-editor/'
-    | '/_app/fonts/$id'
-    | '/_app/settings/custom-lab'
-    | '/_app/settings/general'
-    | '/_app/settings/theme'
-    | '/_app/fonts/'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  AppRouteRoute: typeof AppRouteRouteWithChildren
-  TemplateEditorIdRoute: typeof TemplateEditorIdRoute
-  TemplateEditorIndexRoute: typeof TemplateEditorIndexRoute
-}
-
 const rootRouteChildren: RootRouteChildren = {
   AppRouteRoute: AppRouteRouteWithChildren,
+  SigninRoute: SigninRoute,
   TemplateEditorIdRoute: TemplateEditorIdRoute,
   TemplateEditorIndexRoute: TemplateEditorIndexRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/_app",
-        "/template-editor/$id",
-        "/template-editor/"
-      ]
-    },
-    "/_app": {
-      "filePath": "_app/route.tsx",
-      "children": [
-        "/_app/colors",
-        "/_app/images",
-        "/_app/templates",
-        "/_app/",
-        "/_app/fonts/$id",
-        "/_app/settings/custom-lab",
-        "/_app/settings/general",
-        "/_app/settings/theme",
-        "/_app/fonts/"
-      ]
-    },
-    "/_app/colors": {
-      "filePath": "_app/colors.tsx",
-      "parent": "/_app"
-    },
-    "/_app/images": {
-      "filePath": "_app/images.tsx",
-      "parent": "/_app"
-    },
-    "/_app/templates": {
-      "filePath": "_app/templates.tsx",
-      "parent": "/_app"
-    },
-    "/template-editor/$id": {
-      "filePath": "template-editor/$id.tsx"
-    },
-    "/_app/": {
-      "filePath": "_app/index.tsx",
-      "parent": "/_app"
-    },
-    "/template-editor/": {
-      "filePath": "template-editor/index.tsx"
-    },
-    "/_app/fonts/$id": {
-      "filePath": "_app/fonts/$id.tsx",
-      "parent": "/_app"
-    },
-    "/_app/settings/custom-lab": {
-      "filePath": "_app/settings/custom-lab.tsx",
-      "parent": "/_app"
-    },
-    "/_app/settings/general": {
-      "filePath": "_app/settings/general.tsx",
-      "parent": "/_app"
-    },
-    "/_app/settings/theme": {
-      "filePath": "_app/settings/theme.tsx",
-      "parent": "/_app"
-    },
-    "/_app/fonts/": {
-      "filePath": "_app/fonts/index.tsx",
-      "parent": "/_app"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

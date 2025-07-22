@@ -67,3 +67,16 @@ export function sanitizeNumericInput(
 
   return num;
 }
+
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function throwAsyncError(message: string): Promise<never> {
+  throw new Error(message);
+}

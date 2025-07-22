@@ -1,6 +1,6 @@
 import Dropzone from '@/components/ui/Dropzone.tsx';
 import QuitButton from '@/components/ui/QuitButton.tsx';
-import { useAppContext } from '@/contexts/app-context.ts';
+import { useAppContext } from '@/contexts/app-context.tsx';
 
 import { addTemplate, uploadFile } from '@clab/firebase';
 import type { Template } from '@clab/types';

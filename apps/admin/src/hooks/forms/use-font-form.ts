@@ -1,4 +1,4 @@
-import { useAppContext } from '@/contexts/app-context.ts';
+import { useAppContext } from '@/contexts/app-context.tsx';
 import { generateId } from '@/lib/nanoid.ts';
 import { addFont, uploadFile } from '@clab/firebase';
 import {
