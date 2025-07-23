@@ -1,5 +1,5 @@
 import type { AppContextType } from '@/contexts/app-types.ts';
-import { getApps } from '@clab/firebase';
+import { getUserApps } from '@clab/firebase';
 import type { App } from '@clab/types';
 import { type User } from 'firebase/auth';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ type AppProviderProps = {
 export function AppProvider({ user, children }: AppProviderProps) {
   const [currentApp, _setCurrentApp] = useState<App | undefined>(getCurrentApp);
   const [apps, setApps] = useState<App[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   function getCurrentApp(): App | undefined {
     const app = localStorage.getItem('custom-lab-admin:current-app');
@@ -30,7 +30,7 @@ export function AppProvider({ user, children }: AppProviderProps) {
   useEffect(() => {
     setLoading(true);
 
-    getApps()
+    getUserApps(user.uid)
       .then((apps) => {
         setApps(apps);
         if (!currentApp && apps.length > 0) {

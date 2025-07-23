@@ -18,12 +18,20 @@ import {
 } from '@/components/ui/sidebar';
 import { useAppContext } from '@/contexts/app-context.tsx';
 import { getInitials } from '@/lib/utils.ts';
-import type { App } from '@clab/types';
+import { type App, roleLabels } from '@clab/types';
+import { useMemo } from 'react';
 
 export function AppSwitcher() {
-  const { currentApp, setCurrentApp, apps } = useAppContext();
+  return null;
+
+  const { user, currentApp, setCurrentApp, apps } = useAppContext();
 
   const { isMobile } = useSidebar();
+
+  const role = useMemo(
+    () => currentApp!.memberships!.find((m) => m.userId === user.uid)!.role,
+    [user, currentApp]
+  );
 
   return (
     <SidebarMenu>
@@ -38,7 +46,8 @@ export function AppSwitcher() {
                 <AppIcon app={currentApp} />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{currentApp.name}</span>
+                <span className="truncate font-medium">{currentApp.name}</span>
+                <span className="truncate text-xs">{roleLabels[role]}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>

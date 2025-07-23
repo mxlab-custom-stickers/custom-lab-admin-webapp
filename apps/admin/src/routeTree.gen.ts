@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as TemplateEditorIndexRouteImport } from './routes/template-editor/index'
@@ -23,6 +24,11 @@ import { Route as AppSettingsGeneralRouteImport } from './routes/_app/settings/g
 import { Route as AppSettingsCustomLabRouteImport } from './routes/_app/settings/custom-lab'
 import { Route as AppFontsIdRouteImport } from './routes/_app/fonts/$id'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
   path: '/signin',
@@ -90,6 +96,7 @@ const AppFontsIdRoute = AppFontsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/colors': typeof AppColorsRoute
   '/images': typeof AppImagesRoute
   '/templates': typeof AppTemplatesRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/colors': typeof AppColorsRoute
   '/images': typeof AppImagesRoute
   '/templates': typeof AppTemplatesRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteRouteWithChildren
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/_app/colors': typeof AppColorsRoute
   '/_app/images': typeof AppImagesRoute
   '/_app/templates': typeof AppTemplatesRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/signin'
+    | '/signup'
     | '/colors'
     | '/images'
     | '/templates'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/signin'
+    | '/signup'
     | '/colors'
     | '/images'
     | '/templates'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/signin'
+    | '/signup'
     | '/_app/colors'
     | '/_app/images'
     | '/_app/templates'
@@ -181,12 +193,20 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRouteRoute: typeof AppRouteRouteWithChildren
   SigninRoute: typeof SigninRoute
+  SignupRoute: typeof SignupRoute
   TemplateEditorIdRoute: typeof TemplateEditorIdRoute
   TemplateEditorIndexRoute: typeof TemplateEditorIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signin': {
       id: '/signin'
       path: '/signin'
@@ -312,6 +332,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AppRouteRoute: AppRouteRouteWithChildren,
   SigninRoute: SigninRoute,
+  SignupRoute: SignupRoute,
   TemplateEditorIdRoute: TemplateEditorIdRoute,
   TemplateEditorIndexRoute: TemplateEditorIndexRoute,
 }

@@ -1,11 +1,16 @@
 import { handleAuthError } from '@/utils/firebase-errors.ts';
 import { logError } from '@/utils/log-error.ts';
-import { sendEmailVerification, signInWithEmailAndPassword } from '@clab/firebase';
+import { signInWithEmailAndPassword } from '@clab/firebase';
 import { useForm } from '@tanstack/react-form';
-import type { User } from 'firebase/auth';
 import { useState } from 'react';
+import z from 'zod';
 
-export function useLoginForm(onSuccess?: (user: User) => void) {
+const loginSchema = z.object({
+  email: z.email('Adresse email invalide'),
+  password: z.string().min(1, 'Le mot de passe est requis'),
+});
+
+export function useLoginForm(onSuccess?: () => void) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
@@ -14,36 +19,25 @@ export function useLoginForm(onSuccess?: (user: User) => void) {
       email: '',
       password: '',
     },
+    validators: {
+      onSubmit: loginSchema,
+    },
     onSubmit: async ({ value }) => {
-      if (loading) return;
-
       setLoading(true);
       setError(undefined);
+
       const { email, password } = value;
 
-      let user: User | undefined;
-
       try {
-        user = await signInWithEmailAndPassword(email, password);
+        await signInWithEmailAndPassword(email, password);
+        onSuccess?.();
       } catch (err) {
         logError(err, { context: 'LoginForm', extra: { email } });
         setError(handleAuthError(err));
+        form.setFieldValue('password', '');
       } finally {
         setLoading(false);
       }
-
-      if (!user) return;
-
-      if (!user.emailVerified) {
-        // Don't break the login process if the email fails to send
-        try {
-          await sendEmailVerification();
-        } catch (err) {
-          logError(err, { context: 'LoginForm', extra: { email } });
-        }
-      }
-
-      onSuccess?.(user);
     },
   });
 

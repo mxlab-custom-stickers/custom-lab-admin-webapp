@@ -1,10 +1,10 @@
-import LoginForm from '@/components/auth/LoginForm.tsx';
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
+import SignUpForm from '@/components/auth/SignUpForm';
+import { createFileRoute, redirect, useRouter, useSearch } from '@tanstack/react-router';
 import { z } from 'zod';
 
 const REDIRECT_FALLBACK = '/';
 
-export const Route = createFileRoute('/signin')({
+export const Route = createFileRoute('/signup')({
   component: RouteComponent,
   validateSearch: z.object({
     redirect: z.string().optional().catch(''),
@@ -23,9 +23,9 @@ export const Route = createFileRoute('/signin')({
 function RouteComponent() {
   const router = useRouter();
   const navigate = Route.useNavigate();
-  const search = Route.useSearch();
+  const search = useSearch({ strict: false });
 
-  async function handleLoginSuccess() {
+  function handleSignUpSuccess() {
     router.invalidate().finally(() => {
       // Prevent redirect to external URLs
       const safeRedirect = search.redirect?.startsWith('/') ? search.redirect : REDIRECT_FALLBACK;
@@ -34,9 +34,9 @@ function RouteComponent() {
   }
 
   return (
-    <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm md:!max-w-3xl">
-        <LoginForm onSuccess={handleLoginSuccess} />
+    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <SignUpForm onSuccess={handleSignUpSuccess} />
       </div>
     </div>
   );
