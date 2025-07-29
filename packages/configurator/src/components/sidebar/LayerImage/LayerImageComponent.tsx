@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { DialogTrigger } from '@/components/ui/dialog.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { drawImageOnCanvas } from '@/lib/fabric.ts';
 import { type FileNode, listFiles } from '@clab/firebase';
 import { type Image, isLayerImage } from '@clab/types';
@@ -23,7 +23,7 @@ export default function LayerImageComponent() {
     state: { canvas },
     currentLayer,
     updateLayer,
-  } = useConfiguratorContext();
+  } = useConfigurator();
 
   if (!currentLayer || !isLayerImage(currentLayer)) return null;
 

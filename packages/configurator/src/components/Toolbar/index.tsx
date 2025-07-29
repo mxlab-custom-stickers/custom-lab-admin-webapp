@@ -5,7 +5,7 @@ import NumberInput from '@/components/ui/NumberInput.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx';
 import { Toggle } from '@/components/ui/toggle.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { useCanvas } from '@/hooks/use-canvas.ts';
 import {
   isImageElement,
@@ -37,7 +37,7 @@ export default function Toolbar({ className, ...props }: React.ComponentPropsWit
     setSidebarView,
     updateText,
     updateImage,
-  } = useConfiguratorContext();
+  } = useConfigurator();
   if (!selectedObject) return null;
 
   const { updateFabricText, updateFabricObject } = useCanvas();

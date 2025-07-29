@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { useCanvas } from '@/hooks/use-canvas.ts';
 import { loadFont } from '@/lib/fontLoader.ts';
 import { type Font, isLayerText } from '@clab/types';
@@ -7,7 +7,7 @@ import { Check, X } from 'lucide-react';
 import { useEffect } from 'react';
 
 export default function FontPicker() {
-  const { currentLayer, selectedObject, updateText, setSidebarView } = useConfiguratorContext();
+  const { currentLayer, selectedObject, updateText, setSidebarView } = useConfigurator();
   if (!currentLayer || !isLayerText(currentLayer) || selectedObject?.type !== 'text') return null;
 
   const { updateFabricText } = useCanvas();

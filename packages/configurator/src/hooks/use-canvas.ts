@@ -1,4 +1,4 @@
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { hideOrShowObjectsById } from '@/lib/fabric.ts';
 import type { ColorItem, TemplateLayerColor } from '@clab/types';
 import { getAllFabricObjectsFromTemplate } from '@clab/utils';
@@ -7,7 +7,7 @@ import { type FabricImage, type FabricObject, type Textbox } from 'fabric';
 export const useCanvas = () => {
   const {
     state: { template, canvas },
-  } = useConfiguratorContext();
+  } = useConfigurator();
 
   function setColorItemsColor(colorItems: ColorItem[]) {
     if (!canvas) return;

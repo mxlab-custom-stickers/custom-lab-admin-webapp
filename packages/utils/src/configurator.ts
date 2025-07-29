@@ -3,6 +3,7 @@ import {
   ColorElement,
   ColorGroup,
   ColorItem,
+  Configuration,
   Image,
   isLayerColor,
   isLayerImage,
@@ -14,6 +15,35 @@ import {
   Text,
 } from '@clab/types';
 import type { FabricObject } from 'fabric';
+import { generateId } from './utils';
+
+export function createConfigurationFromTemplate(
+  template: Template,
+  createdBy?: string
+): Configuration {
+  const configId = generateId();
+
+  console.debug('createConfigurationFromTemplate', { from: template.id, configId: configId });
+
+  return {
+    id: configId,
+    appId: template.appId,
+    name: `${template.name} – Ma configuration`,
+    description: template.description,
+    svgUrl: template.svgUrl,
+    tags: template.tags,
+    attributes: [...template.attributes],
+    templateId: template.id, // Reference to original template
+
+    layers: template.layers.map((layer) => ({
+      ...layer,
+      // If needed, clear default values (e.g. text, color, images) here
+    })),
+
+    createdBy,
+    createdAt: new Date().toISOString(),
+  };
+}
 
 /**
  * Resets interactivity on all color items and images

@@ -2,13 +2,13 @@ import ColorPicker from '@/components/ColorPicker.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import NumberInput from '@/components/ui/NumberInput.tsx';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { useCanvas } from '@/hooks/use-canvas.ts';
 import { type Color, isLayerText } from '@clab/types';
 import { X } from 'lucide-react';
 
 export default function TextColorPicker() {
-  const { currentLayer, selectedObject, updateText, setSidebarView } = useConfiguratorContext();
+  const { currentLayer, selectedObject, updateText, setSidebarView } = useConfigurator();
   if (!currentLayer || !isLayerText(currentLayer) || selectedObject?.type !== 'text') return null;
 
   const { updateFabricText } = useCanvas();

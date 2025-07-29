@@ -1,6 +1,6 @@
 import { ScrollArea } from '@/components/ui/scroll-area.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
-import type { SidebarViewType } from '@/contexts/configurator-types.ts';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
+import type { SidebarViewType } from '@/contexts/configurator/configurator-types.ts';
 import LayerColorView from '@/views/sidebar/LayerColorView.tsx';
 import { cn } from '@clab/utils';
 import React from 'react';
@@ -18,7 +18,7 @@ const sidebarViewComponents: Record<SidebarViewType, React.ReactNode> = {
 export default function SidebarView({ className }: { className?: string }) {
   const {
     state: { sidebarView },
-  } = useConfiguratorContext();
+  } = useConfigurator();
 
   return (
     <ScrollArea className={cn(className)}>

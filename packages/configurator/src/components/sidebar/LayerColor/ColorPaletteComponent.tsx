@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { useCanvas } from '@/hooks/use-canvas.ts';
 import { type Color, isLayerColor } from '@clab/types';
 import {
@@ -17,7 +17,7 @@ import {
 import { useMemo } from 'react';
 
 export default function ColorPaletteComponent() {
-  const { currentLayer, currentColorElement, updateLayer } = useConfiguratorContext();
+  const { currentLayer, currentColorElement, updateLayer } = useConfigurator();
 
   const { setColorItemsColor } = useCanvas();
 

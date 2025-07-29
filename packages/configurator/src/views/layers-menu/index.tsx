@@ -1,4 +1,4 @@
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { cn } from '@clab/utils';
 import React from 'react';
 
@@ -8,7 +8,7 @@ export default function LayersMenu({ className, ...props }: LayersMenuProps) {
   const {
     state: { template, currentLayerId },
     setCurrentLayerId,
-  } = useConfiguratorContext();
+  } = useConfigurator();
 
   return (
     <div

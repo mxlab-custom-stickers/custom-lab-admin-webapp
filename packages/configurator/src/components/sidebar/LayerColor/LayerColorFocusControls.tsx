@@ -1,6 +1,6 @@
 import { Label } from '@/components/ui/label.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { useCanvas } from '@/hooks/use-canvas.ts';
 import { isLayerColor } from '@clab/types';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 export default function ColorLayerFocusControls() {
   const [isFocusing, setIsFocusing] = useState<boolean>(false);
 
-  const { currentLayer } = useConfiguratorContext();
+  const { currentLayer } = useConfigurator();
   const { focusColorLayer } = useCanvas();
 
   useEffect(() => {

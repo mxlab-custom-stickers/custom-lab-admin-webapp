@@ -1,7 +1,7 @@
 import ColorSwatch from '@/components/ColorSwatch.tsx';
 import SidebarCard from '@/components/sidebar/SidebarCard.tsx';
 import { Separator } from '@/components/ui/separator.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { isLayerColor } from '@clab/types';
 import { compareColorsByLuminance, getUniqueColorsFromLayer } from '@clab/utils';
 import { useMemo } from 'react';
@@ -16,7 +16,7 @@ import { useMemo } from 'react';
  * If the current layer does not support color palettes, it renders nothing.
  */
 export function LayerColorPaletteSection() {
-  const { currentLayer, setCurrentColorElementId } = useConfiguratorContext();
+  const { currentLayer, setCurrentColorElementId } = useConfigurator();
   if (!currentLayer || !isLayerColor(currentLayer)) return null;
 
   const colors = useMemo(

@@ -1,10 +1,14 @@
-import Canvas from '@/components/Canvas';
-import Sidebar from '@/components/sidebar';
-import Toolbar from '@/components/Toolbar';
-import { ConfiguratorProvider } from '@/contexts/configurator-contexts.tsx';
-import LayersMenu from '@/views/layers-menu';
+import ConfiguratorCanvas from '@/components/Canvas/ConfiguratorCanvas.tsx';
+import LayersMenubar from '@/components/layers-menubar/LayersMenubar.tsx';
+import LayersMenubarItemList from '@/components/layers-menubar/LayersMenubarItemList.tsx';
+import Sidebar from '@/components/sidebar/Sidebar.tsx';
+import SidebarContent from '@/components/sidebar/SidebarContent.tsx';
+import SidebarFooter from '@/components/sidebar/SidebarFooter.tsx';
+import SidebarHeader from '@/components/sidebar/SidebarHeader.tsx';
+import { ConfiguratorProvider } from '@/contexts/configurator/configurator-contexts.tsx';
 import { getTemplateById } from '@clab/firebase';
-import type { Configuration, Template } from '@clab/types';
+import type { Configuration } from '@clab/types';
+import { createConfigurationFromTemplate } from '@clab/utils';
 import { useEffect, useState } from 'react';
 
 const TEMPLATE_ID = 'JpahtGZzSNhpymmYpQPBN';
@@ -13,52 +17,31 @@ export default function App() {
   const [configuration, setConfiguration] = useState<Configuration>();
 
   useEffect(() => {
-    const configuration = localStorage.getItem('configuration');
-    if (!configuration) {
-      getTemplateById(TEMPLATE_ID).then((template) => {
+    getTemplateById(TEMPLATE_ID)
+      .then((template) => {
         if (!template) return;
-
-        const newConfiguration: Configuration = {
-          id: 'configuration',
-          template,
-          createdAt: new Date().toISOString(),
-        };
-        setConfiguration(newConfiguration);
-        localStorage.setItem('configuration', JSON.stringify(newConfiguration));
+        setConfiguration(createConfigurationFromTemplate(template));
+      })
+      .catch(() => {
+        // TODO: Handle error (e.g., show a notification)
+        // logError(err);
       });
-    } else {
-      setConfiguration(JSON.parse(configuration));
-    }
   }, []);
 
-  function handleTemplateChange(updatedTemplate: Template) {
-    if (!configuration) return;
-
-    setConfiguration({ ...configuration, template: updatedTemplate });
-    localStorage.setItem(
-      'configuration',
-      JSON.stringify({ ...configuration, template: updatedTemplate })
-    );
-  }
-
-  return (
-    <div className="dark bg-[url('assets/background.png')] bg-contain bg-[calc(50%+(272px/2)-(16px/2))_calc(50%-(64px/2))] bg-no-repeat">
-      {configuration ? (
-        <ConfiguratorProvider
-          className="grid h-screen w-screen"
-          template={configuration.template}
-          onTemplateChange={handleTemplateChange}
-        >
-          <Sidebar />
-          <div className="relative">
-            <Canvas />
-            <Toolbar />
-          </div>
-          <LayersMenu />
-        </ConfiguratorProvider>
-      ) : (
-        <div>Chargement...</div>
-      )}
+  return configuration ? (
+    <div className="dark h-screen w-screen bg-[url('assets/background.png')] bg-contain bg-[calc(50%+(272px/2)-(16px/2))_calc(50%-(64px/2))] bg-no-repeat">
+      <ConfiguratorProvider initialConfiguration={configuration}>
+        <Sidebar>
+          <SidebarHeader />
+          <SidebarContent />
+          <SidebarFooter />
+        </Sidebar>
+        <ConfiguratorCanvas offsetX={275} offsetY={-75} />
+        <LayersMenubar>
+          <LayersMenubarItemList />
+        </LayersMenubar>
+      </ConfiguratorProvider>
     </div>
-  );
+  ) : // TODO: Add loading state
+  null;
 }

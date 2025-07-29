@@ -1,12 +1,11 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Toggle } from '@/components/ui/toggle.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { useCanvas } from '@/hooks/use-canvas.ts';
 import { CopyPlus, LockOpen, Trash } from 'lucide-react';
 
 export function TopControlsBox({ x, y }: { x: number; y: number }) {
-  const { selectedObject, deleteSelectedObject, updateImage, updateText } =
-    useConfiguratorContext();
+  const { selectedObject, deleteSelectedObject, updateImage, updateText } = useConfigurator();
   if (!selectedObject) return null;
 
   const { lockFabricObject, removeFabricObject } = useCanvas();

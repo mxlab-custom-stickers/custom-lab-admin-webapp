@@ -92,38 +92,53 @@ export function setupZoomAndPan(canvas: Canvas) {
   });
 }
 
-export async function renderSVGToCanvas(canvas: Canvas, svgUrl: string): Promise<FabricObject[]> {
+export async function renderSVGToCanvas(
+  canvas: Canvas,
+  svgUrl: string,
+  offsetX = 0,
+  offsetY = 0
+): Promise<FabricObject[]> {
   const svgData = await loadSVGFromURL(svgUrl);
-  const { options } = svgData;
-  const objects = svgData.objects.filter((obj) => obj !== null);
 
-  objects.forEach((obj) => {
-    obj.set({
-      selectable: false,
-      evented: false,
-      hasControls: false,
-      hasBorders: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      lockScalingX: true,
-      lockScalingY: true,
-      lockRotation: true,
+  const { objects, options } = svgData;
+  if (!objects || !options) {
+    throw new Error('Invalid SVG data');
+  }
+
+  // Add all svg objects to the canvas
+  objects
+    .filter((obj) => obj !== null)
+    .forEach((obj) => {
+      obj.set({
+        selectable: false,
+        evented: false,
+        hasControls: false,
+        hasBorders: false,
+        lockMovementX: true,
+        lockMovementY: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        lockRotation: true,
+      });
+      canvas.add(obj);
     });
-    canvas.add(obj);
-  });
 
-  const scaleX = canvas.getWidth()! / options.width!;
-  const scaleY = canvas.getHeight()! / options.height!;
+  // Scale SVG to fit canvas
+  const canvasWidth = canvas.getWidth()!;
+  const canvasHeight = canvas.getHeight()!;
+  const scaleX = (canvasWidth - offsetX) / options.width!;
+  const scaleY = (canvasHeight - offsetY) / options.height!;
   const scale = Math.min(scaleX, scaleY);
   canvas.setViewportTransform([scale, 0, 0, scale, 0, 0]);
 
-  const dx = canvas.getWidth()! / 2 - (options.left ?? options.width! / 2) * scale;
-  const dy = canvas.getHeight()! / 2 - (options.top ?? options.height! / 2) * scale;
+  // Adjust pan based on offset-corrected center
+  const dx = offsetX + (canvasWidth - offsetX) / 2 - (options.left ?? options.width! / 2) * scale;
+  const dy = offsetY + (canvasHeight - offsetY) / 2 - (options.top ?? options.height! / 2) * scale;
   canvas.relativePan(new Point(dx, dy));
 
   canvas.requestRenderAll();
 
-  return objects;
+  return objects as FabricObject[];
 }
 
 export function hideOrShowObjectsById(canvas: Canvas, ids: string[], hide: boolean): void {

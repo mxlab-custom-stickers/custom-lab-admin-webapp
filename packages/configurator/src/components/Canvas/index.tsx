@@ -1,5 +1,5 @@
 import { TopControlsBox } from '@/components/Canvas/TopControlsBox.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { useFloatingFabricControls } from '@/hooks/use-floating-fabric-controls.ts';
 import {
   clipImageLayerToColorLayer,
@@ -40,7 +40,7 @@ export default function ConfiguratorCanvas({ wrapperClassName }: ConfiguratorCan
     currentLayer,
     setSelectedColorElementId,
     setSelectedObjectId,
-  } = useConfiguratorContext();
+  } = useConfigurator();
 
   const { pos, visible } = useFloatingFabricControls(canvas || null);
 

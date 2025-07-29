@@ -40,13 +40,13 @@ export const templateLayerTypeLabels: Record<TemplateLayerType, string> = {
 };
 
 export interface TemplateLayerBase {
+  type: TemplateLayerType;
+
   id: string;
   name: string;
 
   order: number;
   message?: string;
-
-  type: TemplateLayerType;
 }
 
 /**
@@ -60,9 +60,10 @@ export interface TemplateLayerColor extends TemplateLayerBase {
 
   config: {
     availableColors: Color[];
+    enableColorPalette: boolean;
+    // TODO: put these into a 'ui' config object or similar
     columns: number;
     space: number;
-    enableColorPalette: boolean;
     focus: {
       enable: boolean;
       message: string;
@@ -117,19 +118,6 @@ export interface TemplateLayerText extends TemplateLayerBase {
     availableFonts: Font[];
     availableColors: Color[];
   };
-}
-
-/**
- * Type guard for ColorElement
- */
-export function isColorElement(element: any): element is ColorElement {
-  return (
-    typeof element === 'object' &&
-    element !== null &&
-    (element.type === 'group' || element.type === 'item') &&
-    typeof element.id === 'string' &&
-    typeof element.name === 'string'
-  );
 }
 
 /**

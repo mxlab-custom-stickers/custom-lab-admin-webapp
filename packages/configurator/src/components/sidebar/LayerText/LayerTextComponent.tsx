@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
+import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import { drawTextOnCanvas } from '@/lib/fabric.ts';
 import { isLayerText, type Text } from '@clab/types';
 import { generateId } from '@clab/utils';
@@ -9,7 +9,7 @@ export default function LayerTextComponent() {
     state: { canvas },
     currentLayer,
     updateLayer,
-  } = useConfiguratorContext();
+  } = useConfigurator();
 
   function addNewText() {
     if (!canvas || !currentLayer || !isLayerText(currentLayer)) return;

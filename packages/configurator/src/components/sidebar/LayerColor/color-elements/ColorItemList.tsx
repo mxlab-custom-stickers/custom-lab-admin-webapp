@@ -6,56 +6,46 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion.tsx';
-import { useConfiguratorContext } from '@/contexts/configurator-contexts.tsx';
-import { type Color, type ColorItem, isLayerColor } from '@clab/types';
+import { type Color, type ColorItem } from '@clab/types';
 
 type ColorItemListProps = {
   className?: string;
   colorItems: ColorItem[];
   onColorItemColorChange: (colorItem: ColorItem, color: Color) => void;
+  config: {
+    availableColors: Color[];
+    columns?: number;
+    space?: number;
+  };
 };
 
 export default function ColorItemList({
   className,
   colorItems,
   onColorItemColorChange,
+  config: { availableColors, columns = 5, space = 2 },
 }: ColorItemListProps) {
-  const {
-    state: { canvas },
-    currentLayer,
-    updateColorElement,
-  } = useConfiguratorContext();
-  if (!currentLayer || !isLayerColor(currentLayer)) return null;
-
-  function handleColorSelect(colorItem: ColorItem, color: Color) {
-    if (canvas) {
-      colorItem.fabricObjects?.forEach((obj) => {
-        obj.set('fill', color.value);
-      });
-      canvas.requestRenderAll();
-    }
-    updateColorElement({ ...colorItem, color });
-  }
+  // Open the accordion item by default if there's only one color item
+  const defaultValue = colorItems.length === 1 ? colorItems[0].id : undefined;
 
   return (
-    <Accordion className={className} type="single" collapsible>
+    <Accordion className={className} type="single" defaultValue={defaultValue} collapsible>
       {colorItems
         .sort((a, b) => (a.name < b.name ? -1 : 1))
         .map((colorItem) => (
           <AccordionItem key={colorItem.id} value={colorItem.id}>
-            <AccordionTrigger className="items-center px-1 py-0">
-              <div className="flex items-center">
-                <ColorSwatch className="mr-2" color={colorItem.color} />
-                <div className="flex h-14 flex-1 items-center text-base">{colorItem.name}</div>
+            <AccordionTrigger className="items-center p-3">
+              <div className="flex items-center gap-2">
+                <ColorSwatch color={colorItem.color} />
+                <div className="flex-1 text-base">{colorItem.name}</div>
               </div>
             </AccordionTrigger>
-
             <AccordionContent>
               <ColorPicker
-                className="p-1"
-                colors={currentLayer.config.availableColors}
-                columns={currentLayer.config.columns}
-                space={currentLayer.config.space}
+                className="p-3"
+                colors={availableColors}
+                columns={columns}
+                space={space}
                 value={colorItem.color}
                 onValueChange={(color) => onColorItemColorChange(colorItem, color)}
               />

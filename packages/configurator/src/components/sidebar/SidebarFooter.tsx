@@ -5,9 +5,15 @@ type SidebarFooterProps = React.ComponentPropsWithoutRef<'div'>;
 
 export default function SidebarFooter({ className, ...props }: SidebarFooterProps) {
   return (
-    <div className={cn('group grid h-14 place-items-center', className)} {...props}>
+    <div
+      className={cn(
+        'border-muted-foreground group grid h-14 place-items-center border-t p-2',
+        className
+      )}
+      {...props}
+    >
       <span className="font-['Avant_Garde'] text-xl font-semibold">CUSTOM LAB 2</span>
-      <span className="-mt-3 text-sm text-slate-200">
+      <span className="-mt-3 text-sm text-gray-200">
         Powered by{' '}
         <a href="https://mxlab.fr" target="_blank" className="group-hover:underline">
           MXlab

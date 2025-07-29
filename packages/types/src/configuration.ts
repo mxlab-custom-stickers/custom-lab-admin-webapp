@@ -1,10 +1,6 @@
 import { Template } from './template';
 
-export interface Configuration {
-  id: string;
-
-  template: Template;
-
-  createdAt: string;
-  updatedAt?: string;
-}
+export type Configuration = Omit<Template, 'status' | 'createdBy' | 'updatedBy'> & {
+  createdBy?: string; // optional for anonymous users
+  templateId: string; // which template it was based on
+};
