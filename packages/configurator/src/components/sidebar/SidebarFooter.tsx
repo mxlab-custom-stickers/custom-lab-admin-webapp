@@ -7,7 +7,7 @@ export default function SidebarFooter({ className, ...props }: SidebarFooterProp
   return (
     <div
       className={cn(
-        'border-muted-foreground group grid h-14 place-items-center border-t p-2',
+        'border-muted-foreground group grid h-14 select-none place-items-center border-t p-2',
         className
       )}
       {...props}

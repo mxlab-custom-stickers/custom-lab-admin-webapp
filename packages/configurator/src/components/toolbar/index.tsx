@@ -1,5 +1,5 @@
-import PositionPopover from '@/components/Toolbar/PositionPopover.tsx';
-import TextSpacingPopover from '@/components/Toolbar/TextSpacingPopover.tsx';
+import PositionPopover from '@/components/toolbar/PositionPopover.tsx';
+import TextSpacingPopover from '@/components/toolbar/TextSpacingPopover.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import NumberInput from '@/components/ui/NumberInput.tsx';
 import { Separator } from '@/components/ui/separator.tsx';

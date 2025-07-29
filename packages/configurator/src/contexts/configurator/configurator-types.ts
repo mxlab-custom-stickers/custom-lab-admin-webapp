@@ -27,8 +27,8 @@ export type ConfiguratorContextType = {
   selectedElement: SelectedElement | undefined;
   setSelectedElementId: (id: string | undefined) => void;
 
-  undo: () => void;
-  redo: () => void;
+  undo: (applyVisualChanges?: (canvas: Canvas, config: Configuration) => void) => void;
+  redo: (applyVisualChanges?: (canvas: Canvas, config: Configuration) => void) => void;
   canUndo: boolean;
   canRedo: boolean;
 };

@@ -5,6 +5,8 @@ import Sidebar from '@/components/sidebar/Sidebar.tsx';
 import SidebarContent from '@/components/sidebar/SidebarContent.tsx';
 import SidebarFooter from '@/components/sidebar/SidebarFooter.tsx';
 import SidebarHeader from '@/components/sidebar/SidebarHeader.tsx';
+import Toolbar from '@/components/toolbar/Toolbar.tsx';
+import UndoRedoControls from '@/components/toolbar/UndoRedoControls.tsx';
 import { ConfiguratorProvider } from '@/contexts/configurator/configurator-contexts.tsx';
 import { getTemplateById } from '@clab/firebase';
 import type { Configuration } from '@clab/types';
@@ -36,6 +38,9 @@ export default function App() {
           <SidebarContent />
           <SidebarFooter />
         </Sidebar>
+        <Toolbar>
+          <UndoRedoControls />
+        </Toolbar>
         <ConfiguratorCanvas offsetX={275} offsetY={-75} />
         <LayersMenubar>
           <LayersMenubarItemList />

@@ -1,6 +1,7 @@
 import { configuratorReducer } from '@/contexts/configurator/configurator-reducer.ts';
 import type {
   ConfiguratorContextType,
+  ConfiguratorState,
   SelectedElement,
   SidebarView,
 } from '@/contexts/configurator/configurator-types.ts';
@@ -32,7 +33,24 @@ type ConfiguratorProviderProps = {
   children: React.ReactNode;
 };
 
-const STORAGE_KEY = 'configurator_configuration';
+const STORAGE_KEY = 'configurator_state';
+export const MAX_HISTORY_LENGTH = 100; // Limit history length to prevent memory issues
+
+/**
+ * Enhances the reducer to persist the configuration state to localStorage
+ * @param reducer
+ */
+function withPersistence(reducer: typeof configuratorReducer): typeof configuratorReducer {
+  return (state, action) => {
+    const newState = reducer(state, action);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+    } catch (err) {
+      console.warn('Failed to persist configurator state:', err);
+    }
+    return newState;
+  };
+}
 
 export function ConfiguratorProvider({
   className,
@@ -43,23 +61,34 @@ export function ConfiguratorProvider({
   onConfigurationChange,
   children,
 }: ConfiguratorProviderProps) {
-  // Init state: if controlled configuration provided, use that else localStorage or initialConfiguration
-  const getInitialConfig = (): Configuration => {
-    if (configurationProp) return configurationProp;
+  const getInitialState = (): ConfiguratorState => {
+    if (configurationProp) {
+      return {
+        configuration: configurationProp,
+        history: [configurationProp],
+        historyIndex: 0,
+      };
+    }
 
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch {}
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch {
+      // TODO: Handle JSON parse error (e.g., log it)
+    }
 
-    return initialConfiguration;
+    return {
+      configuration: initialConfiguration,
+      history: [initialConfiguration],
+      historyIndex: 0,
+    };
   };
 
-  const [state, dispatch] = useReducer(configuratorReducer, {
-    configuration: getInitialConfig(),
-    history: [getInitialConfig()],
-    historyIndex: 0,
-  });
+  const [state, dispatch] = useReducer(
+    withPersistence(configuratorReducer),
+    undefined,
+    getInitialState
+  );
   const [sidebarView, setSidebarView] = useState<SidebarView>('home');
   // Controlled/uncontrolled currentLayerId
   const [internalCurrentLayerId, setInternalCurrentLayerId] = useState<string | undefined>(
@@ -108,7 +137,7 @@ export function ConfiguratorProvider({
 
     if (applyVisualChanges) {
       if (!canvasRef.current) {
-        console.warn('Canvas is not initialized, skipping visual updates');
+        console.warn('Canvas is not initialized, skipping visual updates on configuration update');
         return;
       }
       applyVisualChanges(canvasRef.current, newConfig);
@@ -122,9 +151,6 @@ export function ConfiguratorProvider({
     }
     if (!configurationProp) {
       dispatch({ type: 'SET_CONFIGURATION', payload: config });
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-      } catch {}
     }
   }
 
@@ -167,12 +193,38 @@ export function ConfiguratorProvider({
     canvasRef.current = canvas;
   }
 
-  function undo() {
+  function undo(applyVisualChanges?: (canvas: Canvas, config: Configuration) => void) {
+    if (!canUndo) return;
+
+    const { history, historyIndex } = state;
+    const newConfig = history[historyIndex - 1];
+
     dispatch({ type: 'UNDO' });
+
+    if (applyVisualChanges) {
+      if (!canvasRef.current) {
+        console.warn('Canvas is not initialized, skipping visual updates on undo');
+        return;
+      }
+      applyVisualChanges(canvasRef.current, newConfig);
+    }
   }
 
-  function redo() {
+  function redo(applyVisualChanges?: (canvas: Canvas, config: Configuration) => void) {
+    if (!canRedo) return;
+
+    const { history, historyIndex } = state;
+    const newConfig = history[historyIndex + 1];
+
     dispatch({ type: 'REDO' });
+
+    if (applyVisualChanges) {
+      if (!canvasRef.current) {
+        console.warn('Canvas is not initialized, skipping visual updates on redo');
+        return;
+      }
+      applyVisualChanges(canvasRef.current, newConfig);
+    }
   }
 
   const canUndo = state.historyIndex > 0;
@@ -197,7 +249,9 @@ export function ConfiguratorProvider({
         canRedo,
       }}
     >
-      <div className={cn('clab-configurator grid h-screen w-screen', className)}>{children}</div>
+      <div className={cn('clab-configurator relative grid h-screen w-screen', className)}>
+        {children}
+      </div>
     </ConfiguratorContext.Provider>
   );
 }
