@@ -21,6 +21,7 @@ export default function ConfiguratorCanvas({ offsetX = 0, offsetY = 0 }: Configu
     if (!wrapperEl || !canvasEl) return;
 
     const canvas = new Canvas(canvasEl);
+    canvas.selection = false;
 
     const resize = () => resizeCanvasToWrapper(canvas, wrapperEl);
     resize();
@@ -47,7 +48,6 @@ export default function ConfiguratorCanvas({ offsetX = 0, offsetY = 0 }: Configu
   return (
     <div ref={wrapperRef} className="relative h-full w-full">
       <canvas id="configurator-canvas" ref={canvasRef} className="h-full w-full" />
-      {/*{visible && pos && <TopControlsBox x={pos.x} y={pos.y} />}*/}
     </div>
   );
 }

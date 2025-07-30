@@ -5,7 +5,8 @@ import type {
 } from '@/contexts/configurator/configurator-types.ts';
 
 export function configuratorReducer(state: ConfiguratorState, action: ConfiguratorAction) {
-  console.log('Reducer action:', action.type);
+  console.debug('Reducer action:', action.type);
+
   switch (action.type) {
     case 'SET_CONFIGURATION': {
       const newConfig = action.payload;

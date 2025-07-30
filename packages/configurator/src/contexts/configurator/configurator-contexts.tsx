@@ -5,6 +5,10 @@ import type {
   SelectedElement,
   SidebarView,
 } from '@/contexts/configurator/configurator-types.ts';
+import {
+  activateFabricObjectsInLayerColor,
+  deactivateFabricObjectsInConfigurationByLayerIds,
+} from '@/utils/canvas';
 import { type Configuration } from '@clab/types';
 import { cn, findColorElementById } from '@clab/utils';
 import type { Canvas } from 'fabric';
@@ -166,6 +170,41 @@ export function ConfiguratorProvider({
     if (currentLayerIdProp === undefined) setInternalCurrentLayerId(id);
     setSidebarView(id ? 'current-layer' : 'home');
     _setSelectedElementId(undefined);
+
+    const newCurrentLayer = state.configuration.layers.find((l) => l.id === id);
+    if (newCurrentLayer) {
+      if (!canvasRef.current) {
+        console.warn('Canvas is not initialized, skipping layer toggle');
+        return;
+      }
+
+      // Deactivate all other layers' fabric objects
+      const layerIdsToDeactivate = state.configuration.layers
+        .filter((l) => l.id !== id)
+        .map((l) => l.id);
+      deactivateFabricObjectsInConfigurationByLayerIds(
+        canvasRef.current,
+        state.configuration,
+        layerIdsToDeactivate
+      );
+
+      // Activate fabric objects in the new current layer
+      switch (newCurrentLayer.type) {
+        case 'color':
+          activateFabricObjectsInLayerColor(
+            canvasRef.current,
+            newCurrentLayer,
+            (colorItemId: string) => {
+              setSelectedElementId(colorItemId);
+            }
+          );
+          break;
+        case 'image':
+          break;
+        case 'text':
+          break;
+      }
+    }
   }
 
   const selectedElement: SelectedElement | undefined = useMemo(() => {
@@ -235,7 +274,6 @@ export function ConfiguratorProvider({
       value={{
         configuration: state.configuration,
         performConfigurationUpdate,
-        canvasRef,
         setCanvas,
         sidebarView,
         setSidebarView,

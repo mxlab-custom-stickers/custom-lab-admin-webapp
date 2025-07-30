@@ -1,6 +1,5 @@
 import type { CanvasElement, ColorElement, Configuration, TemplateLayer } from '@clab/types';
 import type { Canvas } from 'fabric';
-import React from 'react';
 
 export type ConfiguratorState = {
   configuration: Configuration;
@@ -15,7 +14,6 @@ export type ConfiguratorContextType = {
     applyVisualChanges?: (canvas: Canvas, config: Configuration) => void
   ) => void;
 
-  canvasRef: React.MutableRefObject<Canvas | null>;
   setCanvas: (canvas: Canvas) => void;
 
   sidebarView: SidebarView;

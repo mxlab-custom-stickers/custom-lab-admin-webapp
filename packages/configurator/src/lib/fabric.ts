@@ -56,8 +56,6 @@ export function setupZoomAndPan(canvas: Canvas) {
       lastPosX = e.touches[0].clientX;
       lastPosY = e.touches[0].clientY;
     }
-
-    canvas.selection = false;
   });
 
   canvas.on('mouse:move', (opt) => {
@@ -88,7 +86,6 @@ export function setupZoomAndPan(canvas: Canvas) {
 
   canvas.on('mouse:up', () => {
     isPanning = false;
-    canvas.selection = true;
   });
 }
 

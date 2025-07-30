@@ -89,29 +89,137 @@ export function arePaletteColorsAvailable(
   return palette.colors.every((color) => availableColorIds.has(color.id));
 }
 
+export function adjustHexColorForHighlight(hex: string, amount = 0.07): string {
+  const [h, s, l] = hexToHsl(hex);
+
+  const newL =
+    l < 0.5
+      ? Math.min(1, l + amount) // brighten dark colors
+      : Math.max(0, l - amount); // darken light colors
+
+  return hslToHex(h, s, newL);
+}
+
+function hexToHsl(hex: string): [number, number, number] {
+  const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex;
+  const r = parseInt(cleanHex.slice(0, 2), 16) / 255;
+  const g = parseInt(cleanHex.slice(2, 4), 16) / 255;
+  const b = parseInt(cleanHex.slice(4, 6), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+
+  let h = 0,
+    s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return [h, s, l];
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  const [r, g, b] = hslToRgb(h, s, l);
+  return (
+    '#' +
+    [r, g, b]
+      .map((x) =>
+        Math.round(x * 255)
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')
+  );
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  let r, g, b;
+
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const hue2rgb = (p: number, q: number, t: number) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+
+  return [r, g, b];
+}
+
 /**
- * Returns a slightly brighter version of the given hex color.
+ * Brightens a hex color by increasing its lightness in HSL space.
  * @param hex - The hex color string, e.g. "#336699"
- * @param amount - How much to brighten (0-255), default is 20
- * @returns The brightened hex color string
+ * @param lightnessAmount - Amount to increase lightness (0–100), default 10
+ * @returns A new brightened hex color string
  */
-export function brightenHexColor(hex: string, amount = 20): string {
-  // Remove the leading '#' if present
+export function brightenHexColor(hex: string, lightnessAmount = 2): string {
   const cleanHex = hex.startsWith('#') ? hex.slice(1) : hex;
 
-  // Parse r, g, b components
-  const num = parseInt(cleanHex, 16);
-  let r = (num >> 16) & 0xff;
-  let g = (num >> 8) & 0xff;
-  let b = num & 0xff;
+  const r = parseInt(cleanHex.slice(0, 2), 16) / 255;
+  const g = parseInt(cleanHex.slice(2, 4), 16) / 255;
+  const b = parseInt(cleanHex.slice(4, 6), 16) / 255;
 
-  // Increase each by amount, capped at 255
-  r = Math.min(255, r + amount);
-  g = Math.min(255, g + amount);
-  b = Math.min(255, b + amount);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
 
-  // Convert back to hex with leading zeros if needed
-  const brightened = '#' + [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('');
+  let h = 0,
+    s = 0;
 
-  return brightened;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  const newL = Math.min(1, l + lightnessAmount / 100);
+  const [nr, ng, nb] = hslToRgb(h, s, newL);
+
+  return (
+    '#' +
+    [nr, ng, nb]
+      .map((x) =>
+        Math.round(x * 255)
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')
+  );
 }
