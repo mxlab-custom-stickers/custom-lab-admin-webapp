@@ -20,7 +20,7 @@ export default function LayersMenubarItemList({ className, ...props }: LayersMen
             'flex h-full min-w-24 items-center justify-center rounded-md px-2 text-xl font-semibold uppercase',
             'cursor-pointer select-none hover:bg-[#454545]',
             {
-              'cursor-default bg-[#ffe500] text-black hover:bg-[#ffe500]':
+              'text-accent cursor-default bg-[#ffe500] hover:bg-[#ffe500]':
                 layer.id === currentLayer?.id,
             }
           )}

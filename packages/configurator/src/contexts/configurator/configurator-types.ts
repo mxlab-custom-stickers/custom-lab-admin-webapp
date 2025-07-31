@@ -9,12 +9,14 @@ export type ConfiguratorState = {
 
 export type ConfiguratorContextType = {
   configuration: Configuration;
+  setConfiguration: (config: Configuration) => void;
   performConfigurationUpdate: (
-    updater: (prev: Configuration) => Configuration,
+    updater: (prev: Configuration, currentLayer: TemplateLayer) => Configuration,
     applyVisualChanges?: (canvas: Canvas, config: Configuration) => void
   ) => void;
 
   setCanvas: (canvas: Canvas) => void;
+  canvasCenterPos: { x: number; y: number };
 
   sidebarView: SidebarView;
   setSidebarView: (view: SidebarView) => void;

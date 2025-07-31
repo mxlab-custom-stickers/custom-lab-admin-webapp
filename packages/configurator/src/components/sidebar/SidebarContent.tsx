@@ -4,13 +4,14 @@ import { ScrollArea } from '@/components/ui/scroll-area.tsx';
 import { useConfigurator } from '@/contexts/configurator/configurator-contexts.tsx';
 import type { SelectedElement } from '@/contexts/configurator/configurator-types.ts';
 import LayerColorView from '@/views/sidebar/LayerColorView.tsx';
+import LayerImageView from '@/views/sidebar/LayerImageView.tsx';
 import type { TemplateLayerType } from '@clab/types';
 import { cn } from '@clab/utils';
 import React from 'react';
 
 const layerViewComponents: Record<TemplateLayerType, React.FC> = {
   color: () => <LayerColorView />,
-  image: () => <div>image</div>,
+  image: () => <LayerImageView className="px-2 pb-2" />,
   text: () => <div>text</div>,
   background: () => <div>background</div>,
 };

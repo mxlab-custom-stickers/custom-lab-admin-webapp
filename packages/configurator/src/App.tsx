@@ -19,6 +19,9 @@ export default function App() {
   const [configuration, setConfiguration] = useState<Configuration>();
 
   useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.add('dark');
+
     getTemplateById(TEMPLATE_ID)
       .then((template) => {
         if (!template) return;
@@ -31,7 +34,7 @@ export default function App() {
   }, []);
 
   return configuration ? (
-    <div className="dark h-screen w-screen bg-[url('assets/background.png')] bg-contain bg-[calc(50%+(272px/2)-(16px/2))_calc(50%-(64px/2))] bg-no-repeat">
+    <div className="h-screen w-screen bg-white bg-[url('assets/background.png')] bg-contain bg-[calc(50%+(272px/2)-(16px/2))_calc(50%-(64px/2))] bg-no-repeat">
       <ConfiguratorProvider initialConfiguration={configuration}>
         <Sidebar>
           <SidebarHeader />

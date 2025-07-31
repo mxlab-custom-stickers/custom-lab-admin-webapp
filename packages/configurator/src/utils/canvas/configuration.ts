@@ -1,20 +1,32 @@
 import { updateFabricObjectsColor } from '@/utils/canvas/color.ts';
+import { activateImage, drawImage } from '@/utils/canvas/image.ts';
 import { collectColorItems } from '@/utils/layer-color-helpers.ts';
-import type { Configuration, TemplateLayerColor } from '@clab/types';
+import {
+  type Configuration,
+  type Image,
+  type TemplateLayerColor,
+  type TemplateLayerImage,
+} from '@clab/types';
 import { adjustHexColorForHighlight } from '@clab/utils';
 import type { Canvas } from 'fabric';
 
-export function applyConfigurationToCanvas(canvas: Canvas, configuration: Configuration): void {
+export async function applyConfigurationToCanvas(canvas: Canvas, configuration: Configuration) {
   for (const layer of configuration.layers) {
     switch (layer.type) {
       case 'color':
-        // TODO: Move this logic to a separate function
         const colorItems = collectColorItems(layer.colorElements);
         colorItems.forEach((colorItem) =>
           updateFabricObjectsColor(canvas, colorItem.id, colorItem.color.value)
         );
         break;
       case 'image':
+        // Remove existing images in the layer before drawing new ones
+        canvas
+          .getObjects()
+          .filter((obj) => obj.get('layerId') === layer.id)
+          .forEach((obj) => canvas.remove(obj));
+        canvas.requestRenderAll();
+        await Promise.all(layer.images.map((image) => drawImage(canvas, image)));
         break;
       case 'text':
         break;
@@ -35,7 +47,7 @@ export function deactivateFabricObjectsInConfigurationByLayerIds(
           deactivateFabricObjectsInLayerColor(canvas, layer as TemplateLayerColor);
           break;
         case 'image':
-          // deactivateFabricObjectsInLayerImage(canvas, layer as TemplateLayerImage, callbacks);
+          deactivateFabricObjectsInLayerImage(canvas, layer as TemplateLayerImage);
           break;
         case 'text':
           // deactivateFabricObjectsInLayerText(canvas, layer as TemplateLayerText, callbacks);
@@ -49,6 +61,7 @@ export function activateFabricObjectsInLayerColor(
   layer: TemplateLayerColor,
   onMouseDown: (colorItemId: string) => void
 ): void {
+  console.debug(`Activating fabric objects in layer color '${layer.id}'`);
   const colorItems = collectColorItems(layer.colorElements);
   colorItems.forEach((colorItem) => {
     const objects = canvas.getObjects().filter((obj) => obj.get('id') === colorItem.id);
@@ -84,6 +97,7 @@ export function activateFabricObjectsInLayerColor(
 }
 
 export function deactivateFabricObjectsInLayerColor(canvas: Canvas, layer: TemplateLayerColor) {
+  console.debug(`Deactivating fabric objects in layer color '${layer.id}'`);
   const colorItems = collectColorItems(layer.colorElements);
   colorItems.forEach((colorItem) => {
     const objects = canvas.getObjects().filter((obj) => obj.get('id') === colorItem.id);
@@ -97,5 +111,35 @@ export function deactivateFabricObjectsInLayerColor(canvas: Canvas, layer: Templ
 
       obj.off();
     });
+  });
+}
+
+export function activateFabricObjectsInLayerImage(
+  canvas: Canvas,
+  layer: TemplateLayerImage,
+  callbacks: { onModified: (modifiedImage: Image) => void }
+): void {
+  console.debug(`Activating fabric objects in layer image '${layer.id}'`);
+  layer.images.forEach((image) => activateImage(canvas, image, callbacks));
+}
+
+export function deactivateFabricObjectsInLayerImage(
+  canvas: Canvas,
+  layer: TemplateLayerImage
+): void {
+  console.debug(`Deactivating fabric objects in layer image '${layer.id}'`);
+  layer.images.forEach((image) => {
+    const object = canvas.getObjects().find((obj) => obj.get('id') === image.id);
+    if (!object) {
+      console.error(`Can't deactivate object with id '${image.id}': not found on canvas`);
+      return;
+    }
+
+    object.set({
+      selectable: false,
+      evented: false,
+    });
+
+    object.off();
   });
 }

@@ -7,9 +7,11 @@ import type {
 } from '@/contexts/configurator/configurator-types.ts';
 import {
   activateFabricObjectsInLayerColor,
+  activateFabricObjectsInLayerImage,
   deactivateFabricObjectsInConfigurationByLayerIds,
 } from '@/utils/canvas';
-import { type Configuration } from '@clab/types';
+import { updateImage } from '@/utils/layer-image-helpers.ts';
+import { type Configuration, type TemplateLayer } from '@clab/types';
 import { cn, findColorElementById } from '@clab/utils';
 import type { Canvas } from 'fabric';
 import React, {
@@ -50,7 +52,7 @@ function withPersistence(reducer: typeof configuratorReducer): typeof configurat
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
     } catch (err) {
-      console.warn('Failed to persist configurator state:', err);
+      console.error('Failed to persist configurator state:', err);
     }
     return newState;
   };
@@ -101,6 +103,13 @@ export function ConfiguratorProvider({
   const [selectedElementId, _setSelectedElementId] = useState<string | undefined>(undefined);
 
   const canvasRef = useRef<Canvas | null>(null);
+  const canvasCenterPos = useMemo(() => {
+    if (!canvasRef.current) {
+      console.warn('Cannot calculate canvas center position: canvas is not initialized');
+      return { x: 0, y: 0 };
+    }
+    return { x: canvasRef.current.getWidth() / 2, y: canvasRef.current?.getHeight() / 2 };
+  }, [canvasRef.current]);
 
   // Sync controlled configuration changes to state
   useEffect(() => {
@@ -110,38 +119,50 @@ export function ConfiguratorProvider({
   }, [configurationProp]);
 
   /**
-   * Updates the current configuration state by applying an updater function, and optionally
-   * performs targeted visual updates on the canvas.
+   * Applies a state update to the current configuration and optionally synchronizes visual changes on the Fabric.js canvas.
    *
-   * This function centralizes state updates and visual synchronization, ensuring undo/redo
-   * history is maintained and that the UI reflects changes efficiently.
+   * This utility ensures centralized control over configuration updates, maintaining undo/redo history,
+   * state persistence (e.g., in localStorage), and optional fine-grained visual updates on the canvas.
    *
-   * @param updater - A function that receives the previous Configuration and returns the new updated Configuration.
-   *                  This update will be applied to the state and persisted (e.g., localStorage).
+   * @param updater - A function that receives the previous Configuration and the current layer,
+   *                  returning a new Configuration. This new configuration is stored in state and persisted.
    *
-   * @param applyVisualChanges - Optional. A function that receives the current Fabric.js canvas instance (or null if not initialized)
-   *                             and the new Configuration. This should perform any selective visual updates necessary
-   *                             (e.g., updating a single canvas object instead of full re-render).
-   *                             If omitted, only the state is updated.
+   * @param applyVisualChanges - Optional. A function that receives the Fabric.js canvas instance and the new Configuration.
+   *                             Use this to apply selective, efficient updates to the canvas (e.g., updating a single object).
+   *                             If omitted, only the state will be updated without visual side effects.
+   *
+   * @remarks
+   * - This function assumes a valid `currentLayer` exists. If not, it logs a warning and aborts.
+   * - If canvas is not initialized when `applyVisualChanges` is provided, the visual update is skipped with a warning.
    *
    * @example
    * performConfigurationUpdate(
-   *   prevConfig => updateColorItemColor(prevConfig, layerId, itemId, newColor),
-   *   (canvas, config) => {
-   *     // selectively update canvas objects here
+   *   (prevConfig, currentLayer) =>
+   *     updateColorItemColor(prevConfig, currentLayer.id, itemId, newColor),
+   *   (canvas, newConfig) => {
+   *     const item = findFabricObjectForItem(canvas, currentLayer.id, itemId);
+   *     if (item) {
+   *       item.set('fill', newColor);
+   *       canvas.requestRenderAll();
+   *     }
    *   }
    * );
    */
+
   function performConfigurationUpdate(
-    updater: (prevConfig: Configuration) => Configuration,
+    updater: (prevConfig: Configuration, currentLayer: TemplateLayer) => Configuration,
     applyVisualChanges?: (canvas: Canvas, newConfig: Configuration) => void
   ) {
-    const newConfig = updater(state.configuration);
+    if (!currentLayer) {
+      console.error('No current layer set, skipping configuration update');
+      return;
+    }
+    const newConfig = updater(state.configuration, currentLayer);
     setConfiguration(newConfig); // triggers reducer + history + localStorage
 
     if (applyVisualChanges) {
       if (!canvasRef.current) {
-        console.warn('Canvas is not initialized, skipping visual updates on configuration update');
+        console.error('Canvas is not initialized, skipping visual updates on configuration update');
         return;
       }
       applyVisualChanges(canvasRef.current, newConfig);
@@ -174,7 +195,7 @@ export function ConfiguratorProvider({
     const newCurrentLayer = state.configuration.layers.find((l) => l.id === id);
     if (newCurrentLayer) {
       if (!canvasRef.current) {
-        console.warn('Canvas is not initialized, skipping layer toggle');
+        console.error('Canvas is not initialized, skipping layer toggle');
         return;
       }
 
@@ -191,6 +212,7 @@ export function ConfiguratorProvider({
       // Activate fabric objects in the new current layer
       switch (newCurrentLayer.type) {
         case 'color':
+          // Allow color elements to be selected
           activateFabricObjectsInLayerColor(
             canvasRef.current,
             newCurrentLayer,
@@ -200,6 +222,12 @@ export function ConfiguratorProvider({
           );
           break;
         case 'image':
+          // Allow image elements to be selected, moved, rotated, scaled, etc.
+          activateFabricObjectsInLayerImage(canvasRef.current, newCurrentLayer, {
+            onModified: (modifiedImage) => {
+              setConfiguration(updateImage(state.configuration, modifiedImage));
+            },
+          });
           break;
         case 'text':
           break;
@@ -242,7 +270,7 @@ export function ConfiguratorProvider({
 
     if (applyVisualChanges) {
       if (!canvasRef.current) {
-        console.warn('Canvas is not initialized, skipping visual updates on undo');
+        console.error('Canvas is not initialized, skipping visual updates on undo');
         return;
       }
       applyVisualChanges(canvasRef.current, newConfig);
@@ -259,7 +287,7 @@ export function ConfiguratorProvider({
 
     if (applyVisualChanges) {
       if (!canvasRef.current) {
-        console.warn('Canvas is not initialized, skipping visual updates on redo');
+        console.error('Canvas is not initialized, skipping visual updates on redo');
         return;
       }
       applyVisualChanges(canvasRef.current, newConfig);
@@ -273,8 +301,10 @@ export function ConfiguratorProvider({
     <ConfiguratorContext.Provider
       value={{
         configuration: state.configuration,
+        setConfiguration,
         performConfigurationUpdate,
         setCanvas,
+        canvasCenterPos,
         sidebarView,
         setSidebarView,
         currentLayer,

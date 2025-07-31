@@ -10,6 +10,7 @@ export type CanvasElementType = 'image' | 'text';
  */
 export interface CanvasElement<T extends FabricObject = FabricObject> {
   type: CanvasElementType;
+  layerId: string; // ID of the layer this element belongs to
 
   x: number;
   y: number;
@@ -24,8 +25,6 @@ export interface CanvasElement<T extends FabricObject = FabricObject> {
   skewY: number;
 
   locked: boolean;
-
-  fabricObject?: T | null;
 }
 
 export type UpdatableCanvasElementProps = Partial<

@@ -9,9 +9,9 @@ type LayerHeaderProps = React.ComponentPropsWithoutRef<'div'> & {
 export default function LayerHeader({ className, layer, ...props }: LayerHeaderProps) {
   return (
     <div className={cn('text-center', className)} {...props}>
-      <div className="mb-1 select-none text-2xl font-semibold uppercase">{layer.name}</div>
+      <div className="mb-1 text-2xl font-semibold uppercase">{layer.name}</div>
       {!layer.message ? (
-        <div className="leading-6">Un super message pour mon super calque 👍</div>
+        <div className="leading-5">Un super message pour mon super calque 👍</div>
       ) : null}
     </div>
   );

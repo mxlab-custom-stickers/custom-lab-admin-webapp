@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@plugin 'tailwind-scrollbar';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -55,7 +56,6 @@
 }
 
 /* Avant Garde */
-
 @font-face {
   font-family: 'Avant Garde';
   src: url('./assets/fonts/ITCAvantGarde/ITCAvantGardeStd-BkObl.otf') format('opentype');
